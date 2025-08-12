@@ -1,0 +1,26 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 画面の高さに合わせる */
+}
+
+main {
+  flex: 1; /* 余白を埋める */
+}
+
+.orange{
+  color: #FF8750;
+}
+
+.bg-orange{
+  background-color: #FF8750;
+}
+
+.gray{
+  color: #B3ACAC;
+}

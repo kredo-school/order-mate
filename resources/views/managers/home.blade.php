@@ -3,22 +3,23 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+        <!-- flexboxで縦横中央配置 -->
+        <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+            <a href="#" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
+                <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
                     Order List
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
+            </a>
+            <a href="#" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
+                <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
                     Admin Menu
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
+            </a>
+            <a href="#" class="card bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
+                <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
                     Store Info
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>

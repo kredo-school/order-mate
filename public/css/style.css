@@ -13,14 +13,47 @@ main {
   flex: 1; /* 余白を埋める */
 }
 
-.orange{
-  color: #FF8750;
+/* Link a tag */
+a {
+  background-color: transparent;
+  text-decoration: none;
 }
 
-.bg-orange{
-  background-color: #FF8750;
+.btn {
+  padding: 1rem 2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-align: center;
+  border: none;
 }
 
-.gray{
-  color: #B3ACAC;
+/* オレンジのボタン */
+.btn-primary {
+  background-color: var(--primary-orange);
+  color: #FDF6EB;
 }
+
+/* 枠線のみのボタン */
+.btn-outline {
+  background-color: transparent; /* 背景を透明に */
+  border: 1px solid var(--primary-orange); /* 枠線をオレンジ色に */
+  color: var(--primary-orange); /* 文字色をオレンジ色に */
+}
+
+/* Color */
+:root {
+  /* Figmaのデザインから色を定義 */
+  --primary-orange: #FF8750;
+  --bg-light: #FDF6EB;
+  --text-brown: #6B4C3B;
+  --text-gray: #B3ACAC;
+  --text-beige: #FDF6EB;
+}
+
+/* 色・背景色 */
+.text-orange { color: var(--primary-orange); }
+.text-gray { color: var(--text-gray); }
+.text-brown { color: var(--text-brown); }
+.text-beige { color: var(--text-beige); }
+.bg-orange { background-color: var(--primary-orange); }
+.bg-light-mode { background-color: var(--bg-light); }

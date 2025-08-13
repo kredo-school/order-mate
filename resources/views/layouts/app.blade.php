@@ -44,7 +44,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container m-0">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
@@ -72,7 +72,7 @@
                             <!-- トグルボタン -->
                             <a id="navbarDropdown" class="nav-link" href="#" role="button"
                                data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                <i class="fa-solid fa-bars text-orange"></i>
+                                <i class="fa-solid fa-bars fa-2x text-orange"></i>
                             </a>
                         </li>
                     @endguest

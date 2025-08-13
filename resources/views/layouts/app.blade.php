@@ -22,13 +22,6 @@
     {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-    <style>
-        /* オフキャンバス横幅を1/4に */
-        .offcanvas.offcanvas-end {
-            width: 25% !important;
-            max-width: none;
-        }
-    </style>
 </head>
 <body>
     <div id="app">
@@ -39,7 +32,7 @@
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
-                    {{ Auth::user()->name }}
+                    {{ Auth::user()->name ?? '' }}
                 </p>
 
                 <!-- 右側メニュー -->
@@ -136,7 +129,7 @@
 
         <footer class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="mx-auto">
-                <p class="gray">
+                <p class="gray m-0">
                     &copy;All Rights are reserved by ordermate
                 </p>
             </div>

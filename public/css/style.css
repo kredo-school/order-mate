@@ -13,6 +13,20 @@ main {
   flex: 1; /* 余白を埋める */
 }
 
+/* デフォルト: PCやタブレットは25%幅 */
+body .offcanvas.offcanvas-end {
+  --bs-offcanvas-width: 25% !important;
+  width: 25% !important;
+}
+
+/* スマホは全幅 */
+@media (max-width: 768px) {
+  body .offcanvas.offcanvas-end {
+    --bs-offcanvas-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
 /* Link a tag */
 a {
   background-color: transparent;

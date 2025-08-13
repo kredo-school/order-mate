@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+// 認証ルート
+Auth::routes();
 
 // 認証が必要なルート
 Route::group(['middleware' => 'auth'], function () {
@@ -10,5 +15,10 @@ Route::group(['middleware' => 'auth'], function () {
     // 他にも保護したいルートをここへ
 });
 
-// 認証ルート
-Auth::routes();
+Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('create');
+    
+    // Category routes
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+});

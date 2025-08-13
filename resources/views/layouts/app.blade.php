@@ -12,6 +12,9 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <!-- fontawesome cdn -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -22,13 +25,28 @@
     {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+    <style>
+        /* デフォルト: PCやタブレットは25%幅 */
+        body .offcanvas.offcanvas-end {
+        --bs-offcanvas-width: 25% !important;
+        width: 25% !important;
+        }
+
+        /* スマホは全幅 */
+        @media (max-width: 768px) {
+        body .offcanvas.offcanvas-end {
+            --bs-offcanvas-width: 100% !important;
+            width: 100% !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
@@ -54,7 +72,7 @@
                             <!-- トグルボタン -->
                             <a id="navbarDropdown" class="nav-link" href="#" role="button"
                                data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                <i class="fa-solid fa-bars orange"></i>
+                                <i class="fa-solid fa-bars text-orange"></i>
                             </a>
                         </li>
                     @endguest
@@ -129,7 +147,7 @@
 
         <footer class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="mx-auto">
-                <p class="gray m-0">
+                <p class="text-gray m-0">
                     &copy;All Rights are reserved by ordermate
                 </p>
             </div>

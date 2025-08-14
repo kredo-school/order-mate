@@ -82,7 +82,7 @@ a {
 .bg-orange { background-color: var(--primary-orange); }
 .bg-light-mode { background-color: var(--bg-light); }
 
-img.logo{
+a.navbar-brand{
   height: 15%;
   width: 15%;
 }
@@ -150,4 +150,9 @@ img.logo-main {
   width: 24px;
   height: 24px;
   display: block;
+}
+
+img.logo{
+  height: 50%;
+  width: 50%;
 }

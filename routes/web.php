@@ -21,4 +21,5 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     
     // Category routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
 });

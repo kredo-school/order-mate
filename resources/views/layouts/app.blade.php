@@ -141,7 +141,7 @@
 
         @endauth
 
-        <main class="d-flex align-items-center">
+        <main class="">
             @yield('content')
         </main>
 

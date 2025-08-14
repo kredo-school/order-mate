@@ -1,6 +1,11 @@
 html, body {
   height: 100%;
   margin: 0;
+  background-color: var(--bg-light);
+}
+
+nav, footer {
+  background-color: var(--bg-light) !important;
 }
 
 #app {
@@ -11,6 +16,18 @@ html, body {
 
 main {
   flex: 1; /* 余白を埋める */
+}
+
+.card {
+  background-color: transparent; /* 背景を透明に */
+  box-shadow: none; /* 影も削除 */
+  padding: 2rem;
+}
+
+.page-center {
+  width: 25%;
+  margin: 8vh auto 6vh;
+  padding: 0 20px;
 }
 
 /* Link a tag */
@@ -63,6 +80,7 @@ a {
   color: var(--primary-orange); /* 文字色をオレンジ色に */
 }
 
+
 /* 共通設定 */
 .btn-icon {
   background: none;
@@ -93,6 +111,12 @@ a {
 
 .btn-icon-delete:hover {
   color: #bd2130; /* 少し濃い赤 */
+
+.btn-primary:hover,
+.btn-outline:hover {
+  background-color: #e6763e;
+  color: #FDF6EB;
+
 }
 
 /* Color */
@@ -117,6 +141,71 @@ a {
 a.navbar-brand{
   height: 15%;
   width: 15%;
+}
+
+img.logo-main {
+  height: 150px;
+  width: auto;
+}
+
+/* ロゴブロック */
+.logo-area {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.logo-area .logo {
+  /* 既存の img.logo があればどちらでもOK */
+  height: 64px;
+  width: auto;
+}
+
+/* 入力欄を“下線のみ”にするバリアント（背景は透明） */
+.form-underline .form-control {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #D9D3C8;
+  border-radius: 0;
+  background: transparent;
+  padding: 8px 0;
+  box-shadow: none;
+  outline: none;
+  font-size: 14px;
+}
+.form-underline .form-control:focus {
+  border-bottom-color: var(--primary-orange);
+  box-shadow: none;
+}
+
+/* ラベル（色はFigmaのブラウン） */
+.form-underline label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-brown);
+}
+
+/* 下部リンク2つを左右に配置 */
+.link-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.link-row a { color: var(--primary-orange); }
+.link-row a:hover { text-decoration: underline; }
+
+/* SNSアイコン横並び */
+.social-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+.social-row img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 img.logo{

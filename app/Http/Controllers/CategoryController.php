@@ -33,4 +33,26 @@ class CategoryController extends Controller
         // リダイレクト
         return redirect()->back();
     }
+
+    public function update(Request $request, $id){
+        // バリデーション
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        $category = $this->category->findOrFail($id);
+        $category->name = $request->name;
+        $category->save();
+
+        // リダイレクト
+        return redirect()->back();
+    }
+
+    public function destroy($id){
+        $category = $this->category->findOrFail($id);
+        $category->delete();
+
+        // リダイレクト
+        return redirect()->back();
+    }
 }

@@ -88,8 +88,7 @@
 
         <!-- オフキャンバスメニュー -->
         @auth
-            <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="sideMenu"
-                aria-labelledby="sideMenuLabel">
+            <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="sideMenu" aria-labelledby="sideMenuLabel"  style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="sideMenuLabel">Menu</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"

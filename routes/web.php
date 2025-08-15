@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
@@ -24,4 +25,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
     Route::patch('/categories/update/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Custom routes
+    Route::get('/custom', [CustomController::class, 'index'])->name('custom.index');
+    Route::post('/custom/store', [CustomController::class, 'store'])->name('custom.store');
 });

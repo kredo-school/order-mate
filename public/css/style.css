@@ -5,7 +5,7 @@ html, body {
 }
 
 nav, footer {
-  background-color: var(--bg-light) !important;
+  background-color: var(--bg-light);
 }
 
 #app {
@@ -115,10 +115,6 @@ a {
 .text-beige { color: var(--text-beige); }
 .bg-orange { background-color: var(--primary-orange) !important; }
 .bg-light-mode { background-color: var(--bg-light); }
-
-.offcanvas-body {
-  --bs-offcanvas-bg: var(--primary-orange);
-}
 
 a.navbar-brand{
   height: 15%;

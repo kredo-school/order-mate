@@ -53,4 +53,59 @@ class CustomController extends Controller{
         return back();
     }
 
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'name' => 'required|array',
+            'name.*' => 'required|string|max:255',
+            'extra_price' => 'nullable|array',
+            'extra_price.*' => 'nullable|numeric',
+            'option_ids' => 'nullable|array',        // 既存オプションのID配列
+            'option_ids.*' => 'nullable|integer',
+            'delete_ids' => 'nullable|array',        // 削除対象のID配列
+            'delete_ids.*' => 'nullable|integer',
+        ]);
+    
+        $group = CustomGroup::findOrFail($id);
+        $group->update(['title' => $validated['title']]);
+    
+        // 🔹 削除対象があれば削除
+        if (!empty($validated['delete_ids'])) {
+            CustomOption::whereIn('id', $validated['delete_ids'])->delete();
+        }
+    
+        // 🔹 既存オプションの更新または新規作成
+        foreach ($validated['name'] as $i => $name) {
+            $optionId = $validated['option_ids'][$i] ?? null;
+    
+            if ($optionId) {
+                // 既存オプションを更新
+                CustomOption::where('id', $optionId)->update([
+                    'name' => $name,
+                    'extra_price' => $validated['extra_price'][$i] ?? 0,
+                ]);
+            } else {
+                // 新規オプションを作成
+                CustomOption::create([
+                    'custom_group_id' => $group->id,
+                    'name' => $name,
+                    'extra_price' => $validated['extra_price'][$i] ?? 0,
+                ]);
+            }
+        }
+    
+        return back();
+    }
+    
+
+    public function destroy($id)
+    {
+        $group = CustomGroup::findOrFail($id);
+        $group->options()->delete(); // 関連するオプションも削除
+        $group->delete();
+
+        return back();
+    }
+
 }

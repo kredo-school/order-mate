@@ -29,4 +29,6 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     // Custom routes
     Route::get('/custom', [CustomController::class, 'index'])->name('custom.index');
     Route::post('/custom/store', [CustomController::class, 'store'])->name('custom.store');
+    Route::patch('/custom/update/{id}', [CustomController::class, 'update'])->name('custom.update');
+    Route::delete('/custom/delete/{id}', [CustomController::class, 'destroy'])->name('custom.destroy');
 });

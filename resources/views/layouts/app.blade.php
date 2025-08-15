@@ -49,7 +49,7 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand navbar-light shadow-sm">
             <div class="container m-0">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
@@ -95,7 +95,7 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
-                    <nav class="nav flex-column flex-grow-1">
+                    <div class="nav flex-column flex-grow-1">
                         <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
                                 <i class="fa-solid fa-user"></i>
@@ -144,7 +144,7 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
-                    </nav>
+                    </div>
                 </div>
             </div>
 
@@ -154,7 +154,7 @@
             @yield('content')
         </main>
 
-        <footer class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <footer class="navbar navbar-expand-md navbar-light shadow-sm">
             <div class="mx-auto">
                 <p class="text-gray m-0">
                     &copy;All Rights are reserved by ordermate

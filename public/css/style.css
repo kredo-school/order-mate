@@ -190,3 +190,50 @@ img.logo{
   height: 50%;
   width: 50%;
 }
+
+
+.category-tab {
+  display: inline-block;
+  border: 1px solid var(--primary-orange);
+  color: var(--primary-orange);
+  padding: 0.5rem 1rem;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.category-tab.active {
+  background-color: var(--primary-orange);
+  color: #fff;
+}
+
+.category-link {
+  text-decoration: none;
+}
+
+.category-scroll {
+  overflow-x: auto;
+  flex-wrap: nowrap;  /* 折り返さない */
+  -webkit-overflow-scrolling: touch; /* スマホでスムーズスクロール */
+}
+
+.category-scroll {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-link {
+  flex-shrink: 0;
+}
+
+.new-btn {
+  position: sticky;
+  right: 0;
+  z-index: 10;
+  margin-left: auto;
+}

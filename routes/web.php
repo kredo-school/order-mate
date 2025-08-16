@@ -19,6 +19,9 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/products', [ProductController::class, 'index'])->name('index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('create');
+    Route::get('/products/by-category/{id}', [ProductController::class, 'byCategory'])
+     ->name('products.byCategory');
+
     
     // Category routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

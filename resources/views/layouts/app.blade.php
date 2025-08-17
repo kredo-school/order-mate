@@ -49,7 +49,7 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand navbar-light shadow-sm">
+        <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
             <div class="container m-0">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">

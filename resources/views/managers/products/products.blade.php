@@ -3,7 +3,7 @@
 @section('title', 'Products')
 
 @section('content')
-<div class="container mt-4">
+<div class="container">
   <div class="d-flex justify-content-between">
     <a href="{{url()->previous()}}" class="">
       <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>

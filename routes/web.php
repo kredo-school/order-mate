@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,10 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::post('/custom/store', [CustomController::class, 'store'])->name('custom.store');
     Route::patch('/custom/update/{id}', [CustomController::class, 'update'])->name('custom.update');
     Route::delete('/custom/delete/{id}', [CustomController::class, 'destroy'])->name('custom.destroy');
+
+    // Stores routes
+    Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
+    Route::get('/stores/edit', [StoreController::class, 'edit'])->name('stores.edit');
+    Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
+
 });

@@ -16,6 +16,7 @@ class Store extends Model
             'phone',
             'store_photo',
             'open_hours',
+            'manager_name',
         ];
     
         /**

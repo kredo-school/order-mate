@@ -14,4 +14,9 @@ class ProductController extends Controller{
         // フォルダー、ファイル名
         return view('managers.products.add-product');
     }
+
+    // store
+
+    // update
+    
 }

@@ -31,69 +31,85 @@
       <div class="col">
   
         {{-- Store Name --}}
-        <div class="mb-3">
-          <label for="store_name" class="form-label">Store Name</label>
-          <input type="text" class="form-control" id="store_name" name="store_name"
-                value="{{ old('store_name', $store->store_name ?? '') }}">
+        <div class="mb-3 row">
+          <label for="store_name" class="col-sm-3 col-form-label">Store Name</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="store_name" name="store_name" value="{{ old('store_name', $store->store_name ?? '') }}">
+          </div>
         </div>
   
         {{-- Address --}}
-        <div class="mb-3">
-          <label for="address" class="form-label">Address</label>
-          <input type="text" class="form-control" id="address" name="address"
-                value="{{ old('address', $store->address ?? '') }}">
+        <div class="mb-3 row">
+          <label for="address" class="col-sm-3 col-form-label">Address</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $store->address ?? '') }}">
+          </div>
         </div>
   
         {{-- Phone --}}
-        <div class="mb-3">
-          <label for="phone" class="form-label">Phone</label>
-          <input type="text" class="form-control" id="phone" name="phone"
-                value="{{ old('phone', $store->phone ?? '') }}">
+        <div class="mb-3 row">
+          <label for="phone" class="col-sm-3 col-form-label">Phone</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="phone" name="phone"
+            value="{{ old('phone', $store->phone ?? '') }}">
+          </div>
         </div>
   
         {{-- Manager Name --}}
-        <div class="mb-3">
-          <label for="manager_name" class="form-label">Manager Name</label>
-          <input type="text" class="form-control" id="manager_name" name="manager_name"
-                value="{{ old('manager_name', $store->manager_name ?? '') }}">
+        <div class="mb-3 row">
+          <label for="manager_name" class="col-sm-3 col-form-label">Manager Name</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="manager_name" name="manager_name"
+                  value="{{ old('manager_name', $store->manager_name ?? '') }}">
+          </div>
         </div>
   
         {{-- Open Hours --}}
-        <div class="mb-3">
-          <label for="open_hours" class="form-label">Open Hours</label>
-          <input type="text" class="form-control" id="open_hours" name="open_hours"
-                value="{{ old('open_hours', $store->open_hours ?? '') }}">
+        <div class="mb-3 row">
+          <label for="open_hours" class="col-sm-3 col-form-label">Open Hours</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="open_hours" name="open_hours"
+                  value="{{ old('open_hours', $store->open_hours ?? '') }}">
+          </div>
         </div>
 
         {{-- User Email --}}
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" name="email"
-                value="{{ old('email', $store->user->email ?? Auth::user()->email) }}">
+        <div class="mb-3 row">
+          <label for="email" class="col-sm-3 col-form-label">Email</label>
+          <div class="col-sm-9">
+            <input type="email" class="form-control" id="email" name="email"
+                  value="{{ old('email', $store->user->email ?? Auth::user()->email) }}">
+          </div>
         </div>
   
         {{-- Current Password --}}
-        <div class="mb-3">
-          <label for="current_password" class="form-label">Current Password</label>
-          <input type="password" class="form-control" id="current_password" name="current_password">
+        <div class="mb-3 row">
+          <label for="current_password" class="col-sm-3 col-form-label">Current Password</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" id="current_password" name="current_password">
+          </div>
         </div>
   
         {{-- New Password --}}
-        <div class="mb-3">
-          <label for="password" class="form-label">New Password</label>
-          <input type="password" class="form-control" id="password" name="password">
+        <div class="mb-3 row">
+          <label for="password" class="col-sm-3 col-form-label">New Password</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
         </div>
   
         {{-- Confirm Password --}}
-        <div class="mb-3">
-          <label for="password_confirmation" class="form-label">Confirm Password</label>
-          <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+        <div class="mb-3 row">
+          <label for="password_confirmation" class="col-sm-3 col-form-label">Confirm Password</label>
+          <div class="col-sm-9">
+            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+          </div>
         </div>
       </div>
     </div>
     
-    <div class="mt-3">
-      <a href="{{ route('manager.stores.index') }}" class="btn btn-outline">Back</a>
+    <div class="mt-3 d-flex justify-content-center">
+      <a href="{{ route('manager.stores.index') }}" class="btn btn-outline me-2">Back</a>
       <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
   </form>

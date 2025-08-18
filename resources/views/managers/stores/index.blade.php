@@ -18,10 +18,7 @@
       <div class="col text-center mb-3">
         {{-- Store Photo --}}
         @if ($store->store_photo)
-          <img src="{{ Storage::url($store->store_photo) }}" 
-               alt="store_photo"
-               class="img-fluid rounded mb-3" 
-               style="max-width: 200px;">
+          <img src="{{ Storage::url($store->store_photo) }}" alt="store_photo" class="img-fluid rounded mb-3" style="max-width: 200px;">
         @else
           <i class="fa-solid fa-shop fa-5x text-muted mb-3"></i>
         @endif
@@ -43,8 +40,8 @@
       </div>
     </div>
 
-    <div class="mt-4">
-      <a href="{{ route('manager.stores.edit') }}" class="btn btn-primary">Edit</a>
+    <div class="mt-4 d-flex justify-content-center">
+      <a href="{{ route('manager.stores.edit') }}" class="btn btn-primary me-2">Edit</a>
       <a href="#" class="btn btn-primary">Create QR Code</a>
     </div>
   @else

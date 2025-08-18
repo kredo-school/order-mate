@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admins\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomController;
 use App\Http\Controllers\HomeController;
@@ -17,6 +18,14 @@ Route::group(['middleware' => 'auth'], function () {
     // 他にも保護したいルートをここへ
 });
 
+// Admin
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function (){
+    // 管理者用のルートをここに追加
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
+    Route::get('/stores/{id}', [AdminController::class, 'show'])->name('show');
+});
+
+// Manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/products', [ProductController::class, 'index'])->name('index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('create');

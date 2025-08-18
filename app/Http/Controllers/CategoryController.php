@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -14,45 +15,57 @@ class CategoryController extends Controller
     }
 
     public function index(){
-        $all_categories = $this->category->all();
-        // フォルダー、ファイル名
+        // ログインユーザーのstore_idで絞り込む
+        $storeId = Auth::user()->store_id;
+        $all_categories = $this->category->where('store_id', $storeId)->get();
+
         return view('managers.products.categories')->with([
             'all_categories' => $all_categories
         ]);
     }
 
-    public function store (Request $request){
-        // バリデーション
+    public function store(Request $request){
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
 
-        $this->category->name = $request->name;
-        $this->category->save();
+        $storeId = Auth::user()->store_id;
 
-        // リダイレクト
-        return redirect()->back();
+        $this->category->create([
+            'name' => $request->name,
+            'store_id' => $storeId,
+        ]);
+
+        return redirect()->back()->with('success', 'Category created!');
     }
 
     public function update(Request $request, $id){
-        // バリデーション
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
 
-        $category = $this->category->findOrFail($id);
-        $category->name = $request->name;
-        $category->save();
+        $storeId = Auth::user()->store_id;
 
-        // リダイレクト
-        return redirect()->back();
+        $category = $this->category
+            ->where('store_id', $storeId)
+            ->findOrFail($id);
+
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Category updated!');
     }
 
     public function destroy($id){
-        $category = $this->category->findOrFail($id);
+        $storeId = Auth::user()->store_id;
+
+        $category = $this->category
+            ->where('store_id', $storeId)
+            ->findOrFail($id);
+
         $category->delete();
 
-        // リダイレクト
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Category deleted!');
     }
 }

@@ -43,7 +43,7 @@ class LoginController extends Controller
             return redirect()->route('admin.index'); // ✅ ここ
         }
 
-        return redirect('/home'); // 一般ユーザー用
+        return redirect('/'); // 一般ユーザー用
     }
 
 }

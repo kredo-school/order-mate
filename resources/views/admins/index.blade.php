@@ -1,33 +1,44 @@
 @extends('layouts.base')
 @section('title', 'Admin Index')
 @section('content')
-    <h1 class="mb-4">店舗一覧</h1>
-
+    <h1 class="mb-4 d-inline">Stores</h1>
+    <a href="{{ route('logout') }}"
+    class="nav-link d-flex justify-content-end mb-3"
+    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <span class="me-2 d-flex justify-content-center" style="width: 24px;">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </span>
+    </a>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
     <div class="container">
         <div class="row">
             @foreach ($all_stores as $store)
-                <div class="col-md-6 mb-4">
+                <div class="col-md-4 mb-4">
                     <a href="{{ route('admin.show', $store->id) }}" class="text-decoration-none text-dark">
-                        <div class="card shadow-sm h-100">
+                        <div class="store-box p-3 h-100">
                             <div class="row g-0">
                                 {{-- 左側 1/3 店舗写真 --}}
                                 <div class="col-4">
                                     @if($store->store_photo ?? false)
-                                        <img src="{{ Storage::url($store->store_photo) }}" alt="{{ $store->store_name }}" class="img-fluid h-100 w-100 object-fit-cover">
+                                        <img src="{{ Storage::url($store->store_photo) }}" 
+                                             alt="{{ $store->store_name }}" 
+                                             class="img-fluid h-100 w-100 object-fit-cover rounded">
                                     @else
-                                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center h-100">
+                                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center h-100 rounded">
                                             No Image
                                         </div>
                                     @endif
                                 </div>
                                 {{-- 右側 2/3 情報 --}}
                                 <div class="col-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $store->store_name }}</h5>
-                                        <p class="card-text mb-1"><i class="fa-solid fa-phone text-muted"></i> {{ $store->phone ?? '-' }}</p>
-                                        <p class="card-text mb-1"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
-                                        <p class="card-text mb-1"><i class="fa-solid fa-location-dot text-muted"></i> {{ $store->address ?? '-' }}</p>
-                                        <p class="card-text mb-1"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
+                                    <div class="ps-3">
+                                        <h5 class="fw-bold">{{ $store->store_name }}</h5>
+                                        <p class="mb-1"><i class="fa-solid fa-phone text-muted"></i> {{ $store->phone ?? '-' }}</p>
+                                        <p class="mb-1"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
+                                        <p class="mb-1"><i class="fa-solid fa-location-dot text-muted"></i> {{ $store->address ?? '-' }}</p>
+                                        <p class="mb-1"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -37,4 +48,17 @@
             @endforeach
         </div>
     </div>
+    <style>
+        .store-box {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .store-box:hover {
+            border-color: #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+    </style>
 @endsection
+
+

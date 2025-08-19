@@ -13,7 +13,7 @@
                     Admin Menu
                 </div>
             </a>
-            <a href="#" class="card bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
+            <a href="{{route('manager.stores.index')}}" class="card bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
                 <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
                     Store Info
                 </div>

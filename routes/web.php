@@ -30,9 +30,9 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/products', [ProductController::class, 'index'])->name('index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('create');
     Route::get('/products/by-category/{id}', [ProductController::class, 'byCategory'])
-     ->name('products.byCategory');
+        ->name('products.byCategory');
 
-    
+
     // Category routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
@@ -45,9 +45,12 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::patch('/custom/update/{id}', [CustomController::class, 'update'])->name('custom.update');
     Route::delete('/custom/delete/{id}', [CustomController::class, 'destroy'])->name('custom.destroy');
 
+    // Custom group の options を取得する Ajax 用ルート
+    Route::get('/custom/{id}/options', [CustomController::class, 'options'])
+        ->name('custom.options');
+
     // Stores routes
     Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
     Route::get('/stores/edit', [StoreController::class, 'edit'])->name('stores.edit');
     Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
-
 });

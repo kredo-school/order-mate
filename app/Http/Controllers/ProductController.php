@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\CustomGroup;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller{
@@ -26,9 +27,16 @@ class ProductController extends Controller{
 
     public function create(){
         $all_categories = Category::all();
+        $customGroups = CustomGroup::all(); 
         // フォルダー、ファイル名
         return view('managers.products.add-product')->with([
-            'all_categories' => $all_categories
+            'all_categories' => $all_categories,
+            'customGroups' => $customGroups,
         ]);
     }
+
+    // store
+
+    // update
+
 }

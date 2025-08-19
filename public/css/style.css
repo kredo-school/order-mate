@@ -238,3 +238,19 @@ img.logo{
   margin-left: auto;
 }
 
+
+.custom-link {
+    color: var(--text-brown)!important;
+}
+
+.btn-link-like {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--text-brown);
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: normal;
+  text-decoration: none;
+}

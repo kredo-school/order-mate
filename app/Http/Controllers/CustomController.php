@@ -6,17 +6,20 @@ use App\Models\CustomOption;
 use App\Models\CustomGroup;
 use Illuminate\Http\Request;
 
-class CustomController extends Controller{
+class CustomController extends Controller
+{
 
     private $customGroup;
     private $customOption;
 
-    public function __construct(CustomGroup $customGroup, CustomOption $customOption){
+    public function __construct(CustomGroup $customGroup, CustomOption $customOption)
+    {
         $this->customGroup = $customGroup;
         $this->customOption = $customOption;
     }
 
-    public function index(){
+    public function index()
+    {
         $all_customGroups = $this->customGroup->all();
         $all_customOptions = $this->customOption->all();
         // フォルダー、ファイル名
@@ -66,19 +69,19 @@ class CustomController extends Controller{
             'delete_ids' => 'nullable|array',        // 削除対象のID配列
             'delete_ids.*' => 'nullable|integer',
         ]);
-    
+
         $group = CustomGroup::findOrFail($id);
         $group->update(['title' => $validated['title']]);
-    
+
         // 🔹 削除対象があれば削除
         if (!empty($validated['delete_ids'])) {
             CustomOption::whereIn('id', $validated['delete_ids'])->delete();
         }
-    
+
         // 🔹 既存オプションの更新または新規作成
         foreach ($validated['name'] as $i => $name) {
             $optionId = $validated['option_ids'][$i] ?? null;
-    
+
             if ($optionId) {
                 // 既存オプションを更新
                 CustomOption::where('id', $optionId)->update([
@@ -94,10 +97,10 @@ class CustomController extends Controller{
                 ]);
             }
         }
-    
+
         return back();
     }
-    
+
 
     public function destroy($id)
     {
@@ -108,4 +111,13 @@ class CustomController extends Controller{
         return back();
     }
 
+    public function options($id)
+    {
+        // CustomGroup モデルを想定
+        $group = \App\Models\CustomGroup::with('options')->findOrFail($id);
+
+        return response()->json([
+            'options' => $group->options,
+        ]);
+    }
 }

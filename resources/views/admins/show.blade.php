@@ -1,30 +1,39 @@
 @extends('layouts.base')
 @section('title', 'Admin Store')
 @section('content')
-    <h1>{{ $store->store_name }}</h1>
 
-    <div class="card mb-4">
-        <div class="row g-0">
-            <div class="col-md-4">
-                @if($store->store_photo ?? false)
-                    <img src="{{ Storage::url($store->store_photo) }}" class="img-fluid rounded-start" alt="{{ $store->store_name }}">
-                @else
-                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center h-100">
-                        No Image
-                    </div>
-                @endif
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $store->store_name }}</h5>
-                    <p class="card-text"><i class="fa-solid fa-phone text-muted"></i> {{ $store->phone ?? '-' }}</p>
-                    <p class="card-text"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
-                    <p class="card-text"><i class="fa-solid fa-location-dot text-muted"></i> {{ $store->address ?? '-' }}</p>
-                    <p class="card-text"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
-                </div>
-            </div>
-        </div>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{{ url()->previous() }}" class="">
+        <h5 class="d-inline text-brown">
+          <i class="fa-solid fa-angle-left text-orange"></i> Store Info
+        </h5>
+      </a>
     </div>
 
-    <a href="" class="btn btn-secondary">戻る</a>
+    <div class="row">
+      <div class="col text-center mb-3">
+        @if($store->store_photo ?? false)
+          <img src="{{ Storage::url($store->store_photo) }}" class="img-fluid rounded mb-3" alt="{{ $store->store_name }}">
+        @else
+          <i class="fa-solid fa-shop fa-5x text-muted mb-3"></i>
+        @endif
+        
+        <h4 class="card-title">{{ $store->store_name }}</h4>
+        <p class="card-text"><i class="fa-solid fa-phone text-muted"></i> {{ $store->phone ?? '-' }}</p>
+        <p class="card-text"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
+        <p class="card-text"><i class="fa-solid fa-location-dot text-muted"></i> {{ $store->address ?? '-' }}</p>
+        <p class="card-text"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
+      </div>
+        
+      {{-- Chat (まだ仮置き) --}}
+      <div class="col">
+        <div class="border rounded p-3 bg-light">
+          <h5 class="fw-bold mb-3">Chat</h5>
+          <p class="text-muted">ここにチャット機能を追加予定</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 @endsection

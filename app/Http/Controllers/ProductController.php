@@ -27,7 +27,7 @@ class ProductController extends Controller{
 
     public function create(){
         $all_categories = Category::all();
-        $customGroups = CustomGroup::all(); 
+        $customGroups = CustomGroup::all();
         // フォルダー、ファイル名
         return view('managers.products.add-product')->with([
             'all_categories' => $all_categories,

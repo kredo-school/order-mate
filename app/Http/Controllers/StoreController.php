@@ -53,4 +53,31 @@ class StoreController extends Controller
 
         return redirect()->route('manager.stores.index');
     }
+
+    public function qrCode(){
+        return view('managers.stores.qr');
+    }
+
+    public function generateQr(Request $request){
+        $store = Auth::user()->store;
+
+        $start = (int)$request->input('table_start');
+        $end   = (int)$request->input('table_end');
+
+        if ($start > $end) {
+            return back()->withErrors('開始番号は終了番号以下にしてください');
+        }
+
+        $tables = collect(range($start, $end))->map(function ($number) use ($store) {
+            // 既に同じ番号のテーブルがある場合はそれを返す
+            $table = \App\Models\Table::firstOrCreate(
+                ['store_id' => $store->id, 'number' => $number],
+                ['uuid' => \Illuminate\Support\Str::uuid()]
+            );
+
+            return $table;
+        });
+        return view('managers.stores.qr', compact('store', 'tables'));
+    }
+
 }

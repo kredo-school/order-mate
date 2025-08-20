@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admins\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
@@ -53,4 +54,11 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
     Route::get('/stores/edit', [StoreController::class, 'edit'])->name('stores.edit');
     Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
+    Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
+    Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
+});
+
+// Guests
+Route::group(['prefix' => 'guest', 'as' => 'guest.'], function(){
+    Route::get('/{storeName}/{tableUuid}', [GuestController::class, 'index'])->name('index');
 });

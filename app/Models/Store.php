@@ -36,4 +36,16 @@ class Store extends Model
         {
             return $this->belongsTo(User::class);
         }
+
+            // Store は複数のメニューを持つ
+        public function menus()
+        {
+            return $this->hasMany(Menu::class);
+        }
+
+        // Store は複数のテーブルを持つ
+        public function tables()
+        {
+            return $this->hasMany(Table::class);
+        }
 }

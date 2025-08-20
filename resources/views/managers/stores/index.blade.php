@@ -42,7 +42,7 @@
 
     <div class="mt-4 d-flex justify-content-center">
       <a href="{{ route('manager.stores.edit') }}" class="btn btn-primary me-2">Edit</a>
-      <a href="#" class="btn btn-primary">Create QR Code</a>
+      <a href="{{route('manager.stores.qrCode')}}" class="btn btn-primary">Create QR Code</a>
     </div>
   @else
     <div class="alert alert-warning">

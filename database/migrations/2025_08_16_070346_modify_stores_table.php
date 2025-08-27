@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::table('stores', function (Blueprint $table) {
             // 既存カラムを nullable に変更
             $table->text('address')->nullable()->change();
-            $table->string('phone')->nullable()->unique()->change();
+            $table->string('phone')->nullable()->change();
             $table->string('store_photo')->nullable()->change();
             $table->text('open_hours')->nullable()->change();
         });

@@ -13,7 +13,7 @@
             <!-- Card component from the provided CSS -->
             <div class="card p-4">
                 <!-- Form -->
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('manager.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <!-- Image upload section -->
                     <div class="form-section mb-4 row align-items-center">
@@ -21,7 +21,8 @@
                             <label for="image" class="form-label text-brown">Image</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
-                            <input type="file" id="image" name="image" class="d-none">
+                            <input type="file" id="image" name="image" class="d-none"
+                                onchange="previewMenuImage(event)">
                             <button type="button" onclick="document.getElementById('image').click()"
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
                                 <i class="fas fa-upload me-2"></i>Upload menu image
@@ -67,7 +68,7 @@
                     <!-- Category dropdown -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="menu_category_id" class="form-label">Category</label>
+                            <label for="menu_category_id" class="form-label text-brown">Category</label>
                         </div>
                         <div class="col-8">
                             <select id="menu_category_id" class="form-select me-2" name="menu_category_id">
@@ -91,7 +92,7 @@
                     <!-- Tag field (画像アップロードに変更) -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="tag" class="form-label">Tag</label>
+                            <label for="tag" class="form-label text-brown">Tag</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
                             <input type="file" id="tag" name="tag" accept="image/*" class="d-none"
@@ -102,39 +103,42 @@
                             </button>
                             <!-- プレビュー -->
                             <div id="tag-preview" class="ms-3">
-                                @if (old('tag'))
-                                    <img src="{{ old('tag') }}" alt="Tag Preview" class="img-thumbnail"
-                                        style="max-width: 100px;">
-                                @endif
                             </div>
                         </div>
                     </div>
 
                     <!-- Allergies section -->
+
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label class="form-label text-brown">Allergies</label>
+                            <label class="form-label text-brown">Allergens</label>
                         </div>
-                        <div class="d-flex flex-wrap gap-2 col-8">
-                            <!-- Example allergy items using your CSS classes -->
-                            <div class="allergy-item">
-                                <i class="fas fa-egg allergy-icon"></i>
-                            </div>
-                            <div class="allergy-item">
-                                <i class="fas fa-fish allergy-icon"></i>
-                            </div>
-                            <div class="allergy-item">
-                                <i class="fas fa-wheat-alt allergy-icon"></i>
-                            </div>
-                            <div class="allergy-item">
-                                <i class="fas fa-seedling allergy-icon"></i>
-                            </div>
-                            <div class="allergy-item">
-                                <i class="fas fa-cheese allergy-icon"></i>
-                            </div>
-                            <div class="allergy-item">
-                                <i class="fas fa-shrimp allergy-icon"></i>
-                            </div>
+                        <div class="col-8 d-flex flex-wrap gap-3">
+                            @php
+                                $allergens = [
+                                    'milk' => 'Milk',
+                                    'egg' => 'Eggs',
+                                    'fish' => 'Fish',
+                                    'shrimp' => 'Shrimp',
+                                    'soy' => 'Soy',
+                                    'wheat' => 'Wheat',
+                                    'sesame' => 'Sesame',
+                                    'cashew' => 'Cashew',
+                                    'walnut' => 'Walnut',
+                                ];
+                            @endphp
+
+                            @foreach ($allergens as $key => $label)
+                                <div class="form-check text-center">
+                                    <input type="checkbox" name="allergens[]" value="{{ $key }}"
+                                        id="allergen-{{ $key }}" class="form-check-input d-none">
+                                    <label for="allergen-{{ $key }}" class="allergen-label">
+                                        @include("icons.allergens.$key")
+                                        <span class="tooltip-text">{{ $label }}</span>
+                                    </label>
+                                </div>
+                            @endforeach
+
                         </div>
                     </div>
 
@@ -402,15 +406,42 @@
 
         // 変更イベントで保存
         document.addEventListener('change', saveFormState);
-        document.addEventListener('click', saveFormState);
+        // document.addEventListener('click', saveFormState);
 
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
+            // Addページを開いたら前の入力データをクリア
+            sessionStorage.removeItem('customFormState');
+            sessionStorage.removeItem('menuImagePreview');
+            sessionStorage.removeItem('tagImagePreview');
+
             restoreFormState();
             updateAvailableGroups();
+
+            // menu image 復元
+            const savedImage = sessionStorage.getItem('menuImagePreview');
+            if (savedImage) {
+                const preview = document.getElementById('menu-image-preview');
+                const img = document.createElement('img');
+                img.src = savedImage;
+                img.classList.add('img-thumbnail');
+                img.style.maxWidth = '150px';
+                img.style.maxHeight = '150px';
+                preview.appendChild(img);
+            }
+
+            const savedTagImage = sessionStorage.getItem('tagImagePreview');
+            if (savedTagImage) {
+                const preview = document.getElementById('tag-preview');
+                const img = document.createElement('img');
+                img.src = savedTagImage;
+                img.classList.add('img-thumbnail');
+                img.style.maxWidth = '100px';
+                preview.appendChild(img);
+            }
         });
 
-        // Tag img 用
+        // preview img 
         function previewTagImage(event) {
             const preview = document.getElementById('tag-preview');
             preview.innerHTML = '';
@@ -418,10 +449,48 @@
             if (!file) return;
 
             const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
+            img.src = URL.createObjectURL(file); // Base64 ではなく URL
             img.classList.add('img-thumbnail');
             img.style.maxWidth = '100px';
             preview.appendChild(img);
         }
+
+
+
+        function previewMenuImage(event) {
+            const preview = document.getElementById('menu-image-preview');
+            preview.innerHTML = '';
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file); // ファイルから直接URLを作る
+            img.classList.add('img-thumbnail');
+            img.style.maxWidth = '150px';
+            img.style.maxHeight = '150px';
+            preview.appendChild(img);
+        }
+
+
+        // アレルゲン選択処理
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[name="allergens[]"]');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const label = this.nextElementSibling; // inputの直後にlabelがある
+                    if (this.checked) {
+                        label.classList.add('selected');
+                    } else {
+                        label.classList.remove('selected');
+                    }
+                });
+
+                // 初期表示時にold値がある場合の対応
+                if (checkbox.checked) {
+                    checkbox.nextElementSibling.classList.add('selected');
+                }
+            });
+        });
     </script>
 @endpush

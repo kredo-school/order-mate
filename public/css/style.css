@@ -254,3 +254,64 @@ img.logo{
   font-weight: normal;
   text-decoration: none;
 }
+
+/* ===== Allergen Icon Styles ===== */
+.allergen-label {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.allergen-icon {
+  width: 40px;
+  height: 40px;
+  color: #888; /* デフォルトはグレー */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.allergen-icon path {
+  stroke: currentColor; /* これを追加！ */
+}
+
+.allergen-label.selected .allergen-icon {
+  color: #C52020; /* 選択時は赤 */
+  transform: scale(1.05);
+}
+
+    /* 吹き出し */
+    .tooltip-text {
+        visibility: hidden;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        font-size: 12px;
+        border-radius: 4px;
+        padding: 4px 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 120%; /* 上に出す */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+    }
+    .tooltip-text::after {
+        content: '';
+        position: absolute;
+        top: 100%; /* 吹き出しの下に三角形 */
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+    }
+    .allergen-label:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }

@@ -13,6 +13,16 @@
         @csrf
     </form>
     <div class="container">
+        <h4>マネージャーへ一斉送信</h4>
+        <form action="{{ route('admin.chat.broadcast') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+            <textarea name="content" class="form-control" placeholder="メッセージを入力…" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">一斉送信</button>
+        </form>
+    </div>
+    <div class="container">
         <div class="row">
             @foreach ($all_stores as $store)
                 <div id="store-{{$store->id}}" class="col-md-4 mb-4">

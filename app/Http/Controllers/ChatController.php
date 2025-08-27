@@ -8,7 +8,9 @@ use App\Models\Message;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Events\MessageSent as EventsMessageSent;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Mailer\Event\MessageEvent;
 
 class ChatController extends Controller
 {
@@ -94,5 +96,44 @@ class ChatController extends Controller
         ]));
     }
 
+    public function broadcastToManagers(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
 
+        $admin = Auth::user();
+        if (!$admin->isAdmin()) {
+            abort(403, 'Non-admin access denied.');
+        }
+
+        // role=1 が manager
+        $managers = User::where('role', 1)->get();
+
+        foreach ($managers as $manager) {
+            $store = $manager->store;
+
+            if (!$store) {
+                continue; // store を持たないマネージャーはスキップ
+            }
+
+            // 既存のチャット（storeごとの manager_admin チャット）を取得 or 作成
+            $chat = Chat::firstOrCreate(
+                ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
+                ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+            );
+
+            // メッセージ作成
+            $message = Message::create([
+                'chat_id' => $chat->id,
+                'user_id' => $admin->id, // 管理者からの送信
+                'content' => $request->content,
+            ]);
+
+            // イベント発火してリアルタイム反映
+            broadcast(new MessageSent($message))->toOthers();
+        }
+
+        return redirect()->back();
+    }
 }

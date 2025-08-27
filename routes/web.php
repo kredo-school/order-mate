@@ -25,6 +25,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
     // 管理者用のルートをここに追加
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::get('/stores/{id}', [AdminController::class, 'show'])->name('show');
+    Route::post('/chat/broadcast', [ChatController::class, 'broadcastToManagers'])->name('chat.broadcast');
 });
 
 // Manager

@@ -51,28 +51,24 @@
     <div id="app">
         <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
             <div class="container m-0">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ isset($table) ? route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) : url('/') }}">
                     <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
-                    {{ Auth::user()->name ?? '' }}
+                    {{ $store->store_name ?? '' }}
                 </p>
 
                 <!-- 右側メニュー -->
                 <ul class="navbar-nav ms-auto">
                     @guest
-                        @if (Route::has('login'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
-                        @endif
+                        <li class="nav-item">
+                            <!-- 未ログイン時：翻訳アイコンでオフキャンバス -->
+                            <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
+                                <i class="fa-solid fa-language fa-2x text-orange"></i>
+                            </a>
+                        </li>
                     @else
                         <li class="nav-item">
                             <!-- トグルボタン -->
@@ -85,6 +81,34 @@
                 </ul>
             </div>
         </nav>
+
+        <!-- 未ログイン時のオフキャンバス（言語切替メニュー） -->
+        @guest
+            <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="langMenu"
+                aria-labelledby="langMenuLabel" style="background-color: var(--primary-orange) !important;">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="langMenuLabel">Language</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0 d-flex flex-column">
+                    <div class="nav flex-column flex-grow-1">
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-flag me-2"></i> Japanese
+                        </a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-flag me-2"></i> English
+                        </a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-flag me-2"></i> Chinese
+                        </a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-flag me-2"></i> Korean
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endguest
 
         <!-- オフキャンバスメニュー -->
         @auth
@@ -168,5 +192,5 @@
     @stack('scripts')
 
 </body>
-
 </html>
+

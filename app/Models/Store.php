@@ -48,4 +48,10 @@ class Store extends Model
         {
             return $this->hasMany(Table::class);
         }
+
+        public function chats()
+        {
+            return $this->hasMany(Chat::class);
+        }
+
 }

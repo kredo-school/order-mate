@@ -26,13 +26,8 @@
         <p class="card-text"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
       </div>
         
-      {{-- Chat (まだ仮置き) --}}
-      <div class="col">
-        <div class="border rounded p-3 bg-light">
-          <h5 class="fw-bold mb-3">Chat</h5>
-          <p class="text-muted">ここにチャット機能を追加予定</p>
-        </div>
-      </div>
+      {{-- Chat Column --}}
+      @include('chats.chat', ['chat' => $chat, 'messages' => $messages])
     </div>
   </div>
 

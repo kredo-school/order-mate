@@ -31,18 +31,12 @@
         <p class="mb-1"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
       </div>
 
-      {{-- Chat (まだ仮置き) --}}
-      <div class="col">
-        <div class="border rounded p-3 bg-light">
-          <h5 class="fw-bold mb-3">Chat</h5>
-          <p class="text-muted">ここにチャット機能を追加予定</p>
-        </div>
-      </div>
-    </div>
+      {{-- Chat Column --}}
+      @include('chats.chat', ['chat' => $chat, 'messages' => $messages])
 
     <div class="mt-4 d-flex justify-content-center">
       <a href="{{ route('manager.stores.edit') }}" class="btn btn-primary me-2">Edit</a>
-      <a href="#" class="btn btn-primary">Create QR Code</a>
+      <a href="{{route('manager.stores.qrCode')}}" class="btn btn-primary">Create QR Code</a>
     </div>
   @else
     <div class="alert alert-warning">

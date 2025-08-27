@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,9 +11,31 @@ use Illuminate\Support\Facades\Hash;
 
 class StoreController extends Controller
 {
-    public function index(){
-        $store = Store::where('user_id', Auth::id())->first();
-        return view('managers.stores.index', compact('store'));
+    public function index()
+    {
+        $user  = Auth::user();
+        $store = Store::where('user_id', $user->id)->first();
+
+        if ($store) {
+            $chat = Chat::firstOrCreate(
+                ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
+                ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+            );
+
+            $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
+
+            $firstUnreadId = $chat->messages()
+            ->where('user_id', '!=', $user->id)
+            ->where('is_read', false)
+            ->orderBy('id', 'asc')
+            ->value('id');
+        } else {
+            $chat = null;
+            $messages = collect();
+            $firstUnreadId = null;
+        }
+
+        return view('managers.stores.index', compact('store', 'chat', 'messages', 'firstUnreadId'));
     }
 
     public function edit(){
@@ -53,4 +76,31 @@ class StoreController extends Controller
 
         return redirect()->route('manager.stores.index');
     }
+
+    public function qrCode(){
+        return view('managers.stores.qr');
+    }
+
+    public function generateQr(Request $request){
+        $store = Auth::user()->store;
+
+        $start = (int)$request->input('table_start');
+        $end   = (int)$request->input('table_end');
+
+        if ($start > $end) {
+            return back()->withErrors('開始番号は終了番号以下にしてください');
+        }
+
+        $tables = collect(range($start, $end))->map(function ($number) use ($store) {
+            // 既に同じ番号のテーブルがある場合はそれを返す
+            $table = \App\Models\Table::firstOrCreate(
+                ['store_id' => $store->id, 'number' => $number],
+                ['uuid' => \Illuminate\Support\Str::uuid()]
+            );
+
+            return $table;
+        });
+        return view('managers.stores.qr', compact('store', 'tables'));
+    }
+
 }

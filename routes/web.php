@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admins\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
@@ -54,4 +56,20 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
     Route::get('/stores/edit', [StoreController::class, 'edit'])->name('stores.edit');
     Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
+    Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
+    Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
 });
+
+// Guests
+Route::group(['prefix' => 'guest', 'as' => 'guest.'], function(){
+    Route::get('/{storeName}/{tableUuid}', [GuestController::class, 'index'])->name('index');
+});
+
+
+// チャットルート
+Route::get('/chats/{storeId}', [ChatController::class, 'show'])->name('chat.show');
+Route::post('/chats/{chatId}/send', [ChatController::class, 'send'])->name('chat.send');
+Route::post('/chat/{chat}/read', [ChatController::class, 'markAsRead'])->name('chat.read');
+Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unreadCount');
+Route::get('/chat/unread-per-store', [ChatController::class, 'unreadPerStore']);
+Route::get('/chat/unread-per-store', [ChatController::class, 'unreadPerStore']);

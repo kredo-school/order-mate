@@ -54,14 +54,9 @@ class User extends Authenticatable
         ];
     }
 
-<<<<<<< HEAD
     public function store()
     {
         return $this->hasOne(Store::class, 'user_id');
-    }
-=======
-    public function store(){
-        return $this->hasOne(Store::class);
     }
 
     public function isAdmin(): bool
@@ -79,5 +74,4 @@ class User extends Authenticatable
         return $this->role === 1;
     }
 
->>>>>>> 9b0db3f2b9b7a7f7c6f514460ba7e44a5234c217
 }

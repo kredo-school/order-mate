@@ -12,4 +12,9 @@ class CustomOption extends Model
     {
         return $this->belongsTo(CustomGroup::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

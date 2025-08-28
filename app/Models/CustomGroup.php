@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class CustomGroup extends Model
 {
     protected $fillable = [
-        'store_id',
+        'user_id',
         'title',
     ];
 
     public function options()
     {
         return $this->hasMany(CustomOption::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

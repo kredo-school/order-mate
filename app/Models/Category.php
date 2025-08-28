@@ -9,12 +9,12 @@ class Category extends Model
     // 更新可能なカラムを指定
     protected $fillable = [
         'name',
-        'store_id',
+        'user_id',
     ];
 
     // リレーション（Category belongsTo Store）
-    public function store()
+    public function user()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(User::class);
     }
 }

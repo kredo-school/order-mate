@@ -16,8 +16,8 @@ class CategoryController extends Controller
 
     public function index(){
         // ログインユーザーのstore_idで絞り込む
-        $storeId = Auth::user()->store_id;
-        $all_categories = $this->category->where('store_id', $storeId)->get();
+        $storeId = Auth::id();
+        $all_categories = $this->category->where('user_id', $storeId)->get();
 
         return view('managers.products.categories')->with([
             'all_categories' => $all_categories
@@ -26,14 +26,14 @@ class CategoryController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ]);
 
-        $storeId = Auth::user()->store_id;
+        $storeId = Auth::id();
 
         $this->category->create([
             'name' => $request->name,
-            'store_id' => $storeId,
+            'user_id' => $storeId,
         ]);
 
         return redirect()->back()->with('success', 'Category created!');
@@ -44,10 +44,10 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255'
         ]);
 
-        $storeId = Auth::user()->store_id;
+        $storeId = Auth::id();
 
         $category = $this->category
-            ->where('store_id', $storeId)
+            ->where('user_id', $storeId)
             ->findOrFail($id);
 
         $category->update([
@@ -58,10 +58,10 @@ class CategoryController extends Controller
     }
 
     public function destroy($id){
-        $storeId = Auth::user()->store_id;
+        $storeId = Auth::id();
 
         $category = $this->category
-            ->where('store_id', $storeId)
+            ->where('user_id', $storeId)
             ->findOrFail($id);
 
         $category->delete();

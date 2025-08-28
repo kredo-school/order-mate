@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Table extends Model
 {
-    protected $fillable = ['store_id', 'uuid', 'number'];
+    protected $fillable = ['user_id', 'uuid', 'number'];
 
-    public function store()
+    public function user()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(User::class);
     }
 }

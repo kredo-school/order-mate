@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CustomOption;
 use App\Models\CustomGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomController extends Controller
 {
@@ -20,14 +21,19 @@ class CustomController extends Controller
 
     public function index()
     {
-        $all_customGroups = $this->customGroup->all();
-        $all_customOptions = $this->customOption->all();
-        // フォルダー、ファイル名
+        $userId = Auth::id();
+    
+        // ログインユーザーのデータだけ取得
+        $all_customGroups = $this->customGroup
+            ->where('user_id', $userId)
+            ->with('options') // 関連するオプションも一緒に取得
+            ->get();
+    
         return view('managers.products.customs')->with([
             'all_customGroups' => $all_customGroups,
-            'all_customOptions' => $all_customOptions
         ]);
     }
+    
 
     public function store(Request $request)
     {
@@ -42,7 +48,7 @@ class CustomController extends Controller
         // store_id は入れない（NULLで保存）
         $group = CustomGroup::create([
             'title' => $validated['title'],
-            // 'store_id' => null, // 省略でOK
+            'user_id' => Auth::id(),
         ]);
 
         // name[] / extra_price[] を同じインデックスで対応させて保存
@@ -51,6 +57,7 @@ class CustomController extends Controller
                 'custom_group_id' => $group->id,
                 'name' => $name,
                 'extra_price' => $validated['extra_price'][$i] ?? 0,
+                'user_id' => Auth::id(),
             ]);
         }
         return back();
@@ -70,7 +77,7 @@ class CustomController extends Controller
             'delete_ids.*' => 'nullable|integer',
         ]);
 
-        $group = CustomGroup::findOrFail($id);
+        $group = CustomGroup::where('user_id', Auth::id())->findOrFail($id);
         $group->update(['title' => $validated['title']]);
 
         // 🔹 削除対象があれば削除

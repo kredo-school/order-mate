@@ -23,8 +23,8 @@ class ChatController extends Controller
         $store = Auth::user()->store;
     
         $chat = Chat::firstOrCreate(
-            ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
-            ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+            ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
+            ['user_id' => $store->id, 'chat_type' => 'manager_admin']
         );
     
         $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
@@ -119,8 +119,8 @@ class ChatController extends Controller
 
             // 既存のチャット（storeごとの manager_admin チャット）を取得 or 作成
             $chat = Chat::firstOrCreate(
-                ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
-                ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+                ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
+                ['user_id' => $store->id, 'chat_type' => 'manager_admin']
             );
 
             // メッセージ作成

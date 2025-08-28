@@ -18,8 +18,8 @@ class StoreController extends Controller
 
         if ($store) {
             $chat = Chat::firstOrCreate(
-                ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
-                ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+                ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
+                ['user_id' => $store->id, 'chat_type' => 'manager_admin']
             );
 
             $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
@@ -94,7 +94,7 @@ class StoreController extends Controller
         $tables = collect(range($start, $end))->map(function ($number) use ($store) {
             // 既に同じ番号のテーブルがある場合はそれを返す
             $table = \App\Models\Table::firstOrCreate(
-                ['store_id' => $store->id, 'number' => $number],
+                ['user_id' => $store->id, 'number' => $number],
                 ['uuid' => \Illuminate\Support\Str::uuid()]
             );
 

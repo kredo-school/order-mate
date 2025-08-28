@@ -74,4 +74,10 @@ class User extends Authenticatable
         return $this->role === 1;
     }
 
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'user_id');
+    }
+
+
 }

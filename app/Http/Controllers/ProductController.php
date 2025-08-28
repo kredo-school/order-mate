@@ -6,32 +6,39 @@ use App\Models\Category;
 use App\Models\Menu;
 use App\Models\CustomGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $all_categories = Category::all();
+        $userId = Auth::id();
+
+        $all_categories = Category::where('user_id', $userId)->get(); // 自分のカテゴリだけ
         $initialCategory = $all_categories->first();
 
-        // カテゴリが無い/メニューが無い場合でも必ずコレクションを渡す
         $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)->get()
-            : collect();
+            ? Menu::where('menu_category_id', $initialCategory->id)->where('user_id', $userId)->get(): collect();
 
         return view('managers.products.products', compact('all_categories', 'products'));
     }
 
     public function byCategory($id)
     {
-        $products = Menu::where('menu_category_id', $id)->get(); // 0件でもコレクション
+        $userId = Auth::id();
+
+        $products = Menu::where('menu_category_id', $id)->where('user_id', $userId)->get();
+
         return view('managers.products.partials.products', compact('products'));
     }
 
+
     public function create()
     {
-        $all_categories = Category::all();
-        $customGroups = CustomGroup::all();
+        $userId = Auth::id();
+
+        $all_categories = Category::where('user_id', $userId)->get();
+        $customGroups = CustomGroup::where('user_id', $userId)->get();
         // フォルダー、ファイル名
         return view('managers.products.add-product')->with([
             'all_categories' => $all_categories,
@@ -57,7 +64,7 @@ class ProductController extends Controller
         $menu->price = $request->price;
         $menu->description = $request->description;
         $menu->menu_category_id = $request->menu_category_id;
-        $menu->store_id = auth()->user()->store->id;
+        $menu->user_id = Auth::id();
 
 
         // 画像アップロード

@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $fillable = ['chat_type', 'store_id'];
+    protected $fillable = ['chat_type', 'user_id'];
 
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
 
-    public function store()
+    public function user()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(User::class);
     }
 }

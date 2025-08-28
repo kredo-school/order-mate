@@ -18,7 +18,7 @@ class GuestController extends Controller
         $store = Store::where('store_name', $storeName)->firstOrFail();
 
         // テーブルをUUIDで取得（store_idも一致することを確認）
-        $table = Table::where('store_id', $store->id)
+        $table = Table::where('user_id', $store->id)
                       ->where('uuid', $tableUuid)
                       ->firstOrFail();
 

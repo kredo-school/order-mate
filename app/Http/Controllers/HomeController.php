@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,11 +26,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $storeId = Auth::user()->store->id ?? null;
+        $storeId = Auth::id();
         $store = null;
     
         if ($storeId) {
-            $store = Store::withCount([
+            $store = User::withCount([
                 'chats as unread_messages_count' => function ($query) {
                     $query->join('messages', 'chats.id', '=', 'messages.chat_id')
                         ->where('messages.is_read', false)

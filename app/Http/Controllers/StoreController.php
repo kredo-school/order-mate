@@ -9,23 +9,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class StoreController extends Controller
-{
+class StoreController extends Controller{
     public function index()
     {
-        $user  = Auth::user();
-        $store = Store::where('user_id', $user->id)->first();
+        $store = Auth::user()->store;
 
         if ($store) {
             $chat = Chat::firstOrCreate(
-                ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
-                ['user_id' => $store->id, 'chat_type' => 'manager_admin']
+                ['user_id' => $store->user_id, 'chat_type' => 'manager_admin'],
+                ['user_id' => $store->user_id, 'chat_type' => 'manager_admin']
             );
 
             $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
 
             $firstUnreadId = $chat->messages()
-            ->where('user_id', '!=', $user->id)
+            ->where('user_id', '!=', Auth::id())
             ->where('is_read', false)
             ->orderBy('id', 'asc')
             ->value('id');
@@ -43,36 +41,43 @@ class StoreController extends Controller
         return view('managers.stores.save', compact('store'));
     }
 
-    public function save(Request $request){
+    public function save(Request $request)
+    {
         $validated = $request->validate([
             'store_name'   => 'nullable|string|max:255',
             'store_url'    => 'nullable|string|max:255',
             'address'      => 'nullable|string',
             'phone'        => 'nullable|string|max:255',
             'manager_name' => 'nullable|string|max:255',
-            'store_photo'  => 'nullable|image|max:255',
+            'store_photo'  => 'nullable|image|max:2048',
             'open_hours'   => 'nullable|string',
-            'password'     => 'nullable|string|min:8|confirmed', 
-            // password_confirmation フィールドもフォームに必要
+            'password'     => 'nullable|string|min:8|confirmed',
+            'email'        => 'nullable|email|max:255', // users.email の更新用
         ]);
 
-        // 画像がアップロードされた場合
+        // store_photo
         if ($request->hasFile('store_photo')) {
             $validated['store_photo'] = $request->file('store_photo')->store('store_photos', 'public');
         }
 
-        // Store 更新または作成
+        // store 用のデータだけ抜き出す（email / password は user 用なので除外）
+        $storeData = collect($validated)->except(['email', 'password'])->toArray();
+
+        // Store 更新（既存 or 新規）
         Store::updateOrCreate(
             ['user_id' => Auth::id()],
-            $validated
+            $storeData
         );
 
-        // パスワード更新がある場合
-        if (!empty($validated['password'])) {
-            $user = User::find(Auth::id());
-            $user->password = Hash::make($validated['password']);
-            $user->save();
+        // User 更新
+        $user = User::find(Auth::id());
+        if ($request->filled('email')) {
+            $user->email = $request->email;
         }
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+        $user->save();
 
         return redirect()->route('manager.stores.index');
     }
@@ -104,3 +109,4 @@ class StoreController extends Controller
     }
 
 }
+

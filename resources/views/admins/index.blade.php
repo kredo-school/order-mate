@@ -17,7 +17,7 @@
         <form action="{{ route('admin.chat.broadcast') }}" method="POST">
             @csrf
             <div class="mb-3">
-            <textarea name="content" class="form-control" placeholder="メッセージを入力…" required></textarea>
+            <textarea name="content" class="form-control" placeholder="メッセージを入力…" autofocus required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">一斉送信</button>
         </form>

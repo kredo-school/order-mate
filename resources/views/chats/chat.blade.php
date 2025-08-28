@@ -83,20 +83,6 @@
       });
     }
 
-    // 未読数をサーバーから再取得する関数
-    function refreshUnreadCount() {
-      fetch('/chat/unread-count', {
-        headers: { 'Accept': 'application/json' }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (unreadBadge) {
-            unreadBadge.textContent = data.count > 0 ? data.count : '';
-          }
-        })
-        .catch(err => console.error('Failed to fetch unread count:', err));
-    }
-
     function addMessage(message, isMine = false){
       const wrapper = document.createElement('div');
       wrapper.className = `d-flex flex-column mb-2 ${isMine ? 'align-items-end' : 'align-items-start'}`;
@@ -114,7 +100,8 @@
     // ===== Echo 受信（既存のままでOK） =====
     @if(isset($chat))
     const chatId = "{{ $chat->id }}";
-    Echo.channel(`chat.${chatId}`).listen('MessageSent', e => {
+    Echo.channel(`chat.${chatId}`).listen('.message.sent', e => {
+      console.log("📩 received:", e); // ← 追加
       const isMine = e.message.user.id == {{ Auth::id() }};
       addMessage(e.message, isMine);
       scrollToBottom();
@@ -134,8 +121,10 @@
       const firstUnread = container.querySelector('[data-unread="true"]');
       if (firstUnread) {
         console.log("scrolling to unread:", firstUnread.textContent);
-        // 要素の相対位置を計算して「上端」に配置
-        container.scrollTop = firstUnread.offsetTop - container.offsetTop;
+
+        // バーも見えるように余白をつける
+        const offset = firstUnread.offsetTop - container.offsetTop - 20;
+        container.scrollTop = offset < 0 ? 0 : offset; // ← これだけでOK
       } else {
         console.log("no unread, scrolling to bottom");
         scrollToBottom();
@@ -150,10 +139,7 @@
           'Accept': 'application/json',
         }
       }).then(() => {
-        // ✅ サーバー更新後に未読バッジを即更新
-        if (typeof window.refreshBadges === "function") {
-          window.refreshBadges();
-        }
+
       });
     }
 
@@ -212,9 +198,5 @@
     // 念押し（即時）
     ensureScroll();
 
-    refreshUnreadCount();
-    window.addEventListener("pageshow", () => {
-      refreshBadges();
-    });
   });
 </script>

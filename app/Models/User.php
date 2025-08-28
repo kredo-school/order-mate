@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function store()
     {
-        return $this->hasOne(Store::class, 'user_id');
+        return $this->hasOne(Store::class);
     }
 
     public function isAdmin(): bool
@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function chats()
     {
-        return $this->hasMany(Chat::class, 'user_id');
+        return $this->hasMany(Chat::class);
     }
 
 

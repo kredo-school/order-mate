@@ -15,8 +15,8 @@ class AdminController extends Controller
         $all_stores = Store::withCount([
             'chats as unread_messages_count' => function ($query) {
                 $query->join('messages', 'chats.id', '=', 'messages.chat_id')
-                    ->where('messages.is_read', false)
-                    ->where('messages.user_id', '!=', Auth::id()); // 👈 自分の送信は除外
+                ->where('messages.is_read', false)
+                ->where('messages.user_id', '!=', Auth::id());
             }
         ])->get();
 
@@ -29,8 +29,8 @@ class AdminController extends Controller
 
         // チャットを取得または作成
         $chat = Chat::firstOrCreate(
-            ['store_id' => $store->id, 'chat_type' => 'manager_admin'],
-            ['store_id' => $store->id, 'chat_type' => 'manager_admin']
+            ['user_id' => $store->user_id, 'chat_type' => 'manager_admin'],
+            ['user_id' => $store->user_id, 'chat_type' => 'manager_admin']
         );
 
         $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();

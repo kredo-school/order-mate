@@ -23,9 +23,10 @@ class ChatController extends Controller
         $store = Auth::user()->store;
     
         $chat = Chat::firstOrCreate(
-            ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
-            ['user_id' => $store->id, 'chat_type' => 'manager_admin']
+            ['user_id' => $store->user_id, 'chat_type' => 'manager_admin'],
+            ['user_id' => $store->user_id, 'chat_type' => 'manager_admin']
         );
+        dd($store->user_id, $chat);
     
         $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
     
@@ -72,23 +73,25 @@ class ChatController extends Controller
 
         return response()->json(['status' => 'ok']);
     }
+    public function unreadCount(){
+        $chatIds = Chat::where('user_id', Auth::id())->pluck('id');
 
-    public function unreadCount()
-    {
-        $count = Message::where('is_read', false)
+        $count = Message::whereIn('chat_id', $chatIds)
+            ->where('is_read', false)
             ->where('user_id', '!=', Auth::id())
             ->count();
-
         return response()->json(['count' => $count]);
     }
 
+
     public function unreadPerStore()
     {
-        $stores = Auth::user()->isAdmin()
-            ? Store::withCount(['messages as unread_messages_count' => function ($q) {
-                $q->where('is_read', false)->where('user_id', '!=', Auth::id());
-            }])->get(['id'])
-            : collect();
+        $stores = Store::withCount(['chats as unread_messages_count' => function ($q) {
+            $q->whereHas('messages', function ($mq) {
+                $mq->where('is_read', false)
+                   ->where('user_id', '!=', Auth::id());
+            });
+        }])->get(['id']);
 
         return response()->json($stores->map(fn($s) => [
             'id' => $s->id,
@@ -119,8 +122,8 @@ class ChatController extends Controller
 
             // 既存のチャット（storeごとの manager_admin チャット）を取得 or 作成
             $chat = Chat::firstOrCreate(
-                ['user_id' => $store->id, 'chat_type' => 'manager_admin'],
-                ['user_id' => $store->id, 'chat_type' => 'manager_admin']
+                ['user_id' => $store->user_id, 'chat_type' => 'manager_admin'],
+                ['user_id' => $store->user_id, 'chat_type' => 'manager_admin']
             );
 
             // メッセージ作成

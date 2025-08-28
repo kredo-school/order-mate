@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
   <div class="d-flex justify-content-between mb-3">
-    <a href="{{ url()->previous() }}" class="">
+    <a href="{{ route('home') }}" class="">
       <h5 class="d-inline text-brown">
         <i class="fa-solid fa-angle-left text-orange"></i> Store Info
       </h5>

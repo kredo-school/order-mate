@@ -68,7 +68,7 @@ Route::group(['prefix' => 'guest', 'as' => 'guest.'], function(){
 
 
 // チャットルート
-Route::get('/chats/{storeId}', [ChatController::class, 'show'])->name('chat.show');
+Route::get('/chats/{userId}', [ChatController::class, 'show'])->name('chat.show');
 Route::post('/chats/{chatId}/send', [ChatController::class, 'send'])->name('chat.send');
 Route::post('/chat/{chat}/read', [ChatController::class, 'markAsRead'])->name('chat.read');
 Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unreadCount');

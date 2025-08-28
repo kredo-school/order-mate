@@ -56,7 +56,7 @@
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
-                    {{ $store->store_name ?? '' }}
+                    {{ $userStore->store_name ?? '' }}
                 </p>
 
                 <!-- 右側メニュー -->

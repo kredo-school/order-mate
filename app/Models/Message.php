@@ -9,7 +9,7 @@ class Message extends Model
     protected $casts = [
         'is_read' => 'boolean',
     ];
-    protected $fillable = ['chat_id', 'user_id', 'content'];
+    protected $fillable = ['chat_id', 'user_id', 'content', 'is_read'];
 
     public function chat()
     {

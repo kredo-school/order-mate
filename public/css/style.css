@@ -283,35 +283,53 @@ img.logo{
   transform: scale(1.05);
 }
 
-    /* 吹き出し */
-    .tooltip-text {
-        visibility: hidden;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        font-size: 12px;
-        border-radius: 4px;
-        padding: 4px 8px;
-        position: absolute;
-        z-index: 1;
-        bottom: 120%; /* 上に出す */
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        transition: opacity 0.2s;
-        white-space: nowrap;
-    }
-    .tooltip-text::after {
-        content: '';
-        position: absolute;
-        top: 100%; /* 吹き出しの下に三角形 */
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 5px;
-        border-style: solid;
-        border-color: #333 transparent transparent transparent;
-    }
-    .allergen-label:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
+/* 吹き出し */
+.tooltip-text {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 4px 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 120%; /* 上に出す */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+.tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* 吹き出しの下に三角形 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+.allergen-label:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.store-photo-wrapper {
+  width: 200px;   /* 一覧と揃えたいサイズに調整 */
+  height: 200px;  /* 正方形にする例 */
+  overflow: hidden;
+}
+
+.store-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 枠からはみ出さずトリミング */
+}
+
+
+
+
+
+

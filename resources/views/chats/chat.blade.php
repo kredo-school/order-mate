@@ -1,4 +1,4 @@
-<div class="col">
+<div class="col-md-8">
   <div class="border rounded p-3 bg-light h-100 d-flex flex-column">
       <h5 class="fw-bold mb-3">Chat</h5>
 
@@ -58,6 +58,18 @@
     if (!container) return;
 
     let unreadScrollDone = false;
+    let hideTimer;
+
+    container.addEventListener('scroll', () => {
+      container.classList.remove('hide-scrollbar');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        container.classList.add('hide-scrollbar');
+      }, 1000); // 1秒スクロールが止まったら非表示
+    });
+
+    // 初期は非表示
+    container.classList.add('hide-scrollbar');
 
     // ===== 送信処理（既存のままでOK） =====
     if (form) {
@@ -145,19 +157,19 @@
 
     function insertUnreadDivider(){
       const firstUnread = container.querySelector('[data-unread="true"]');
-      if (firstUnread) {
-        // 重複防止
-        if (!container.querySelector('.unread-divider')) {
-          const divider = document.createElement('div');
-          divider.className = "unread-divider text-center text-muted my-2 position-relative";
-          divider.innerHTML = `
-            <hr class="my-2">
-            <span class="bg-light px-2 position-absolute top-50 start-50 translate-middle">
-              Unread messages
-            </span>
-          `;
-          firstUnread.parentNode.insertBefore(divider, firstUnread);
-        }
+      if (!firstUnread) return; // 未読メッセージがない場合は何もしない
+
+      // 重複防止
+      if (!container.querySelector('.unread-divider')) {
+        const divider = document.createElement('div');
+        divider.className = "unread-divider text-center text-muted my-2 position-relative";
+        divider.innerHTML = `
+          <hr class="my-2">
+          <span class="bg-light px-2 position-absolute top-50 start-50 translate-middle">
+            Unread messages
+          </span>
+        `;
+        firstUnread.parentNode.insertBefore(divider, firstUnread);
       }
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,13 +16,20 @@ class AdminController extends Controller
         $all_stores = Store::withCount([
             'chats as unread_messages_count' => function ($query) {
                 $query->join('messages', 'chats.id', '=', 'messages.chat_id')
-                ->where('messages.is_read', false)
-                ->where('messages.user_id', '!=', Auth::id());
+                    ->where('messages.is_read', false)
+                    ->where('messages.user_id', '!=', Auth::id());
             }
-        ])->get();
-
-        return view('admins.index', compact('all_stores'));
+        ])->with('user') // 各storeに紐づくuserも一緒に取得
+        ->get();
+    
+        // role=1 が manager
+        $managers = User::where('role', 1)
+                    ->with('store')
+                    ->get();
+    
+        return view('admins.index', compact('all_stores', 'managers'));
     }
+    
 
     // AdminController
     public function show($id){

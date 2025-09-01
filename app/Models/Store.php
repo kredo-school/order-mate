@@ -40,7 +40,7 @@ class Store extends Model
         // Store は複数のメニューを持つ
     public function menus()
     {
-        return $this->hasMany(Menu::class);
+        return $this->hasMany(Menu::class, 'user_id', 'user_id');
     }
 
     // Store は複数のテーブルを持つ

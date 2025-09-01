@@ -24,15 +24,6 @@
                 </a>
             @endforeach
         </div>
-
-        <!-- New ボタン（右端固定） -->
-        <a href="{{ route('manager.categories.index') }}" class="new-btn category-link">
-            <div class="p-0">
-                <span class="category-tab">
-                    <i class="fa-solid fa-plus"></i> New
-                </span>
-            </div>
-        </a>
     </div>
   </div>
 

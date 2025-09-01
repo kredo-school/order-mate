@@ -121,11 +121,11 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                        <a href="{{route('manager.stores.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
                                 <i class="fa-solid fa-user"></i>
                             </span>
-                            Account Information
+                            Store Information
                         </a>
                         <a href="{{route('manager.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
@@ -180,13 +180,34 @@
             @yield('content')
         </main>
 
-        <footer class="navbar navbar-expand-md navbar-light shadow-sm">
-            <div class="mx-auto">
+        <footer class="shadow-sm bg-light-mode">
+            {{-- QRゲストの注文ページだけ表示 --}}
+            @if (request()->routeIs('guest.*'))
+                <div class="container-fluid d-flex justify-content-between align-items-center py-2">
+                    {{-- 左側（Total Price）--}}
+                    <div>
+                        <span class="fw-bold">Total: </span>
+                        <span id="total-price">-</span>
+                    </div>
+        
+                    {{-- 右側（リンク4つ）--}}
+                    <div class="d-flex gap-3">
+                        <a href="#" class="nav-link p-0">Order History</a>
+                        <a href="{{route('guest.call', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid])}}" class="nav-link p-0">Call Staff</a>
+                        <a href="#" class="nav-link p-0">Checkout</a>
+                        <a href="#" class="nav-link p-0">Payment</a>
+                    </div>
+                </div>
+            @endif
+        
+            {{-- 下段（共通 Copyright） --}}
+            <div class="text-center py-2">
                 <p class="text-gray m-0">
-                    &copy;All Rights are reserved by ordermate
+                    &copy; All Rights are reserved by ordermate
                 </p>
             </div>
         </footer>
+        
     </div>
 
     @stack('scripts')

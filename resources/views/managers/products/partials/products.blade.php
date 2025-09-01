@@ -1,6 +1,5 @@
 @php
-    // $products が無ければ空コレクションにして isEmpty() を安全に呼べるようにする
-    $list = $products ?? $menus ?? collect();
+    $list = $products ?? ($menus ?? collect());
 @endphp
 
 @if ($list->isEmpty())
@@ -8,13 +7,34 @@
 @else
     <div class="row">
         @foreach ($list as $product)
-            <div class="col-md-3 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5>{{ $product->name }}</h5>
-                        <p>{{ isset($product->price) ? number_format($product->price) . '円' : '' }}</p>
+            <div class="col-md-3 mb-4">
+                <a href="{{ route('manager.products.show', $product->id) }}" class="text-decoration-none text-brown">
+                    <div class="card h-100 border-0 shadow-none position-relative">
+                        {{-- タグ画像 --}}
+                        @if ($product->tag)
+                            <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
+                                style="top:5px; left:5px; width:50px; height:50px; object-fit:cover; z-index:10;">
+                        @endif
+
+                        {{-- メイン画像 --}}
+                        @if ($product->image)
+                            <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
+                                alt="{{ $product->name }}" style="height: 180px; object-fit: cover;">
+                        @else
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                style="height: 180px;">
+                                <span class="text-muted">No Image</span>
+                            </div>
+                        @endif
+
+                        <div class="card-body text-center p-2">
+                            <h5 class="card-title mb-1 text-brown fw-bold mt-1">{{ $product->name }}</h5>
+                            @if (isset($product->price))
+                                <p class="mb-0 text-brown">{{ number_format($product->price) }}php</p>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         @endforeach
     </div>

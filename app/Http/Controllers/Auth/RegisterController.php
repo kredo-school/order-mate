@@ -72,8 +72,8 @@ class RegisterController extends Controller
 
         // 👇 ユーザー作成後に自動で店舗を作成
         Store::create([
-            'user_id' => $user->id,
-            'name'    => $user->name . 'の店舗',
+            'user_id'    => $user->id,
+            'store_name' => $user->name . 'の店舗',
         ]);
 
         return $user;

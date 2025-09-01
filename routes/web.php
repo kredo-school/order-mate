@@ -30,8 +30,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
 
 // Manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('create');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');  // ← ここを修正
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create'); // ← ここも揃える
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/by-category/{id}', [ProductController::class, 'byCategory'])
         ->name('products.byCategory');

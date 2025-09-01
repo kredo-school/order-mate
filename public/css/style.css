@@ -328,7 +328,11 @@ img.logo{
   object-fit: cover; /* 枠からはみ出さずトリミング */
 }
 
-
+/* delete modal */
+#deleteModal .modal-content {
+    background-color: var(--bg-light) !important; /* ベージュに統一 */
+    border: none; /* 枠線を消す */
+}
 
 
 

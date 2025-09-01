@@ -51,7 +51,8 @@
     <div id="app">
         <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
             <div class="container m-0">
-                <a class="navbar-brand" href="{{ isset($table) ? route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) : url('/') }}">
+                <a class="navbar-brand"
+                    href="{{ isset($table) ? route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) : url('/') }}">
                     <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
 
@@ -127,7 +128,8 @@
                             </span>
                             Account Information
                         </a>
-                        <a href="{{route('manager.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                        <a href="{{ route('manager.products.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
                                 <i class="fa-solid fa-utensils"></i>
                             </span>
@@ -192,5 +194,5 @@
     @stack('scripts')
 
 </body>
-</html>
 
+</html>

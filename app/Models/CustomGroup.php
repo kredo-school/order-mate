@@ -13,7 +13,7 @@ class CustomGroup extends Model
 
     public function options()
     {
-        return $this->hasMany(CustomOption::class);
+        return $this->hasMany(CustomOption::class, 'custom_group_id');
     }
 
     public function user()

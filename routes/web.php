@@ -68,8 +68,9 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
 });
 
 // Guests
-Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
-    Route::get('/{storeName}/{tableUuid}', [GuestController::class, 'index'])->name('index');
+Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], function(){
+    Route::get('/', [GuestController::class, 'index'])->name('index');
+    Route::get('/call', [GuestController::class, 'call'])->name('call');
 });
 
 

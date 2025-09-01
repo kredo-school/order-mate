@@ -83,26 +83,22 @@
                         <form action="{{ route('manager.custom.update', $group->id) }}" method="POST">
                           @csrf
                           @method('PATCH')
-
+                    
                           <div class="modal-header">
                             <h5 class="modal-title" id="editGroupModalLabel{{ $group->id }}">Edit Custom Group</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-
+                    
                           <div class="modal-body">
                             {{-- Group title --}}
                             <div class="mb-3">
                               <label for="title{{ $group->id }}" class="form-label">Group Title</label>
                               <input type="text" name="title" id="title{{ $group->id }}" class="form-control" value="{{ $group->title }}" required>
                             </div>
-
+                    
                             {{-- Options --}}
-                            @php
-                              $groupOptions = $all_customOptions->where('custom_group_id', $group->id);
-                            @endphp
-
                             <div id="edit-custom-fields-wrapper-{{ $group->id }}">
-                              @foreach($groupOptions as $option)
+                              @foreach($group->options as $option)
                                 <div class="d-flex mb-2 align-items-center price-option">
                                   <input type="hidden" name="option_ids[]" value="{{ $option->id }}">
                                   <input type="text" name="name[]" class="form-control me-2" value="{{ $option->name }}" required>
@@ -113,18 +109,12 @@
                                 </div>
                               @endforeach
                             </div>
-
+                    
                             {{-- Add option button --}}
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOptionField({{ $group->id }})">
                               <i class="fa-solid fa-plus"></i> Add Option
                             </button>
                           </div>
-
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                          </div>
-
                         </form>
                       </div>
                     </div>
@@ -142,25 +132,21 @@
                 </div>
               </div>
 
-              {{-- オプション一覧 --}}
-              @php
-                $groupOptions = $all_customOptions->where('custom_group_id', $group->id);
-              @endphp
-
-              @if($groupOptions->count() > 0)
-                <ul class="list-unstyled mb-0">
-                  @foreach ($groupOptions as $option)
-                    <li class="d-flex justify-content-between">
-                      <span>{{ $option->name }}</span>
-                      @if ($option->extra_price)
-                        <span>+ {{ number_format($option->extra_price) }}</span>
-                      @endif
-                    </li>
-                  @endforeach
-                </ul>
-              @else
-                <p class="text-muted mb-0">No options added</p>
-              @endif
+            {{-- オプション一覧 --}}
+            @if($group->options->count() > 0)
+              <ul class="list-unstyled mb-0">
+                @foreach ($group->options as $option)
+                  <li class="d-flex justify-content-between">
+                    <span>{{ $option->name }}</span>
+                    @if ($option->extra_price)
+                      <span>+ {{ number_format($option->extra_price) }}</span>
+                    @endif
+                  </li>
+                @endforeach
+              </ul>
+            @else
+              <p class="text-muted mb-0">No options added</p>
+            @endif
             </div>
           @endforeach
         </div>

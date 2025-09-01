@@ -12,16 +12,59 @@
     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
         @csrf
     </form>
-    <div class="container">
-        <h4>マネージャーへ一斉送信</h4>
+    <div class="container mb-4">
         <form action="{{ route('admin.chat.broadcast') }}" method="POST">
             @csrf
-            <div class="mb-3">
-            <textarea name="content" class="form-control" placeholder="メッセージを入力…" autofocus required></textarea>
+    
+            {{-- タイトル + ドロップダウンを横並び --}}
+            <div class="d-flex align-items-center mb-3">
+                <h4 class="me-3 mb-0">Broadcast to Managers</h4>
+                
+                <div class="dropdown flex-grow-1">
+                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                        Select Managers
+                    </button>
+                    <ul class="dropdown-menu w-100 p-2" style="max-height: 250px; overflow-y: auto;">
+                        <li>
+                            <div class="form-check">
+                                <input type="checkbox" id="select-all" class="form-check-input">
+                                <label for="select-all" class="form-check-label">Select All</label>
+                            </div>
+                        </li>
+                        <hr>
+                        @foreach($managers->sortBy('store.store_name') as $manager)
+                            @if($manager->store)
+                                <li>
+                                    <div class="form-check">
+                                        <input type="checkbox" 
+                                               name="manager_ids[]" 
+                                               value="{{ $manager->id }}" 
+                                               id="manager-{{ $manager->id }}" 
+                                               class="form-check-input manager-checkbox">
+                                        <label for="manager-{{ $manager->id }}" class="form-check-label">
+                                            {{ $manager->store->store_name }} ({{ $manager->name }})
+                                        </label>
+                                    </div>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">一斉送信</button>
+    
+            {{-- メッセージ入力欄 --}}
+            <div class="mb-3">
+                <textarea name="content" class="form-control" placeholder="Enter your message..." required></textarea>
+            </div>
+    
+            {{-- 送信ボタン --}}
+            <button type="submit" class="btn btn-primary">Broadcast</button>
         </form>
     </div>
+    
     <div class="container">
         <div class="row">
             @foreach ($all_stores as $store)
@@ -74,27 +117,64 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          function refreshBadges() {
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // --- 未読バッジ更新 ---
+        function refreshBadges() {
             fetch('/chat/unread-per-store')
-              .then(res => res.json())
-              .then(data => {
-                data.forEach(store => {
-                  const badge = document.querySelector(`#store-${store.id} .badge`);
-                  if (badge) {
-                    badge.textContent = store.count > 0 ? store.count : '';
-                  }
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(store => {
+                        const badge = document.querySelector(`#store-${store.id} .badge`);
+                        if (badge) {
+                            badge.textContent = store.count > 0 ? store.count : '';
+                        }
+                    });
                 });
-              });
-          }
-        
-          refreshBadges();
-          window.addEventListener("pageshow", e => {
+        }
+    
+        refreshBadges();
+        window.addEventListener("pageshow", e => {
             if (e.persisted) refreshBadges();
-          });
         });
-    </script>
+    
+        // --- チェックボックス制御 ---
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.manager-checkbox');
+    
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            });
+    
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    selectAll.checked = Array.from(checkboxes).every(c => c.checked);
+                });
+            });
+        }
+    
+        // --- ドロップダウン内で閉じないようにする ---
+        document.querySelectorAll('.dropdown-menu input, .dropdown-menu label').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    
+        // --- フォーム送信前バリデーション ---
+        const broadcastForm = document.querySelector('form[action="{{ route('admin.chat.broadcast') }}"]');
+        if (broadcastForm) {
+            broadcastForm.addEventListener('submit', function(e) {
+                const checkedCount = document.querySelectorAll('.manager-checkbox:checked').length;
+                if (checkedCount === 0) {
+                    e.preventDefault();
+                    alert("Choose at least one manager to send the message.");
+                }
+            });
+        }
+    });
+</script>
+
 @endsection
 
 

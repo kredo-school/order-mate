@@ -8,7 +8,7 @@
     <div class="row">
         @foreach ($list as $product)
             <div class="col-md-3 mb-4">
-                <a href="{{ route('manager.products.edit', $product->id) }}" class="text-decoration-none text-brown">
+                <a href="{{ route('manager.products.show', $product->id) }}" class="text-decoration-none text-brown">
                     <div class="card h-100 border-0 shadow-none position-relative">
                         {{-- タグ画像 --}}
                         @if ($product->tag)

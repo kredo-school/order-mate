@@ -14,14 +14,17 @@ class ProductController extends Controller
     {
         $userId = Auth::id();
 
-        $all_categories = Category::where('user_id', $userId)->get(); // 自分のカテゴリだけ
+        $all_categories = Category::where('user_id', $userId)->get();
         $initialCategory = $all_categories->first();
 
         $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)->where('user_id', $userId)->get(): collect();
+            ? Menu::where('menu_category_id', $initialCategory->id)->where('user_id', $userId)->get()
+            : collect();
 
+        // redirect じゃなく view を返す！
         return view('managers.products.products', compact('all_categories', 'products'));
     }
+
 
     public function byCategory($id)
     {
@@ -98,16 +101,15 @@ class ProductController extends Controller
     }
 
 
-    // update
     // edit メソッド
     public function edit($id)
     {
-        $menu = Menu::findOrFail($id);
-        $all_categories = Category::all();
-        $customGroups = CustomGroup::all();
+        $product = Menu::findOrFail($id);
+        $all_categories = Category::where('user_id', Auth::id())->get();
+        $customGroups = CustomGroup::where('user_id', Auth::id())->get();
 
         return view('managers.products.edit-product')->with([
-            'menu' => $menu,
+            'product' => $product,
             'all_categories' => $all_categories,
             'customGroups' => $customGroups,
         ]);
@@ -167,9 +169,18 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
-        $menu->customGroups()->detach(); // 中間テーブルも削除
+        $menu->customGroups()->detach();
         $menu->delete();
 
-        return redirect()->route('manager.products.index');
+        // 削除後は一覧へ
+        return redirect()->route('manager.index');
+    }
+
+
+    public function show($id)
+    {
+        $product = Menu::findOrFail($id);
+
+        return view('managers.products.show', compact('product'));
     }
 }

@@ -492,5 +492,12 @@
                 }
             });
         });
+
+        public
+        function show($id) {
+            $product = Menu::findOrFail($id);
+
+            return view('managers.products.show', compact('product'));
+        }
     </script>
 @endpush

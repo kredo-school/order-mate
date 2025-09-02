@@ -38,8 +38,12 @@
                     </div>
 
                     <!-- Category -->
-                    <div class="text-brown fs-5 mb-2">
-                        {{ $product->category?->name ?: 'No Category' }}
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <span class="badge rounded-pill px-3 py-2 fs-6"
+                            style="background-color: #fff3e0; color: #8B5E3C; border: 1px solid #e0a96d;">
+                            {{ $product->category?->name ?: 'No Category' }}
+                        </span>
                     </div>
 
                     <!-- Description -->
@@ -49,12 +53,14 @@
 
                     <!-- Allergies -->
                     <div class="mb-3 d-flex justify-content-center gap-2 flex-wrap">
-                        @if ($product->allergies && $product->allergies->count() > 0)
-                            @foreach ($product->allergies as $allergy)
-                                <i class="fa-solid fa-circle-exclamation text-danger fs-5" title="{{ $allergy->name }}"></i>
+                        @if ($product->allergens && count($product->allergens) > 0)
+                            @foreach ($product->allergens as $allergen)
+                                <div class="allergen-label selected">
+                                    @include("icons.allergens.$allergen")
+                                </div>
                             @endforeach
                         @else
-                            <span class="text-brown">No Allergies</span>
+                            <span class="text-brown">No Allergens</span>
                         @endif
                     </div>
 

@@ -68,6 +68,8 @@ class ProductController extends Controller
         $menu->description = $request->description;
         $menu->menu_category_id = $request->menu_category_id;
         $menu->user_id = Auth::id();
+        $menu->allergens = $request->allergens ?? [];
+
 
 
         // 画像アップロード
@@ -132,6 +134,8 @@ class ProductController extends Controller
         $menu->price = $request->price;
         $menu->description = $request->description ?? '';
         $menu->menu_category_id = $request->menu_category_id;
+        $menu->allergens = $request->allergens ?? [];
+
 
         // 画像更新
         if ($request->hasFile('image')) {

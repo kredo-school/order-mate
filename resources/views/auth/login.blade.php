@@ -13,7 +13,7 @@
 
             {{-- Email --}}
             <div class="mb-3">
-                <label for="email">Username</label>
+                <label for="email">Email</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" required autofocus>
                 @error('email')

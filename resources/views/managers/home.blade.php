@@ -8,7 +8,7 @@
                     Order List
                 </div>
             </a>
-            <a href="{{route('manager.index')}}" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
+            <a href="{{route('manager.products.index')}}" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
                 <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
                     Admin Menu
                 </div>

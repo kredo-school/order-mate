@@ -22,18 +22,18 @@ class CustomController extends Controller
     public function index()
     {
         $userId = Auth::id();
-    
+
         // ログインユーザーのデータだけ取得
         $all_customGroups = $this->customGroup
             ->where('user_id', $userId)
             ->with('options') // 関連するオプションも一緒に取得
             ->get();
-    
+
         return view('managers.products.customs')->with([
             'all_customGroups' => $all_customGroups,
         ]);
     }
-    
+
 
     public function store(Request $request)
     {

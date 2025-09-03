@@ -110,41 +110,19 @@
                     </div>
 
                     <!-- Custom Groups -->
+                    <!-- Custom Groups -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
                             <label for="custom_groups" class="form-label">Custom</label>
                         </div>
                         <div class="d-grid gap-2 col-8">
                             <div id="custom-groups-wrapper">
-                                @foreach ($product->customGroups as $index => $group)
-                                    <div class="d-flex mb-2 align-items-center custom-group-row">
-                                        <select name="custom_groups[{{ $index }}][id]"
-                                            class="form-select me-2 custom-group-select" data-index="{{ $index }}">
-                                            <option value="">Select Custom Group</option>
-                                            @foreach ($customGroups as $g)
-                                                <option value="{{ $g->id }}"
-                                                    {{ $group->id == $g->id ? 'selected' : '' }}>{{ $g->title }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <div class="form-check me-2">
-                                            <input type="checkbox" name="custom_groups[{{ $index }}][is_required]"
-                                                value="1" class="form-check-input"
-                                                {{ $group->pivot->is_required ? 'checked' : '' }}>
-                                            <label class="form-check-label">Required</label>
-                                        </div>
-
-                                        <button type="button"
-                                            class="btn btn-danger btn-sm remove-custom-group">x</button>
-                                    </div>
-                                @endforeach
+                                {{-- 初期表示は JS が担当 --}}
                             </div>
 
                             <div class="d-flex justify-content-between text-brown">
-                                <button type="button" id="add-custom-group"
-                                    class="btn btn-link p-0 text-brown custom-link" style="text-decoration: none;">+
-                                    Add</button>
+                                <button type="button" id="add-custom-group" class="btn btn-link p-0 text-brown custom-link"
+                                    style="text-decoration: none;">+ Add</button>
                                 <a href="{{ route('manager.custom.index') }}" class="text-brown custom-link">see all
                                     custom</a>
                             </div>
@@ -188,30 +166,125 @@
             preview.appendChild(img);
         }
 
-        // Custom Group JS (Add / Remove / Options)
-        document.getElementById('add-custom-group').addEventListener('click', function() {
-            const wrapper = document.getElementById('custom-groups-wrapper');
-            const index = wrapper.querySelectorAll('.custom-group-row').length;
-            const row = document.createElement('div');
-            row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
-            row.innerHTML = `
-            <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
-                <option value="">Select Custom Group</option>
-                ${customGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
+        // custom
+        document.addEventListener('DOMContentLoaded', function() {
+            const customGroups = @json($customGroups);
+            const existingGroups = @json($product->customGroups);
+
+            function createCustomGroupRow(group = null, index = null, selectedIds = []) {
+                const wrapper = document.getElementById('custom-groups-wrapper');
+                const rowIndex = index ?? wrapper.querySelectorAll('.custom-group-row').length;
+
+                const row = document.createElement('div');
+                row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
+
+                let selectOptions = '<option value="">Select Custom Group</option>';
+                customGroups.forEach(g => {
+                    const disabled = selectedIds.includes(String(g.id)) ? 'disabled' : '';
+                    const selected = group && g.id == group.id ? 'selected' : '';
+                    selectOptions += `<option value="${g.id}" ${selected} ${disabled}>${g.title}</option>`;
+                });
+
+                row.innerHTML = `
+            <select name="custom_groups[${rowIndex}][id]" class="form-select me-2 custom-group-select" data-index="${rowIndex}">
+                ${selectOptions}
             </select>
             <div class="form-check me-2">
-                <input type="checkbox" name="custom_groups[${index}][is_required]" value="1" class="form-check-input">
+                <input type="checkbox" name="custom_groups[${rowIndex}][is_required]" value="1" class="form-check-input" ${group && group.pivot.is_required ? 'checked' : ''}>
                 <label class="form-check-label">Required</label>
             </div>
             <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
         `;
-            wrapper.appendChild(row);
-        });
 
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('.remove-custom-group')) {
-                e.target.closest('.custom-group-row').remove();
+                wrapper.appendChild(row);
+
+                if (group) fetchCustomOptions(group.id, rowIndex, row, group.pivot.options ?? []);
+
+                updateAllSelectOptions();
             }
+
+            function fetchCustomOptions(groupId, index, row, preSelected = []) {
+                fetch(`/manager/custom/${groupId}/options`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.classList.add('custom-options', 'mt-2', 'w-100');
+
+                        data.options.forEach(opt => {
+                            const checkWrapper = document.createElement('div');
+                            checkWrapper.classList.add('form-check');
+
+                            const input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.classList.add('form-check-input');
+                            input.name = `custom_groups[${index}][options][]`;
+                            input.value = opt.id;
+                            if (preSelected.includes(opt.id)) input.checked = true;
+
+                            const label = document.createElement('label');
+                            label.classList.add('form-check-label');
+                            label.textContent = `${opt.name} (+${opt.extra_price})`;
+
+                            checkWrapper.appendChild(input);
+                            checkWrapper.appendChild(label);
+
+                            optionsDiv.appendChild(checkWrapper);
+                        });
+
+                        row.after(optionsDiv);
+                    });
+            }
+
+            function updateAllSelectOptions() {
+                const selectedIds = Array.from(document.querySelectorAll('.custom-group-select'))
+                    .map(select => select.value)
+                    .filter(val => val);
+
+                document.querySelectorAll('.custom-group-select').forEach(select => {
+                    Array.from(select.options).forEach(option => {
+                        if (option.value === "") return;
+                        option.hidden = selectedIds.includes(option.value) && option.value !==
+                            select.value;
+                    });
+                });
+            }
+
+            // ✅ 初期表示
+            existingGroups.forEach((group, index) => {
+                createCustomGroupRow(group, index);
+            });
+
+            // add ボタン
+            document.getElementById('add-custom-group').addEventListener('click', () => {
+                const selectedIds = Array.from(document.querySelectorAll('.custom-group-select'))
+                    .map(select => select.value)
+                    .filter(val => val);
+                createCustomGroupRow(null, null, selectedIds);
+            });
+
+            // select 変更
+            document.addEventListener('change', e => {
+                if (e.target.matches('.custom-group-select')) {
+                    const row = e.target.closest('.custom-group-row');
+                    const oldOptions = row.nextElementSibling;
+                    if (oldOptions && oldOptions.classList.contains('custom-options')) oldOptions.remove();
+                    if (e.target.value) fetchCustomOptions(e.target.value, e.target.dataset.index, row);
+
+                    updateAllSelectOptions();
+                }
+            });
+
+            // row 削除
+            document.addEventListener('click', e => {
+                if (e.target.matches('.remove-custom-group')) {
+                    const row = e.target.closest('.custom-group-row');
+                    const oldOptions = row.nextElementSibling;
+                    if (oldOptions && oldOptions.classList.contains('custom-options')) oldOptions.remove();
+                    row.remove();
+
+                    updateAllSelectOptions();
+                }
+            });
         });
     </script>
 @endpush

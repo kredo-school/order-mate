@@ -37,11 +37,27 @@ a {
 }
 
 .btn {
-  padding: 1rem 2rem;
   font-weight: bold;
   border-radius: 8px;
   text-align: center;
   border: none;
+  cursor: pointer;
+}
+
+/* サイズ別ボタン */
+.btn-s {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.btn-m {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.btn-l {
+  padding: 1rem 2rem; /* 今のサイズをそのまま */
+  font-size: 1.1rem;
 }
 
 /* オレンジのボタン */
@@ -335,5 +351,21 @@ img.logo{
 }
 
 
+/* Products専用の検索フォーム下線 */
+form.product-search input.input-underline[type="search"] {
+  border: none !important;
+  border-bottom: 1.5px solid #d2b48c !important;
+  border-radius: 0 !important;
+  background-color: transparent !important; /* background: transparent; は背景色をなくすために必要 */
+  box-shadow: none !important;
+  -webkit-appearance: none !important; /* Safari/Chromeのデフォルト消す */
+  -moz-appearance: textfield !important; /* Firefoxのデフォルト消す */
+  appearance: none !important; /* その他のブラウザのデフォルト消す */
+  padding-left: 0; /* 左側のデフォルトパディングを削除 */
+}
 
-
+form.product-search input.input-underline[type="search"]:focus {
+  border-bottom: 2px solid #a67c52 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

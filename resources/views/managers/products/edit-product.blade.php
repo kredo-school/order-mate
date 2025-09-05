@@ -109,6 +109,41 @@
                         </div>
                     </div>
 
+                    {{-- Allergens --}}
+                    <div class="form-section mb-4 row">
+                        <div class="col-4"><label class="form-label text-brown">Allergens</label></div>
+                        <div class="col-8 d-flex flex-wrap gap-3">
+                            @php
+                                $allergens = [
+                                    'milk' => 'Milk',
+                                    'egg' => 'Eggs',
+                                    'fish' => 'Fish',
+                                    'shrimp' => 'Shrimp',
+                                    'soy' => 'Soy',
+                                    'wheat' => 'Wheat',
+                                    'sesame' => 'Sesame',
+                                    'cashew' => 'Cashew',
+                                    'walnut' => 'Walnut',
+                                ];
+                                $selectedAllergens = old('allergens', $product->allergens ?? []);
+                                // 文字列なら配列に変換
+                                if (is_string($selectedAllergens)) {
+                                    $selectedAllergens = explode(',', $selectedAllergens);
+                                }
+                            @endphp
+                            @foreach ($allergens as $key => $label)
+                                <div class="form-check text-center">
+                                    <input type="checkbox" name="allergens[]" value="{{ $key }}"
+                                        id="allergen-{{ $key }}" class="form-check-input d-none"
+                                        {{ in_array($key, $selectedAllergens) ? 'checked' : '' }}>
+                                    <label for="allergen-{{ $key }}"
+                                        class="allergen-label">@include("icons.allergens.$key")<span
+                                            class="tooltip-text">{{ $label }}</span></label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <!-- Custom Groups -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
@@ -119,7 +154,8 @@
                                 @foreach ($product->customGroups as $index => $group)
                                     <div class="d-flex mb-2 align-items-center custom-group-row">
                                         <select name="custom_groups[{{ $index }}][id]"
-                                            class="form-select me-2 custom-group-select" data-index="{{ $index }}">
+                                            class="form-select me-2 custom-group-select"
+                                            data-index="{{ $index }}">
                                             <option value="">Select Custom Group</option>
                                             @foreach ($customGroups as $g)
                                                 <option value="{{ $g->id }}"
@@ -150,6 +186,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Submit -->
                     <button type="submit" class="btn btn-primary btn-block btn-md">Update</button>
@@ -188,29 +225,93 @@
             preview.appendChild(img);
         }
 
-        // Custom Group JS (Add / Remove / Options)
+        // allergy
+        document.querySelectorAll('input[name="allergens[]"]').forEach(input => {
+            input.addEventListener('change', () => {
+                const label = document.querySelector(`label[for="${input.id}"]`);
+                if (input.checked) {
+                    label.classList.add('selected');
+                } else {
+                    label.classList.remove('selected');
+                }
+            });
+        });
+
+
+        // Add 新しい Custom Group 行
         document.getElementById('add-custom-group').addEventListener('click', function() {
             const wrapper = document.getElementById('custom-groups-wrapper');
+            const selectedIds = Array.from(wrapper.querySelectorAll('.custom-group-select'))
+                .map(s => s.value)
+                .filter(v => v);
+            const availableGroups = customGroups.filter(g => !selectedIds.includes(String(g.id)));
+            if (!availableGroups.length) {
+                alert('All custom groups are already added.');
+                return;
+            }
             const index = wrapper.querySelectorAll('.custom-group-row').length;
             const row = document.createElement('div');
             row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
             row.innerHTML = `
-            <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
-                <option value="">Select Custom Group</option>
-                ${customGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
-            </select>
-            <div class="form-check me-2">
-                <input type="checkbox" name="custom_groups[${index}][is_required]" value="1" class="form-check-input">
-                <label class="form-check-label">Required</label>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
-        `;
+      <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
+          <option value="">Select Custom Group</option>
+          ${availableGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
+      </select>
+      <div class="form-check me-2">
+          <input type="checkbox" name="custom_groups[${index}][is_required]" value="1" class="form-check-input">
+          <label class="form-check-label">Required</label>
+      </div>
+      <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
+    `;
             wrapper.appendChild(row);
         });
 
+        // Remove ボタン処理
         document.addEventListener('click', function(e) {
             if (e.target.matches('.remove-custom-group')) {
-                e.target.closest('.custom-group-row').remove();
+                const row = e.target.closest('.custom-group-row');
+                const optionsDiv = row.nextElementSibling;
+                if (optionsDiv && optionsDiv.classList.contains('custom-options')) optionsDiv.remove();
+                row.remove();
+            }
+        });
+
+        // Select 変更で Options fetch
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('.custom-group-select')) {
+                const select = e.target;
+                const groupId = select.value;
+                const row = select.closest('.custom-group-row');
+
+                // 古い options を削除
+                const oldOptions = row.nextElementSibling;
+                if (oldOptions && oldOptions.classList.contains('custom-options')) oldOptions.remove();
+                if (!groupId) return;
+
+                // fetch options
+                fetch(`/manager/custom/${groupId}/options`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.options) return;
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.classList.add('custom-options', 'mt-2', 'w-100');
+                        data.options.forEach(opt => {
+                            const checkWrapper = document.createElement('div');
+                            checkWrapper.classList.add('form-check');
+                            const input = document.createElement('input');
+                            input.type = 'checkbox';
+                            input.classList.add('form-check-input');
+                            input.name = `custom_groups[${select.dataset.index}][options][]`;
+                            input.value = opt.id;
+                            const label = document.createElement('label');
+                            label.classList.add('form-check-label');
+                            label.textContent = `${opt.name} (+${opt.extra_price})`;
+                            checkWrapper.appendChild(input);
+                            checkWrapper.appendChild(label);
+                            optionsDiv.appendChild(checkWrapper);
+                        });
+                        row.after(optionsDiv);
+                    });
             }
         });
     </script>

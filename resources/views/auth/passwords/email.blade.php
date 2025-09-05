@@ -30,12 +30,12 @@
             </div>
 
             {{-- 送信ボタン --}}
-            <button type="submit" class="btn btn-primary w-100">
+            <button type="submit" class="btn btn-l btn-primary w-100">
                 Send Password Reset Link
             </button>
 
             {{-- 戻るボタン --}}
-            <a href="{{ route('login') }}" class="btn btn-outline w-100 mt-2">Back to Login</a>
+            <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">Back to Login</a>
         </form>
 
         {{-- SNSアイコン --}}

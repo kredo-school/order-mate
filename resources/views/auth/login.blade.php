@@ -13,7 +13,7 @@
 
             {{-- Email --}}
             <div class="mb-3">
-                <label for="email">Username</label>
+                <label for="email">E-mail</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" required autofocus>
                 @error('email')
@@ -36,8 +36,8 @@
             </div>
 
             {{-- 送信ボタン（既存の .btn .btn-primary を活用） --}}
-            <button type="submit" class="btn btn-primary w-100">LOG IN</button>
-            <a href="{{ route('register') }}" class="btn btn-outline w-100 mt-2">Register</a>
+            <button type="submit" class="btn btn-primary btn-l w-100">LOG IN</button>
+            <a href="{{ route('register') }}" class="btn btn-outline btn-l w-100 mt-2">Register</a>
 
 
         </form>

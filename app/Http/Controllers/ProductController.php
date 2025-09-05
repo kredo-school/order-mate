@@ -10,20 +10,45 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
-        $all_categories = Category::where('user_id', $userId)->get();
-        $initialCategory = $all_categories->first();
+        // --- 検索あり ---
+        if ($request->filled('search')) {
+            $keyword = $request->input('search');
+            $products = Menu::where('user_id', $user->id)
+                ->where(function ($q) use ($keyword) {
+                    $q->where('name', 'LIKE', "%{$keyword}%")
+                        ->orWhere('description', 'LIKE', "%{$keyword}%");
+                })
+                ->get();
 
-        $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)->where('user_id', $userId)->get()
+            return view('managers.products.products', [
+                'products' => $products,
+                'all_categories' => Category::where('user_id', $user->id)->get(),
+                'search' => $keyword
+            ]);
+        }
+
+        // --- 通常表示 ---
+        $all_categories = Category::where('user_id', $user->id)->get();
+        $activeCategory = $all_categories->first();
+
+        $products = $activeCategory
+            ? Menu::where('user_id', $user->id)
+            ->where('menu_category_id', $activeCategory->id)
+            ->get()
             : collect();
 
-        // redirect じゃなく view を返す！
-        return view('managers.products.products', compact('all_categories', 'products'));
+        return view('managers.products.products', [
+            'products' => $products,
+            'all_categories' => $all_categories,
+            'activeCategory' => $activeCategory,
+        ]);
     }
+
+
 
 
     public function byCategory($id)

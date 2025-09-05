@@ -8,9 +8,18 @@
             <a href="{{ url()->previous() }}" class="">
                 <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>
             </a>
-            <input type="search" name="search_product" id="search_product">
+            {{-- 検索フォーム（下線＋アイコンのみ） --}}
+            <form action="{{ route('manager.products.index') }}" method="GET"
+                class="product-search d-flex align-items-center mx-3" role="search">
+                <input type="search" name="search" class="input-underline" placeholder="Search products..."
+                    value="{{ request('search') }}" aria-label="Search products">
+                <button type="submit" class="btn-icon text-orange ms-2" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
             <a href="{{ route('manager.products.create') }}" class="text-orange">
-                <i class="fa-solid fa-plus"></i> Add
+                <i class="fa-solid fa-plus"></i> Add menu
             </a>
         </div>
 
@@ -19,17 +28,31 @@
             <div class="d-flex align-items-center">
                 <!-- 横スクロール可能なカテゴリー部分 -->
                 <div class="category-scroll d-flex">
+                    {{-- カテゴリ --}}
                     @foreach ($all_categories as $category)
                         <a href="#" class="category-link" data-id="{{ $category->id }}">
                             <div class="p-0">
-                                <span class="category-tab {{ $loop->first ? 'active' : '' }}">
+                                <span
+                                    class="category-tab 
+                    {{ !request()->has('search') && $loop->first ? 'active' : '' }}">
                                     {{ $category->name }}
                                 </span>
                             </div>
                         </a>
                     @endforeach
-                </div>
 
+                    {{-- 検索結果タブ（検索時のみ表示） --}}
+                    @if (request()->filled('search'))
+                        <a href="#" class="category-link search-results-tab" data-id="search">
+                            <div class="p-0">
+                                <span class="category-tab active">
+                                    Search Results
+                                </span>
+                            </div>
+                        </a>
+                    @endif
+
+                </div>
                 <!-- New ボタン（右端固定） -->
                 <a href="{{ route('manager.categories.index') }}" class="new-btn category-link">
                     <div class="p-0">
@@ -60,25 +83,39 @@
                 tab.addEventListener('click', function(e) {
                     const categoryId = this.dataset.id;
 
-                    if (!categoryId) {
-                        // "New"ボタンの場合はデフォルトのリンク動作を許可
+                    // "New"ボタンだけスルー
+                    if (!categoryId || categoryId === 'new') {
                         return;
                     }
 
                     e.preventDefault();
 
-                    // activeクラス切り替え
+                    // 検索フォームをリセット
+                    const searchInput = document.querySelector('input[name="search"]');
+                    if (searchInput) {
+                        searchInput.value = '';
+                    }
+
+                    // Search Resultsタブを非表示にする
+                    const searchTab = document.querySelector('.search-results-tab');
+                    if (searchTab) {
+                        searchTab.remove();
+                    }
+
+                    // active切り替え
                     document.querySelectorAll('.category-tab').forEach(el => el.classList.remove(
                         'active'));
                     this.querySelector('.category-tab').classList.add('active');
 
-                    // Ajaxで商品一覧を取得
-                    fetch(`/manager/products/by-category/${categoryId}`)
-                        .then(res => res.text())
-                        .then(html => {
-                            container.innerHTML = html;
-                        })
-                        .catch(err => console.error(err));
+                    // "Search Results" はAjaxリクエストしない
+                    if (categoryId !== 'search') {
+                        fetch(`/manager/products/by-category/${categoryId}`)
+                            .then(res => res.text())
+                            .then(html => {
+                                container.innerHTML = html;
+                            })
+                            .catch(err => console.error(err));
+                    }
                 });
             });
         });

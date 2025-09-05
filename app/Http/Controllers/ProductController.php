@@ -96,7 +96,7 @@ class ProductController extends Controller
             $menu->customGroups()->sync($syncData);
         }
 
-        return redirect()->route('manager.index');
+        return redirect()->route('manager.products.index');
     }
 
 
@@ -172,14 +172,13 @@ class ProductController extends Controller
         $menu->delete();
 
         // 削除後は一覧へ
-        return redirect()->route('manager.index');
+        return redirect()->route('manager.products.index');
     }
 
 
     public function show($id)
     {
         $product = Menu::findOrFail($id);
-
         return view('managers.products.show', compact('product'));
     }
 }

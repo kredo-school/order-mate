@@ -132,7 +132,8 @@
                             </span>
                             Store Information
                         </a>
-                        <a href="{{route('manager.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                        <a href="{{ route('manager.products.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
                                 <i class="fa-solid fa-utensils"></i>
                             </span>
@@ -223,5 +224,5 @@
     @stack('scripts')
 
 </body>
-</html>
 
+</html>

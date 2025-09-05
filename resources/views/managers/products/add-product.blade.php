@@ -5,7 +5,7 @@
 @section('content')
     <main class="bg-light-mode">
         <div class="d-flex justify-content-between mt-4 mx-3">
-            <a href="{{ route('manager.index') }}" class="">
+            <a href="{{ route('manager.products.index') }}" class="">
                 <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>
             </a>
         </div>

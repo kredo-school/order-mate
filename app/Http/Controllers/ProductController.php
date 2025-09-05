@@ -11,67 +11,63 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
     public function index(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
+    $all_categories = Category::where('user_id', $user->id)->get();
+    $activeCategory = $all_categories->first();
 
-        // --- 検索あり ---
-        if ($request->filled('search')) {
-            $keyword = $request->input('search');
-            $products = Menu::where('user_id', $user->id)
-                ->where(function ($q) use ($keyword) {
-                    $q->where('name', 'LIKE', "%{$keyword}%")
-                        ->orWhere('description', 'LIKE', "%{$keyword}%");
-                })
-                ->get();
-
-            return view('managers.products.products', [
-                'products' => $products,
-                'all_categories' => Category::where('user_id', $user->id)->get(),
-                'search' => $keyword
-            ]);
-        }
-
-        // --- 通常表示 ---
-        $all_categories = Category::where('user_id', $user->id)->get();
-        $activeCategory = $all_categories->first();
-
-        $products = $activeCategory
-            ? Menu::where('user_id', $user->id)
-            ->where('menu_category_id', $activeCategory->id)
-            ->get()
-            : collect();
+    // --- 検索あり ---
+    if ($request->filled('search')) {
+        $keyword = $request->input('search');
+        $products = Menu::where('user_id', $user->id)
+            ->where(function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', "%{$keyword}%")
+                  ->orWhere('description', 'LIKE', "%{$keyword}%");
+            })
+            ->get();
 
         return view('managers.products.products', [
             'products' => $products,
             'all_categories' => $all_categories,
-            'activeCategory' => $activeCategory,
-        ]);
+            'activeCategory' => null,
+            'search' => $keyword,
+        ])->with('isGuestPage', false);
     }
 
+    // --- 通常表示 ---
+    $products = $activeCategory
+        ? Menu::where('user_id', $user->id)
+              ->where('menu_category_id', $activeCategory->id)
+              ->get()
+        : collect();
 
+    return view('managers.products.products', [
+        'products' => $products,
+        'all_categories' => $all_categories,
+        'activeCategory' => $activeCategory,
+    ])->with('isGuestPage', false);
+}
 
 
     public function byCategory($id)
     {
         $userId = Auth::id();
+        $products = Menu::where('menu_category_id', $id)
+                        ->where('user_id', $userId)
+                        ->get();
 
-        $products = Menu::where('menu_category_id', $id)->where('user_id', $userId)->get();
-
-        return view('managers.products.partials.products', compact('products'));
+        return view('managers.products.partials.products', compact('products'))
+               ->with('isGuestPage', false);
     }
-
 
     public function create()
     {
         $userId = Auth::id();
-
         $all_categories = Category::where('user_id', $userId)->get();
         $customGroups = CustomGroup::where('user_id', $userId)->get();
-        // フォルダー、ファイル名
-        return view('managers.products.add-product')->with([
-            'all_categories' => $all_categories,
-            'customGroups' => $customGroups,
-        ]);
+
+        return view('managers.products.add-product', compact('all_categories', 'customGroups'))
+               ->with('isGuestPage', false);
     }
 
     // store

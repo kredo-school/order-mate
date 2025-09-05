@@ -10,7 +10,6 @@
   {{-- category --}}
   <div class="position-relative mt-5">
     <div class="d-flex align-items-center">
-        <!-- 横スクロール可能なカテゴリー部分 -->
         <div class="category-scroll d-flex">
             @foreach ($all_categories as $category)
                 <a href="#" 
@@ -27,14 +26,10 @@
     </div>
   </div>
 
-
-
   {{-- products --}}
   <div id="products-container" class="mt-4">
-    {{-- products エリア（初期表示）--}}
     @include('managers.products.partials.products', ['products' => $products ?? collect()])
   </div>
-
 </div>
 
 <script>
@@ -42,23 +37,28 @@
       const tabs = document.querySelectorAll('.category-link');
       const container = document.getElementById('products-container');
 
+      // Blade から渡された変数
+      const isGuestPage = @json($isGuestPage);
+      const storeName = @json($store->store_name ?? '');
+      const tableUuid = @json($table->uuid ?? '');
+
       tabs.forEach(tab => {
           tab.addEventListener('click', function (e) {
               const categoryId = this.dataset.id;
-
-              if (!categoryId) {
-                  // "New"ボタンの場合はデフォルトのリンク動作を許可
-                  return;
-              }
+              if (!categoryId) return;
 
               e.preventDefault();
 
-              // activeクラス切り替え
+              // active クラス切り替え
               document.querySelectorAll('.category-tab').forEach(el => el.classList.remove('active'));
               this.querySelector('.category-tab').classList.add('active');
 
-              // Ajaxで商品一覧を取得
-              fetch(`/manager/products/by-category/${categoryId}`)
+              // Ajax URL
+              const url = isGuestPage 
+                  ? `/guest/${storeName}/${tableUuid}/products/${categoryId}` 
+                  : `/manager/products/by-category/${categoryId}`;
+
+              fetch(url)
                   .then(res => res.text())
                   .then(html => {
                       container.innerHTML = html;

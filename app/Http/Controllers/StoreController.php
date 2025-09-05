@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chat;
 use App\Models\Store;
+use App\Models\Table;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,14 +98,13 @@ class StoreController extends Controller{
         }
 
         $tables = collect(range($start, $end))->map(function ($number) use ($store) {
-            // 既に同じ番号のテーブルがある場合はそれを返す
-            $table = \App\Models\Table::firstOrCreate(
-                ['user_id' => $store->id, 'number' => $number],
+            $table = Table::firstOrCreate(
+                ['user_id' => $store->user_id, 'number' => $number], // ← ここを修正
                 ['uuid' => \Illuminate\Support\Str::uuid()]
             );
-
             return $table;
         });
+
         return view('managers.stores.qr', compact('store', 'tables'));
     }
 

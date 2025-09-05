@@ -98,7 +98,7 @@
                     
                             {{-- Options --}}
                             <div id="edit-custom-fields-wrapper-{{ $group->id }}">
-                              @foreach($group->options as $option)
+                              @foreach($group->customOptions as $option)
                                 <div class="d-flex mb-2 align-items-center price-option">
                                   <input type="hidden" name="option_ids[]" value="{{ $option->id }}">
                                   <input type="text" name="name[]" class="form-control me-2" value="{{ $option->name }}" required>
@@ -133,13 +133,15 @@
               </div>
 
             {{-- オプション一覧 --}}
-            @if($group->options->count() > 0)
+            @if($group->customOptions->count() > 0)
               <ul class="list-unstyled mb-0">
-                @foreach ($group->options as $option)
+                @foreach ($group->customOptions as $option)
                   <li class="d-flex justify-content-between">
                     <span>{{ $option->name }}</span>
                     @if ($option->extra_price)
-                      <span>+ {{ number_format($option->extra_price) }}</span>
+                      <span class="text-muted">
+                          （{{ $option->extra_price > 0 ? '+' : ($option->extra_price < 0 ? '-' : '±') }}{{ number_format(abs($option->extra_price)) }}）
+                      </span>
                     @endif
                   </li>
                 @endforeach

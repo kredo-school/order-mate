@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasOne(Store::class);
     }
 
+    public function hasStore(): bool
+    {
+        return $this->role === 1; // Manager のみストアを持つ
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 2;

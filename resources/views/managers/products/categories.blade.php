@@ -16,7 +16,7 @@
       @csrf
       <div class="row">
         <div class="col-9">
-          <input type="text" name="name" id="name" class="form-control" placeholder="Category Name" required>
+          <input type="text" name="name" id="name" class="form-control" placeholder="Category Name" autofocus required>
         </div>
         <div class="col-3">
           <button type="submit" class="btn bg-orange text-white p-2 ms-2"><i class="fa-solid fa-plus"></i> Add </button>

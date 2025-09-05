@@ -18,35 +18,34 @@ class ProductController extends Controller
         $initialCategory = $all_categories->first();
 
         $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)->where('user_id', $userId)->get()
+            ? Menu::where('menu_category_id', $initialCategory->id)
+                  ->where('user_id', $userId)
+                  ->get()
             : collect();
 
-        // redirect じゃなく view を返す！
-        return view('managers.products.products', compact('all_categories', 'products'));
+        return view('managers.products.products', compact('all_categories', 'products'))
+               ->with('isGuestPage', false);
     }
-
 
     public function byCategory($id)
     {
         $userId = Auth::id();
+        $products = Menu::where('menu_category_id', $id)
+                        ->where('user_id', $userId)
+                        ->get();
 
-        $products = Menu::where('menu_category_id', $id)->where('user_id', $userId)->get();
-
-        return view('managers.products.partials.products', compact('products'));
+        return view('managers.products.partials.products', compact('products'))
+               ->with('isGuestPage', false);
     }
-
 
     public function create()
     {
         $userId = Auth::id();
-
         $all_categories = Category::where('user_id', $userId)->get();
         $customGroups = CustomGroup::where('user_id', $userId)->get();
-        // フォルダー、ファイル名
-        return view('managers.products.add-product')->with([
-            'all_categories' => $all_categories,
-            'customGroups' => $customGroups,
-        ]);
+
+        return view('managers.products.add-product', compact('all_categories', 'customGroups'))
+               ->with('isGuestPage', false);
     }
 
     // store

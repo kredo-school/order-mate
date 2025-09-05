@@ -8,15 +8,21 @@
     <div class="row">
         @foreach ($list as $product)
             <div class="col-md-3 mb-4">
-                <a href="{{ route('manager.products.show', $product->id) }}" class="text-decoration-none text-brown">
+                <a href="{{ $isGuestPage 
+                    ? route('guest.show', [
+                        'storeName' => $store->store_name,
+                        'tableUuid' => $table->uuid,
+                        'id' => $product->id
+                    ]) 
+                    : route('manager.products.show', $product->id) }}" 
+                    class="text-decoration-none text-brown">
+                    
                     <div class="card h-100 border-0 shadow-none position-relative">
-                        {{-- タグ画像 --}}
                         @if ($product->tag)
                             <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
                                 style="top:5px; left:5px; width:50px; height:50px; object-fit:cover; z-index:10;">
                         @endif
 
-                        {{-- メイン画像 --}}
                         @if ($product->image)
                             <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
                                 alt="{{ $product->name }}" style="height: 180px; object-fit: cover;">

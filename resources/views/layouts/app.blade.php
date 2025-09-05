@@ -52,8 +52,12 @@
         <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
             <div class="container m-0">
                 <a class="navbar-brand"
-                    href="{{ isset($table) ? route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) : url('/') }}">
-                    <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
+                    @if(Route::is('guest.*') && isset($store, $table))
+                        href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                    @else
+                        href="{{ url('/') }}"
+                    @endif>
+                        <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
@@ -193,11 +197,16 @@
                     </div>
         
                     {{-- 右側（リンク4つ）--}}
+                    @php
+                        $storeName = request()->route('storeName');
+                        $tableUuid = request()->route('tableUuid');
+                    @endphp
                     <div class="d-flex gap-3">
-                        <a href="#" class="nav-link p-0">Order History</a>
-                        <a href="{{route('guest.call', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid])}}" class="nav-link p-0">Call Staff</a>
+                        <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
+                        <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
                         <a href="#" class="nav-link p-0">Checkout</a>
                         <a href="#" class="nav-link p-0">Payment</a>
+                        <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
                 </div>
             @endif

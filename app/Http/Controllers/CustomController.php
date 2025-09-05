@@ -26,7 +26,7 @@ class CustomController extends Controller
         // ログインユーザーのデータだけ取得
         $all_customGroups = $this->customGroup
             ->where('user_id', $userId)
-            ->with('options') // 関連するオプションも一緒に取得
+            ->with('customOptions') // 関連するオプションも一緒に取得
             ->get();
 
         return view('managers.products.customs')->with([

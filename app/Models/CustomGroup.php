@@ -11,7 +11,7 @@ class CustomGroup extends Model
         'title',
     ];
 
-    public function options()
+    public function customOptions()
     {
         return $this->hasMany(CustomOption::class, 'custom_group_id');
     }

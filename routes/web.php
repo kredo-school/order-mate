@@ -6,8 +6,10 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CustomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
+use App\Models\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +73,33 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
 Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], function(){
     Route::get('/', [GuestController::class, 'index'])->name('index');
     Route::get('/call', [GuestController::class, 'call'])->name('call');
+    Route::get('/show/{id}', [GuestController::class, 'show'])->name('show');
+    Route::get('/products/{categoryId}', [GuestController::class, 'byCategory'])
+->name('products.byCategory');
+
+    // カート関連
+    Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');
+    Route::get('/cart/add-complete', function ($storeName, $tableUuid) {
+        $table = Table::where('uuid', $tableUuid)
+                      ->with('user.store')
+                      ->firstOrFail();
+        $store = $table->user->store;
+
+        return view('guests.add-complete', compact('store', 'table'));
+    })->name('cart.addComplete');
+    Route::get('/cart', [OrderController::class, 'show'])->name('cart.show');
+    Route::delete('/cart/{orderItem}', [OrderController::class, 'destroy'])->name('cart.destroy');
+    Route::get('/cart/{orderItem}/edit', [OrderController::class, 'edit'])->name('cart.edit');
+    Route::patch('/cart/{orderItem}', [OrderController::class, 'update'])->name('cart.update');
+    // 完了処理
+    Route::post('/cart/complete', [OrderController::class, 'complete'])->name('cart.complete');
+    Route::get('/order-complete', function ($storeName, $tableUuid) {
+        $table = Table::where('uuid', $tableUuid)->with('user.store')->firstOrFail();
+        $store = $table->user->store;
+
+        return view('guests.order-complete', compact('store', 'table'));
+    })->name('order.complete');
+    Route::get('/order-history', [OrderController::class, 'history'])->name('orderHistory');
 });
 
 

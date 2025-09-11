@@ -10,22 +10,44 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    public function index()
-    {
-        $userId = Auth::id();
+    public function index(Request $request)
+{
+    $user = Auth::user();
+    $all_categories = Category::where('user_id', $user->id)->get();
+    $activeCategory = $all_categories->first();
 
-        $all_categories = Category::where('user_id', $userId)->get();
-        $initialCategory = $all_categories->first();
+    // --- 検索あり ---
+    if ($request->filled('search')) {
+        $keyword = $request->input('search');
+        $products = Menu::where('user_id', $user->id)
+            ->where(function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', "%{$keyword}%")
+                  ->orWhere('description', 'LIKE', "%{$keyword}%");
+            })
+            ->get();
 
-        $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)
-                  ->where('user_id', $userId)
-                  ->get()
-            : collect();
-
-        return view('managers.products.products', compact('all_categories', 'products'))
-               ->with('isGuestPage', false);
+        return view('managers.products.products', [
+            'products' => $products,
+            'all_categories' => $all_categories,
+            'activeCategory' => null,
+            'search' => $keyword,
+        ])->with('isGuestPage', false);
     }
+
+    // --- 通常表示 ---
+    $products = $activeCategory
+        ? Menu::where('user_id', $user->id)
+              ->where('menu_category_id', $activeCategory->id)
+              ->get()
+        : collect();
+
+    return view('managers.products.products', [
+        'products' => $products,
+        'all_categories' => $all_categories,
+        'activeCategory' => $activeCategory,
+    ])->with('isGuestPage', false);
+}
+
 
     public function byCategory($id)
     {

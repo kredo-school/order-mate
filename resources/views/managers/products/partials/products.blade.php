@@ -2,7 +2,9 @@
     $list = $products ?? ($menus ?? collect());
 @endphp
 
-@if ($list->isEmpty())
+@if (request()->has('search') && $list->isEmpty())
+    <p class="text-gray">No results found</p>
+@elseif ($list->isEmpty())
     <p class="text-gray">No products in this category.</p>
 @else
     <div class="row">

@@ -186,7 +186,8 @@
 
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block btn-md">Add</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-m">
+                        <i class="fas fa-plus me-1"></i>Add</button>
                 </form>
             </div>
         </div>
@@ -449,13 +450,11 @@
             if (!file) return;
 
             const img = document.createElement('img');
-            img.src = URL.createObjectURL(file); // Base64 ではなく URL
+            img.src = URL.createObjectURL(file);
             img.classList.add('img-thumbnail');
             img.style.maxWidth = '100px';
             preview.appendChild(img);
         }
-
-
 
         function previewMenuImage(event) {
             const preview = document.getElementById('menu-image-preview');
@@ -464,21 +463,19 @@
             if (!file) return;
 
             const img = document.createElement('img');
-            img.src = URL.createObjectURL(file); // ファイルから直接URLを作る
+            img.src = URL.createObjectURL(file);
             img.classList.add('img-thumbnail');
             img.style.maxWidth = '150px';
             img.style.maxHeight = '150px';
             preview.appendChild(img);
         }
 
-
-        // アレルゲン選択処理
+        // ====== アレルゲン選択処理 ======
         document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('input[name="allergens[]"]');
+            document.querySelectorAll('input[name="allergens[]"]').forEach(checkbox => {
+                const label = document.querySelector(`label[for="${checkbox.id}"]`);
 
-            checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
-                    const label = this.nextElementSibling; // inputの直後にlabelがある
                     if (this.checked) {
                         label.classList.add('selected');
                     } else {
@@ -486,18 +483,11 @@
                     }
                 });
 
-                // 初期表示時にold値がある場合の対応
+                // 初期表示時 old() の復元
                 if (checkbox.checked) {
-                    checkbox.nextElementSibling.classList.add('selected');
+                    label.classList.add('selected');
                 }
             });
         });
-
-        public
-        function show($id) {
-            $product = Menu::findOrFail($id);
-
-            return view('managers.products.show', compact('product'));
-        }
     </script>
 @endpush

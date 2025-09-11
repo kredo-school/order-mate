@@ -193,7 +193,10 @@
                     {{-- 左側（Total Price）--}}
                     <div>
                         <span class="fw-bold">Total: </span>
-                        <span id="total-price">-</span>
+                        <span class="h3 fw-bold" id="total-price">{{ number_format($totalPrice ?? 0) }}</span>
+                        @if($isPaid)
+                            <span class="text-muted ms-2 fw-bolder">(paid)</span>
+                        @endif
                     </div>
         
                     {{-- 右側（リンク4つ）--}}
@@ -205,7 +208,12 @@
                         <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
                         <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
                         <a href="#" class="nav-link p-0">Checkout</a>
-                        <a href="#" class="nav-link p-0">Payment</a>
+                        <form action="{{ route('guest.checkout', [$store->store_name, $table->uuid]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="nav-link p-0">
+                                Payment
+                            </button>
+                        </form>
                         <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
                     </div>
                 </div>

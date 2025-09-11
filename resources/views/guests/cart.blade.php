@@ -14,8 +14,8 @@
     <h3 class="fw-bold mb-4">Cart</h3>
     <div class="col">
 
-      @if ($order && $order->orderItems->count() > 0)
-        @foreach ($order->orderItems as $item)
+      @if ($orderItems->count() > 0)
+        @foreach ($orderItems as $item)
           <div class="card border-0 hover-card p-0 clickable-card"
           data-href="{{ route('guest.cart.edit', [
               'storeName' => $store->store_name,
@@ -93,7 +93,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4">
           <div>
             <small class="text-muted">Total</small><br>
-            <span class="fs-4 fw-bold">{{ number_format($order->total_price) }} php</span>
+            <span class="fs-4 fw-bold">{{ number_format($totalPrice) }} php</span>
           </div>
           <form action="{{ route('guest.cart.complete', [
                       'storeName' => $store->store_name,

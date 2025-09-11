@@ -17,18 +17,26 @@ class OrderController extends Controller
      */
     public function show($storeName, $tableUuid)
     {
+        // 1. テーブル取得
         $table = Table::where('uuid', $tableUuid)
                       ->with('user.store')
                       ->firstOrFail();
-
+    
         $store = $table->user->store;
-
-        $order = Order::where('table_id', $table->id)
-                      ->where('status', 'pending')
-                      ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
-                      ->first();
-
-        return view('guests.cart', compact('store', 'table', 'order'));
+    
+        // 2. order_items を直接取得
+        $orderItems = OrderItem::whereHas('order', function ($query) use ($table) {
+            $query->where('table_id', $table->id)
+                  ->where('status', 'open'); // ← order は open のまま
+        })
+        ->where('status', 'pending') // ← ここで order_items 側を絞る
+        ->with(['menu', 'customOptions.customOption'])
+        ->get();
+    
+        // 3. 合計金額を算出
+        $totalPrice = $orderItems->sum('price');
+    
+        return view('guests.cart', compact('store', 'table', 'orderItems', 'totalPrice'));
     }
 
     /**
@@ -44,11 +52,11 @@ class OrderController extends Controller
         // === 1. table を取得 ===
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
 
-        // === 2. pending の order を取得 or 作成 ===
+        // === 2. open の order を取得 or 作成 ===
         $order = Order::firstOrCreate(
             [
                 'table_id' => $table->id,
-                'status'   => 'pending',
+                'status'   => 'open', // ← "pending" を "open" に変更
             ],
             [
                 'user_id'     => $table->user_id,
@@ -175,24 +183,34 @@ class OrderController extends Controller
     public function complete($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
+    
         $order = Order::where('table_id', $table->id)
-                    ->where('status', 'pending')
-                    ->with('orderItems')
-                    ->firstOrFail();
-
-        // order_items のステータスを updating
+                      ->where('status', 'open')
+                      ->with('orderItems')
+                      ->firstOrFail();
+    
+        // pending のものだけ preparing に更新
         foreach ($order->orderItems as $item) {
-            $item->update(['status' => 'preparing']);
+            if ($item->status === 'pending') {
+                $item->update(['status' => 'preparing']);
+            }
         }
-
-        // order 自体も preparing にする場合はこちら
-        $order->update(['status' => 'preparing']);
-
+    
+        // order 自体は open のまま
         return redirect()->route('guest.order.complete', [
             'storeName' => $storeName,
             'tableUuid' => $tableUuid,
         ]);
+    }
+    
+    // 会計処理時に呼ぶメソッド
+    public function checkout($tableId)
+    {
+        $order = Order::where('table_id', $tableId)
+                      ->where('status', 'open')
+                      ->firstOrFail();
+    
+        $order->update(['status' => 'closed']);
     }
 
     public function history($storeName, $tableUuid)
@@ -242,5 +260,17 @@ class OrderController extends Controller
     
         return view('guests.order-history', compact('store', 'table', 'history'));
     }
-    
+
+    public function toggleStatus(OrderItem $orderItem)
+    {
+        if ($orderItem->status === 'preparing') {
+            $orderItem->update(['status' => 'ready']);
+        } elseif ($orderItem->status === 'ready') {
+            $orderItem->update(['status' => 'completed']);
+        }
+
+        return response()->json(['status' => $orderItem->status]);
+    }
+
 }
+    

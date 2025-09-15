@@ -46,7 +46,6 @@ class StripeWebhookController extends Controller
                             'is_paid'       => true,
                             'payment_method'=> 'stripe',
                             'payment_id'    => $paymentIntent,
-                            'status'        => 'closed',
                         ]);
                         Log::info("Order #{$orderId} closed and marked as paid.");
                     }

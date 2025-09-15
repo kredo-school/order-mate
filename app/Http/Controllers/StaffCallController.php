@@ -24,12 +24,18 @@ class StaffCallController extends Controller
     // Manager 側で最新5件取得
     public function index()
     {
-        $calls = StaffCall::where('is_read', false)
-            ->orderBy('created_at', 'asc')
-            ->take(5)
-            ->get();
+        $calls = StaffCall::with('table')
+                ->where('is_read', false)
+                ->orderBy('created_at', 'asc')
+                ->take(5)
+                ->get();
 
-        return response()->json($calls);
+        return response()->json(
+            $calls->map(fn($call) => [
+                'id' => $call->id,
+                'table_number' => $call->table->number,
+            ])
+        );
     }
 
     // Manager がタップして既読にする

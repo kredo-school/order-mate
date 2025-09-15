@@ -11,11 +11,23 @@
         </button>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- 注文一覧テーブル --}}
     <table id="orderTable" class="table table-striped table-hover text-center align-middle">
       <thead class="table-light">
         <tr>
-          <th>Table ID</th>
+          <th>Table No.</th> {{-- ← 表示は table.number --}}
           <th>Time</th>
           <th class="filterable" data-column="item">
               <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Item</a>
@@ -38,35 +50,33 @@
         </tr>
       </thead>
         <tbody>
-            @foreach($orders as $order)
-                @foreach($order->orderItems as $item)
-                    @php
-                        $progress = $item->status;
-                        $progressLabel = ucfirst($progress);
-                        $progressDot = $progress === 'preparing' 
-                            ? '<span class="status-dot text-primary">●</span>' 
-                            : ($progress === 'ready' 
-                                ? '<span class="status-dot text-success">●</span>' 
-                                : '<span class="status-dot text-secondary">●</span>');
-                    @endphp
-                    <tr class="order-row"
-                        data-item="{{ $item->menu->name }}"
-                        data-order_type="{{ $order->order_type }}"
-                        data-category="{{ $item->menu->category->name ?? '-' }}"
-                        data-progress="{{ $progress }}"
-                        data-id="{{ $item->id }}"
-                        data-status="{{ $item->status }}"
-                        style="cursor: pointer;">
-                        <td>{{ $order->table->id }}</td>
-                        <td><span class="elapsed-time" data-created-at="{{ $item->updated_at }}"></span></td>
-                        <td>{{ $item->menu->name }}</td>
-                        <td>{{ $item->customOptions->pluck('customOption.name')->implode(', ') ?: '-' }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>{{ $order->order_type }}</td>
-                        <td>{{ $item->menu->category->name ?? '-' }}</td>
-                        <td class="status-cell">{!! $progressDot !!} {{ $progressLabel }}</td>
-                    </tr>
-                @endforeach
+            @foreach($orderRows as $row)
+                @php
+                    $progress = $row['status'];
+                    $progressLabel = ucfirst($progress);
+                    $progressDot = $progress === 'preparing'
+                        ? '<span class="status-dot text-primary">●</span>'
+                        : ($progress === 'ready'
+                            ? '<span class="status-dot text-success">●</span>'
+                            : '<span class="status-dot text-secondary">●</span>');
+                @endphp
+                <tr class="order-row"
+                    data-id="{{ $row['id'] }}"
+                    data-item="{{ $row['item'] }}"
+                    data-order_type="{{ $row['orderType'] }}"
+                    data-category="{{ $row['category'] }}"
+                    data-progress="{{ $progress }}"
+                    data-status="{{ $row['status'] }}"
+                    style="cursor: pointer;">
+                    <td>{{ $row['table'] }}</td>
+                    <td>{{ $row['time'] }}</td>
+                    <td>{{ $row['item'] }}</td>
+                    <td>{{ $row['option'] }}</td>
+                    <td>{{ $row['quantity'] }}</td>
+                    <td>{{ $row['orderType'] }}</td>
+                    <td>{{ $row['category'] }}</td>
+                    <td class="status-cell">{!! $progressDot !!} {{ $progressLabel }}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -168,7 +178,7 @@
 
       itemCheckboxes.forEach(cb => {
           cb.addEventListener('change', () => {
-              allCheckbox.checked = itemCheckboxes.every(c => c.checked);
+              allCheckbox.checked = itemCheckboxes.every(c => cb.checked);
               applyFilters();
           });
       });
@@ -297,7 +307,8 @@
             const div = document.createElement("div");
             div.className = "square d-flex align-items-center justify-content-center";
             div.style.cursor = "pointer";
-            div.textContent = call.table_id; // ← Table番号表示
+            // call.table_id → call.table.number を返すようにして表示
+            div.textContent = call.table_number ?? call.table_id;
             div.dataset.id = call.id;
 
             div.addEventListener("click", async () => {

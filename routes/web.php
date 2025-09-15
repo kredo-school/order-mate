@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffCallController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\TableController;
 use App\Models\Table;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
@@ -75,6 +76,18 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
     Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
 
+    // Tables routes
+    Route::get('/tables', function () {
+        $tables = Table::active()->orderBy('number')->get(); // 追加した number カラムで並べる
+        return view('managers.tables.tables', compact('tables'));
+    })->name('tables');
+    Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
+    ->name('tables.show');
+    Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
+    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
+    Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
+
+
     // Orders routes
     Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
 
@@ -93,6 +106,8 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
     Route::get('/show/{id}', [GuestController::class, 'show'])->name('show');
     Route::get('/products/{categoryId}', [GuestController::class, 'byCategory'])
 ->name('products.byCategory');
+    Route::get('/welcome', [GuestController::class, 'welcome'])->name('welcome');
+    Route::match(['get', 'post'], '/start-order', [GuestController::class, 'startOrder'])->name('startOrder');
 
     // カート関連
     Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');
@@ -121,13 +136,20 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
     // Guest 側 呼び出し
     Route::post('/call',[StaffCallController::class, 'store'])->name('call.store');
 
-    // Payment
-    Route::post('/checkout', [CheckoutController::class, 'checkout'])
-        ->name('checkout');
+    // Payment (Stripe)
+    Route::post('/payment', [CheckoutController::class, 'payment'])->name('payment');
 
-    Route::get('/checkout/success', [CheckoutController::class, 'success'])
-        ->name('checkout.success');
+    // checkout
+    Route::post('/checkout', function ($storeName, $tableUuid) {
+        $table = Table::where('uuid', $tableUuid)
+                      ->with('user.store')
+                      ->firstOrFail();
+        $store = $table->user->store;
 
+        return view('guests.checkout', compact('store', 'table'));
+    })->name('checkout');
+
+    Route::match(['get', 'post'], '/checkout/complete', [CheckoutController::class, 'checkout'])->name('checkout.complete');
 });
 
 

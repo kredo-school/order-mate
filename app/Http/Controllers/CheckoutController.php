@@ -12,45 +12,38 @@ class CheckoutController extends Controller
 {
     public function checkout(Request $request, $storeName, $tableUuid)
     {
-        // 1) テーブル & 注文取得（サーバ側で金額を決める）
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
-        $order = Order::where('table_id', $table->id)
-                      ->where('status', 'open')  // あなたのアプリの「まとめ注文」のステータス
-                      ->firstOrFail();
-
-        // 2) amount: Stripeは「最小通貨単位」で受け取る（PHPなら centavos -> *100）
-        //    （Order->total_price が decimal で『PHP』通貨を使っている前提）
-        $amount = (int) round($order->total_price * 100); // 100 = cents
-
-        Stripe::setApiKey(config('services.stripe.secret'));
-
-        $session = CheckoutSession::create([
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'php', // 通貨。あなたのアプリの国に合わせて。
-                    'product_data' => [
-                        'name' => 'Table ' . $table->id . ' Order #' . $order->id,
-                    ],
-                    'unit_amount' => $amount,
-                ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => route('guest.checkout.success', [
-                'storeName' => $order->table->user->store->store_name,
-                'tableUuid' => $order->table->uuid,
-            ]) . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => url()->previous(),
-            'metadata' => [
-                'order_id' => $order->id,
-            ],
+    
+        $order = $table->orders()
+            ->where('status', 'open')
+            ->latest()
+            ->first();
+    
+        if (! $order) {
+            // 次の人用に「注文開始画面」へ誘導
+            return redirect()->route('guest.startOrder', [$storeName, $tableUuid])
+                             ->with('info', 'No active order. Please start a new order.');
+        }
+    
+        if ($order->is_paid && $order->payment_method === 'stripe') {
+            $order->update(['status' => 'closed']);
+    
+            return view('guests.checkout-complete', [
+                'table'     => $table,
+                'order'     => $order,
+                'message'   => 'Thank you for coming!',
+                'showTotal' => false,
+            ]);
+        }
+    
+        return view('guests.checkout-complete', [
+            'table'     => $table,
+            'order'     => $order,
+            'message'   => 'Thank you for coming, please proceed to the cashier.',
+            'showTotal' => true,
         ]);
-
-        // リダイレクトして Stripe Checkout に飛ばす
-        return redirect($session->url);
     }
+    
 
     public function success(Request $request)
     {
@@ -64,6 +57,93 @@ class CheckoutController extends Controller
     
         return view('guests.payment-complete', [
             'session' => $session,
+        ]);
+    }
+
+    public function payment(Request $request, $storeName, $tableUuid)
+    {
+        $table = Table::where('uuid', $tableUuid)->firstOrFail();
+        $order = $table->orders()
+            ->where('status', 'open')
+            ->latest()
+            ->first();
+
+        if (! $order) {
+            return redirect()->back()->with('error', 'No active order found.');
+        }
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = CheckoutSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'php',
+                    'product_data' => [
+                        'name' => "Order #{$order->id}",
+                    ],
+                    'unit_amount' => $order->total_price * 100, // セント単位
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('guest.checkout.success', [$storeName, $tableUuid]) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url'  => url()->previous(),
+            'metadata' => [
+                'order_id' => $order->id,
+            ],
+        ]);
+
+        return redirect($session->url);
+    }
+
+    public function payByManager(Request $request, $tableId)
+    {
+        $table = Table::findOrFail($tableId);
+    
+        $order = Order::where('table_id', $table->id)
+            ->where('is_paid', false)
+            ->latest()
+            ->first();
+    
+        if (! $order) {
+            return back()->with('error', 'No unpaid order found for this table.');
+        }
+    
+        $order->update([
+            'is_paid'        => true,
+            'payment_method' => $request->input('payment_method', 'manual'),
+            'payment_id'     => null,
+        ]);
+    
+        return back()->with('success', 'Order marked as paid via '.$request->payment_method);
+    }
+
+    public function checkoutByManager(Request $request, Table $table)
+    {
+        $order = $table->orders()
+            ->where('status', 'open') // ← pending じゃなくて open に揃えるのがよさそう
+            ->latest()
+            ->first();
+    
+        if (! $order) {
+            return redirect()->route('manager.tables.show', $table->id)
+                             ->with('error', 'No active order found.');
+        }
+    
+        // Stripe支払い済みかどうか判定
+        if ($order->is_paid) {
+            $order->update(['status' => 'closed']);
+    
+            return redirect()->route('manager.tables', [
+                'storeName' => $table->user->store->name,
+                'tableUuid' => $table->uuid,
+            ]);
+        }
+
+        return redirect()->route('manager.tables', [
+            'storeName' => $table->user->store->name,
+            'tableUuid' => $table->uuid,
         ]);
     }
 }

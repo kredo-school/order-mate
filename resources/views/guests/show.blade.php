@@ -18,7 +18,7 @@
         {{-- 右側（商品情報） --}}
         <div class="col-md-6">
             <h2 class="fw-bold text-center">{{ $product->name }}</h2>
-            <p class="fs-5 text-center">{{ number_format($product->price) }}円</p>
+            <p class="fs-5 text-center">{{ number_format($product->price, 2) }}円</p>
 
             {{-- 説明 --}}
             @if (!empty($product->description))

@@ -202,16 +202,6 @@ class OrderController extends Controller
             'tableUuid' => $tableUuid,
         ]);
     }
-    
-    // 会計処理時に呼ぶメソッド
-    public function checkout($tableId)
-    {
-        $order = Order::where('table_id', $tableId)
-                      ->where('status', 'open')
-                      ->firstOrFail();
-    
-        $order->update(['status' => 'closed']);
-    }
 
     public function history($storeName, $tableUuid)
     {
@@ -219,45 +209,69 @@ class OrderController extends Controller
                       ->with('user.store')
                       ->firstOrFail();
         $store = $table->user->store;
-    
+
         $orders = Order::where('table_id', $table->id)
                        ->where('status', '!=', 'pending')
                        ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
                        ->get();
-    
-        $history = [];
-    
+
+        $history = collect();
+
         foreach ($orders as $order) {
             foreach ($order->orderItems as $item) {
-    
-                // オプションがある場合は 1 件ずつ分割
+                $menu = $item->menu;
+                $status = $item->status;
+                $orderedAt = $order->created_at;
+
+                // カスタムオプションがある場合：オプションごとに行を作る（quantity＝オプション数量）
                 if ($item->customOptions->isNotEmpty()) {
+                    $sumOpts = (int) $item->customOptions->sum('quantity');
+
                     foreach ($item->customOptions as $opt) {
-                        $history[] = [
-                            'menu_name' => $item->menu->name,
-                            'options'   => $opt->customOption->name,
-                            'quantity'  => 1, // オプション1つにつき1行にする
-                            'price'     => $item->menu->price + ($opt->extra_price * $opt->quantity),
-                            'status'    => $item->status,
-                            'ordered_at'=> $order->created_at,
-                        ];
+                        $perUnit = (float) ($menu->price + ($opt->extra_price ?? 0)); // 単価
+                        $history->push([
+                            'menu_name'  => $menu->name,
+                            'options'    => $opt->customOption->name ?? '-',
+                            'quantity'   => (int) $opt->quantity,
+                            'price'      => $perUnit, // 単価
+                            'status'     => $status,
+                            'ordered_at' => $orderedAt,
+                        ]);
+                    }
+
+                    // オプション無しの残り個数があれば行を追加（options = '-'）
+                    $leftover = $item->quantity - $sumOpts;
+                    if ($leftover > 0) {
+                        $history->push([
+                            'menu_name'  => $menu->name,
+                            'options'    => '-',
+                            'quantity'   => $leftover,
+                            'price'      => (float) $menu->price,
+                            'status'     => $status,
+                            'ordered_at' => $orderedAt,
+                        ]);
                     }
                 } else {
-                    // オプションなしの場合
-                    $history[] = [
-                        'menu_name' => $item->menu->name,
-                        'options'   => '-',
-                        'quantity'  => $item->quantity,
-                        'price'     => $item->price,
-                        'status'    => $item->status,
-                        'ordered_at'=> $order->created_at,
-                    ];
+                    // オプション無しのアイテム（quantity が複数ならまとめて1行）
+                    // item->price は合計価格の可能性があるので単価は安全に menu->price を使うか、
+                    // item->price が合計である前提なら単価 = item->price / quantity
+                    $perUnit = $item->quantity > 0
+                        ? (float) round($item->price / $item->quantity, 2)
+                        : (float) $menu->price;
+
+                    $history->push([
+                        'menu_name'  => $menu->name,
+                        'options'    => '-',
+                        'quantity'   => (int) $item->quantity,
+                        'price'      => $perUnit,
+                        'status'     => $status,
+                        'ordered_at' => $orderedAt,
+                    ]);
                 }
             }
         }
-    
-        $history = collect($history);
-    
+
+        // ゲスト向けビューは $history という変数名を期待しているのでそのまま渡す
         return view('guests.order-history', compact('store', 'table', 'history'));
     }
 
@@ -272,5 +286,86 @@ class OrderController extends Controller
         return response()->json(['status' => $orderItem->status]);
     }
 
+    public function historyByTable($tableId)
+    {
+        $table = Table::findOrFail($tableId);
+
+        $orders = Order::with(['orderItems.menu', 'orderItems.customOptions.customOption'])
+            ->where('table_id', $tableId)
+            ->get();
+
+        $history = collect();
+        $totalPrice = 0;
+
+        // 最新の order をチェック（支払い状態参照）
+        $latestOrder = $orders->sortByDesc('created_at')->first();
+        $isPaid = $latestOrder?->is_paid ?? false;
+        $paymentMethod = $latestOrder?->payment_method ?? null;
+
+        foreach ($orders as $order) {
+            foreach ($order->orderItems as $item) {
+                $menu = $item->menu;
+                $status = $item->status;
+                $orderedAt = $order->created_at;
+
+                if ($item->customOptions->isNotEmpty()) {
+                    $sumOpts = (int) $item->customOptions->sum('quantity');
+
+                    foreach ($item->customOptions as $opt) {
+                        $perUnit = (float) ($menu->price + ($opt->extra_price ?? 0));
+                        $lineQty = (int) $opt->quantity;
+                        $history->push([
+                            'menu_name'  => $menu->name,
+                            'options'    => $opt->customOption->name ?? '-',
+                            'quantity'   => $lineQty,
+                            'price'      => $perUnit,
+                            'status'     => $status,
+                            'ordered_at' => $orderedAt,
+                        ]);
+                        $totalPrice += $perUnit * $lineQty;
+                    }
+
+                    $leftover = $item->quantity - $sumOpts;
+                    if ($leftover > 0) {
+                        $perUnit = (float) $menu->price;
+                        $history->push([
+                            'menu_name'  => $menu->name,
+                            'options'    => '-',
+                            'quantity'   => $leftover,
+                            'price'      => $perUnit,
+                            'status'     => $status,
+                            'ordered_at' => $orderedAt,
+                        ]);
+                        $totalPrice += $perUnit * $leftover;
+                    }
+                } else {
+                    $perUnit = $item->quantity > 0
+                        ? (float) round($item->price / $item->quantity, 2)
+                        : (float) $menu->price;
+
+                    $history->push([
+                        'menu_name'  => $menu->name,
+                        'options'    => '-',
+                        'quantity'   => (int) $item->quantity,
+                        'price'      => $perUnit,
+                        'status'     => $status,
+                        'ordered_at' => $orderedAt,
+                    ]);
+                    $totalPrice += $perUnit * (int)$item->quantity;
+                }
+            }
+        }
+
+        return view('managers.tables.show', compact('table', 'history', 'totalPrice', 'isPaid', 'paymentMethod'));
+    }
+
+
+    public function checkoutComplete($storeName, $tableUuid)
+    {
+        $table = Table::where('uuid', $tableUuid)->with('user.store')->firstOrFail();
+        $store = $table->user->store;
+
+        return view('guests.checkout-complete', compact('store', 'table'));
+    }
+
 }
-    

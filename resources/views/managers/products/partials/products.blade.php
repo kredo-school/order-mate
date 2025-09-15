@@ -38,7 +38,7 @@
                         <div class="card-body text-center p-2">
                             <h5 class="card-title mb-1 text-brown fw-bold mt-1">{{ $product->name }}</h5>
                             @if (isset($product->price))
-                                <p class="mb-0 text-brown">{{ number_format($product->price) }}php</p>
+                                <p class="mb-0 text-brown">{{ number_format($product->price, 2) }}php</p>
                             @endif
                         </div>
                     </div>

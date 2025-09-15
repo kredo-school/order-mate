@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- fontawesome cdn -->
@@ -49,43 +49,48 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
-            <div class="container m-0">
-                <a class="navbar-brand"
-                    @if(Route::is('guest.*') && isset($store, $table))
-                        href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
-                    @else
-                        href="{{ url('/') }}"
-                    @endif>
-                        <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
-                </a>
 
-                <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
-                    {{ $userStore->store_name ?? '' }}
-                </p>
+        {{-- ================= ヘッダー ================= --}}
+        @if(trim($__env->yieldContent('header')) != '')
+            @yield('header')
+        @else
+            <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
+                <div class="container m-0">
+                    <a class="navbar-brand"
+                        @if(Route::is('guest.*') && isset($store, $table))
+                            href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                        @else
+                            href="{{ url('/') }}"
+                        @endif>
+                            <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
+                    </a>
 
-                <!-- 右側メニュー -->
-                <ul class="navbar-nav ms-auto">
-                    @guest
-                        <li class="nav-item">
-                            <!-- 未ログイン時：翻訳アイコンでオフキャンバス -->
-                            <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
-                                <i class="fa-solid fa-language fa-2x text-orange"></i>
-                            </a>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <!-- トグルボタン -->
-                            <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                <i class="fa-solid fa-bars fa-2x text-orange"></i>
-                            </a>
-                        </li>
-                    @endguest
-                </ul>
-            </div>
-        </nav>
+                    <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
+                        {{ $userStore->store_name ?? '' }}
+                    </p>
+
+                    <!-- 右側メニュー -->
+                    <ul class="navbar-nav ms-auto">
+                        @guest
+                            <li class="nav-item">
+                                <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
+                                    data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
+                                    <i class="fa-solid fa-language fa-2x text-orange"></i>
+                                </a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#sideMenu" aria-controls="sideMenu">
+                                    <i class="fa-solid fa-bars fa-2x text-orange"></i>
+                                </a>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </nav>
+        @endif
+        {{-- =============== /ヘッダー =============== --}}
 
         <!-- 未ログイン時のオフキャンバス（言語切替メニュー） -->
         @guest
@@ -98,18 +103,10 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-flag me-2"></i> Japanese
-                        </a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-flag me-2"></i> English
-                        </a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-flag me-2"></i> Chinese
-                        </a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-flag me-2"></i> Korean
-                        </a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i class="fa-solid fa-flag me-2"></i> Japanese</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i class="fa-solid fa-flag me-2"></i> English</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i class="fa-solid fa-flag me-2"></i> Chinese</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i class="fa-solid fa-flag me-2"></i> Korean</a>
                     </div>
                 </div>
             </div>
@@ -127,110 +124,94 @@
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
                         <a href="{{route('manager.stores.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
-                            Store Information
+                            <i class="fa-solid fa-user me-2"></i> Store Information
                         </a>
-                        <a href="{{ route('manager.products.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-utensils"></i>
-                            </span>
-                            Menu
+                        <a href="{{ route('manager.products.index') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-utensils me-2"></i> Menu
+                        </a>
+                        <a href="{{ route('manager.order-list') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-list-ul me-2"></i> Order List
                         </a>
                         <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-list-ul"></i>
-                            </span>
-                            Order List
+                            <i class="fa-solid fa-boxes-packing me-2"></i> Takeout
                         </a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-boxes-packing"></i>
-                            </span>
-                            Takeout
+                        <a href="{{ route('manager.custom.index') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-table-cells me-2"></i> Custom
                         </a>
-                        <a href="{{ route('manager.custom.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-table-cells"></i>
-                            </span>
-                            Custom
+                        <a href="{{ route('manager.categories.index') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-layer-group me-2"></i> Category
                         </a>
-                        <a href="{{ route('manager.categories.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-layer-group"></i>
-                            </span>
-                            Category
+                        <a href="{{ route('manager.tables') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-table me-2"></i> Table
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                            </span>
-                            {{ __('Logout') }}
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}
                         </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
                     </div>
                 </div>
             </div>
-
         @endauth
 
-        <main class="">
+        <main>
             @yield('content')
         </main>
 
-        <footer class="shadow-sm bg-light-mode">
-            {{-- QRゲストの注文ページだけ表示 --}}
-            @if (request()->routeIs('guest.*'))
-                <div class="container-fluid d-flex justify-content-between align-items-center py-2">
-                    {{-- 左側（Total Price）--}}
-                    <div>
-                        <span class="fw-bold">Total: </span>
-                        <span class="h3 fw-bold" id="total-price">{{ number_format($totalPrice ?? 0) }}</span>
-                        @if($isPaid)
-                            <span class="text-muted ms-2 fw-bolder">(paid)</span>
-                        @endif
+        {{-- ================= フッター ================= --}}
+        @if(trim($__env->yieldContent('footer')) != '')
+            @yield('footer')
+        @else
+            <footer class="shadow-sm bg-light-mode">
+                {{-- QRゲストの注文ページだけ表示 --}}
+                @if (request()->routeIs('guest.*'))
+                    <div class="container-fluid d-flex justify-content-between align-items-center py-2">
+                        {{-- 左側（Total Price）--}}
+                        <div>
+                            <span class="fw-bold">Total: </span>
+                            <span class="h3 fw-bold" id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
+                            @if($isPaid)
+                                <span class="text-muted ms-2 fw-bolder">(paid)</span>
+                            @endif
+                        </div>
+            
+                        {{-- 右側（リンク4つ）--}}
+                        @php
+                            $storeName = request()->route('storeName');
+                            $tableUuid = request()->route('tableUuid');
+                        @endphp
+                        <div class="d-flex gap-3">
+                            <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
+                            <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
+                            {{-- 未決済なら Payment を表示 --}}
+                            @if (empty($isPaid) || ! $isPaid)
+                                <form action="{{ route('guest.payment', [$store->store_name, $table->uuid]) }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link nav-link p-0">Payment</button>
+                                </form>
+                            @endif
+
+                            {{-- Checkout（確定）は常に表示）--}}
+                            <form action="{{ route('guest.checkout', [$store->store_name, $table->uuid]) }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-link nav-link p-0">Checkout</button>
+                            </form>
+                            <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
+                        </div>
                     </div>
-        
-                    {{-- 右側（リンク4つ）--}}
-                    @php
-                        $storeName = request()->route('storeName');
-                        $tableUuid = request()->route('tableUuid');
-                    @endphp
-                    <div class="d-flex gap-3">
-                        <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
-                        <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
-                        <a href="#" class="nav-link p-0">Checkout</a>
-                        <form action="{{ route('guest.checkout', [$store->store_name, $table->uuid]) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="nav-link p-0">
-                                Payment
-                            </button>
-                        </form>
-                        <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
-                    </div>
+                @endif
+            
+                {{-- 下段（共通 Copyright） --}}
+                <div class="text-center py-2">
+                    <p class="text-gray m-0">&copy; All Rights are reserved by ordermate</p>
                 </div>
-            @endif
-        
-            {{-- 下段（共通 Copyright） --}}
-            <div class="text-center py-2">
-                <p class="text-gray m-0">
-                    &copy; All Rights are reserved by ordermate
-                </p>
-            </div>
-        </footer>
+            </footer>
+        @endif
+        {{-- =============== /フッター =============== --}}
         
     </div>
 
     @stack('scripts')
-
 </body>
-
 </html>

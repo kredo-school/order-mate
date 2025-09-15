@@ -32,7 +32,7 @@
               {{-- 中央：商品名・価格 --}}
               <div class="flex-grow-1 px-3 d-flex flex-column justify-content-center">
                 <span class="fw-bold">{{ $item->menu->name }}</span>
-                <span class="text-muted">{{ number_format($item->menu->price) }} php</span>
+                <span class="text-muted">{{ number_format($item->menu->price, 2) }} php</span>
                 {{-- カスタムオプション --}}
                 @if ($item->customOptions->count() > 0)
                   <ul class="mb-0 small text-muted">
@@ -41,7 +41,7 @@
                         {{ $custom->customOption->name }}
                         （{{ $custom->quantity }}）
                         @if ($custom->extra_price != 0)
-                          <span>（{{ $custom->extra_price > 0 ? '+' : '' }}{{ number_format($custom->extra_price) }} php）</span>
+                          <span>（{{ $custom->extra_price > 0 ? '+' : '' }}{{ number_format($custom->extra_price, 2) }} php）</span>
                         @else
                           <span>（±0 php）</span>
                         @endif
@@ -93,7 +93,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4">
           <div>
             <small class="text-muted">Total</small><br>
-            <span class="fs-4 fw-bold">{{ number_format($totalPrice) }} php</span>
+            <span class="fs-4 fw-bold">{{ number_format($totalPrice, 2) }} php</span>
           </div>
           <form action="{{ route('guest.cart.complete', [
                       'storeName' => $store->store_name,

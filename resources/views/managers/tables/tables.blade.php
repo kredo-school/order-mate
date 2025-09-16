@@ -12,10 +12,11 @@
     @if($tables->isEmpty())
         <p>No tables found.</p>
     @else
-        <div class="row">
+        <div class="row mt-3">
             @foreach($tables as $table)
                 <div class="col-6 col-md-3 mb-3">
-                    <a href="{{ route('manager.tables.show', $table->id) }}" class="btn btn-outline-primary w-100">
+                    <a href="{{ route('manager.tables.show', $table->id) }}" 
+                        class="btn {{ $table->open_count > 0 ? 'btn-primary' : 'btn-outline' }} w-100">
                         {{ $table->number }}
                     </a>
                 </div>

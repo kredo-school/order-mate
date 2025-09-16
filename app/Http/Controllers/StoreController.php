@@ -118,23 +118,5 @@ class StoreController extends Controller{
     
         return view('managers.stores.qr', compact('store', 'tables'));
     }
-
-    public function tablesIndex()
-    {
-        $store = Auth::user()->store;
-
-        if (! $store) {
-            // 店舗がない場合は空のコレクション渡す or リダイレクト
-            $tables = collect();
-        } else {
-            // 同じストア(user_id)の is_active = true のやつだけ取得
-            $tables = Table::forStore($store->user_id)
-                        ->active()
-                        ->orderBy('number')
-                        ->get();
-        }
-
-        return view('managers.tables.tables', compact('tables'));
-    }
 }
 

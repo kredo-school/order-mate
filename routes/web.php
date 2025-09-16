@@ -78,13 +78,16 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
 
     // Tables routes
     Route::get('/tables', function () {
-        $tables = Table::active()->orderBy('number')->get(); // 追加した number カラムで並べる
+        $tables = Table::withCount([
+            'orders as open_count' => function ($q) {
+                $q->where('status', 'open');
+            }
+        ])->active()->orderBy('number')->get();
         return view('managers.tables.tables', compact('tables'));
     })->name('tables');
     Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
-    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
     Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
 
 

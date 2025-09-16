@@ -53,7 +53,6 @@ class OrderListController extends Controller
                             'orderType' => $orderType,
                             'category'  => $category,
                             'status'    => $item->status,
-                            'updated_at'=> $item->updated_at, // ← ★ 追加
                         ]);
                     }
                     // 残り（オプション無し）の数量があれば '-' 行を追加
@@ -70,7 +69,6 @@ class OrderListController extends Controller
                             'orderType' => $orderType,
                             'category'  => $category,
                             'status'    => $item->status,
-                            'updated_at'=> $item->updated_at, // ← ★ 追加
                         ]);
                     }
                 } else {
@@ -84,7 +82,6 @@ class OrderListController extends Controller
                         'orderType' => $orderType,
                         'category'  => $category,
                         'status'    => $item->status,
-                        'updated_at'=> $item->updated_at, // ← ★ 追加
                     ]);
                 }
             }

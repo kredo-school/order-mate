@@ -10,16 +10,10 @@ class TableController extends Controller
 {
     public function index()
     {
-        $tables = Table::where('is_active', true)
-        ->withCount(['orders as history_count' => function ($q) {
-            $q->where('status', 'open');
-        }])
-        ->get();
-    
-    dd($tables->toArray());
-    
-    
+        $tables = Table::where('is_active', true)->get();
+
         return view('managers.tables.index', compact('tables'));
     }
-    
+
+
 }

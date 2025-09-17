@@ -52,12 +52,10 @@
         <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
             <div class="container m-0">
                 <a class="navbar-brand"
-                    @if(Route::is('guest.*') && isset($store, $table))
-                        href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                    @if (Route::is('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
                     @else
-                        href="{{ url('/') }}"
-                    @endif>
-                        <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
+                        href="{{ url('/') }}" @endif>
+                    <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                 </a>
 
                 <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
@@ -126,7 +124,8 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="{{route('manager.stores.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                        <a href="{{ route('manager.stores.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <span class="me-2 d-flex justify-content-center" style="width: 24px;">
                                 <i class="fa-solid fa-user"></i>
                             </span>
@@ -190,27 +189,37 @@
             {{-- QRゲストの注文ページだけ表示 --}}
             @if (request()->routeIs('guest.*'))
                 <div class="container-fluid d-flex justify-content-between align-items-center py-2">
-                    {{-- 左側（Total Price）--}}
+                    {{-- 左側（Total Price） --}}
                     <div>
-                        <span class="fw-bold">Total: </span>
-                        <span id="total-price">-</span>
+                        <span class="fw-bold text-brown fs-4 ms-4">Total : </span>
+                        <span id="total-price" class="fw-bolder text-brown fs-5">- PHP</span>
                     </div>
-        
-                    {{-- 右側（リンク4つ）--}}
+
+                    {{-- 右側（リンク4つ） --}}
                     @php
                         $storeName = request()->route('storeName');
                         $tableUuid = request()->route('tableUuid');
                     @endphp
                     <div class="d-flex gap-3">
-                        <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
-                        <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
-                        <a href="#" class="nav-link p-0">Checkout</a>
-                        <a href="#" class="nav-link p-0">Payment</a>
-                        <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
+                            class="nav-link p-0  fs-5 text-brown">Order History</a>
+                        <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
+                            class="nav-link p-0 fs-5 text-brown">Call Staff</a>
+                        <a href="#" class="nav-link p-0  fs-5 text-brown">Checkout</a>
+                        <a href="#" class="nav-link p-0  fs-5 text-brown">Payment</a>
+                        <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
+                            class="nav-link p-0 text-brown position-relative"> <!-- ここが重要 -->
+                            <i class="fa-solid fa-cart-shopping fa-3x me-4 ms-2"></i>
+                            <span id="cart-count"
+                                class="position-absolute badge rounded-pill bg-orange d-flex justify-content-center align-items-center"
+                                style="top: -9px; right: 10px; font-size: 1rem; width: 22px; height: 22px; {{ ($cartCount ?? 0) == 0 ? 'display:none;' : '' }}">
+                                {{ $cartCount ?? 0 }}
+                            </span>
+                        </a>
                     </div>
                 </div>
             @endif
-        
+
             {{-- 下段（共通 Copyright） --}}
             <div class="text-center py-2">
                 <p class="text-gray m-0">
@@ -218,10 +227,21 @@
                 </p>
             </div>
         </footer>
-        
+
     </div>
 
-    @stack('scripts')
+   @if (request()->routeIs('guest.*'))
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cartCountEl = document.getElementById("cart-count");
+            const initialCount = parseInt("{{ $cartCount }}");
+            if (cartCountEl && initialCount > 0) {
+                cartCountEl.style.display = 'flex';
+            }
+        });
+    </script>
+    @stack('guest-scripts')
+@endif
 
 </body>
 

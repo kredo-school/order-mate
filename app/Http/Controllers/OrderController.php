@@ -18,15 +18,15 @@ class OrderController extends Controller
     public function show($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)
-                      ->with('user.store')
-                      ->firstOrFail();
+            ->with('user.store')
+            ->firstOrFail();
 
         $store = $table->user->store;
 
         $order = Order::where('table_id', $table->id)
-                      ->where('status', 'pending')
-                      ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
-                      ->first();
+            ->where('status', 'pending')
+            ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
+            ->first();
 
         return view('guests.cart', compact('store', 'table', 'order'));
     }
@@ -39,7 +39,7 @@ class OrderController extends Controller
         $menu     = Menu::findOrFail($menuId);
         $quantity = $request->input('quantity', 1);
         $basePrice = $menu->price * $quantity;
-        $options   = $request->input('options', []); 
+        $options   = $request->input('options', []);
 
         // === 1. table を取得 ===
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
@@ -92,9 +92,13 @@ class OrderController extends Controller
         $order->increment('total_price', $basePrice + $extraTotal);
 
         // === 7. 完了画面へ遷移 ===
-        return redirect()->route('guest.cart.addComplete', [
-            'storeName' => $storeName,
-            'tableUuid' => $tableUuid,
+        // JSONレスポンスに修正 ????????
+        $totalItems = $order->orderItems->sum('quantity');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => '商品がカートに追加されました！',
+            'totalItems' => $totalItems
         ]);
     }
 
@@ -177,9 +181,9 @@ class OrderController extends Controller
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
 
         $order = Order::where('table_id', $table->id)
-                    ->where('status', 'pending')
-                    ->with('orderItems')
-                    ->firstOrFail();
+            ->where('status', 'pending')
+            ->with('orderItems')
+            ->firstOrFail();
 
         // order_items のステータスを updating
         foreach ($order->orderItems as $item) {
@@ -198,20 +202,20 @@ class OrderController extends Controller
     public function history($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)
-                      ->with('user.store')
-                      ->firstOrFail();
+            ->with('user.store')
+            ->firstOrFail();
         $store = $table->user->store;
-    
+
         $orders = Order::where('table_id', $table->id)
-                       ->where('status', '!=', 'pending')
-                       ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
-                       ->get();
-    
+            ->where('status', '!=', 'pending')
+            ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
+            ->get();
+
         $history = [];
-    
+
         foreach ($orders as $order) {
             foreach ($order->orderItems as $item) {
-    
+
                 // オプションがある場合は 1 件ずつ分割
                 if ($item->customOptions->isNotEmpty()) {
                     foreach ($item->customOptions as $opt) {
@@ -221,7 +225,7 @@ class OrderController extends Controller
                             'quantity'  => 1, // オプション1つにつき1行にする
                             'price'     => $item->menu->price + ($opt->extra_price * $opt->quantity),
                             'status'    => $item->status,
-                            'ordered_at'=> $order->created_at,
+                            'ordered_at' => $order->created_at,
                         ];
                     }
                 } else {
@@ -232,15 +236,33 @@ class OrderController extends Controller
                         'quantity'  => $item->quantity,
                         'price'     => $item->price,
                         'status'    => $item->status,
-                        'ordered_at'=> $order->created_at,
+                        'ordered_at' => $order->created_at,
                     ];
                 }
             }
         }
-    
+
         $history = collect($history);
-    
+
         return view('guests.order-history', compact('store', 'table', 'history'));
     }
-    
+
+    /**
+     * カート内の合計アイテム数を取得
+     */
+    public function getCartCount(Request $request, $storeName, $tableUuid)
+    {
+        // テーブルのUUIDからテーブルIDを検索
+        $table = Table::where('uuid', $tableUuid)->firstOrFail();
+
+        // 進行中の注文（カート）を取得
+        $order = Order::where('table_id', $table->id)
+            ->where('status', 'pending')
+            ->first();
+
+        // 注文が存在すれば、注文アイテムの合計数量を計算
+        $totalItems = $order ? $order->orderItems->sum('quantity') : 0;
+
+        return response()->json(['totalItems' => $totalItems]);
+    }
 }

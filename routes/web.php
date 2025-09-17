@@ -70,27 +70,33 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
 });
 
 // Guests
-Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], function(){
+Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], function () {
     Route::get('/', [GuestController::class, 'index'])->name('index');
     Route::get('/call', [GuestController::class, 'call'])->name('call');
     Route::get('/show/{id}', [GuestController::class, 'show'])->name('show');
     Route::get('/products/{categoryId}', [GuestController::class, 'byCategory'])
-->name('products.byCategory');
+        ->name('products.byCategory');
+    Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
+
 
     // カート関連
     Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');
     Route::get('/cart/add-complete', function ($storeName, $tableUuid) {
         $table = Table::where('uuid', $tableUuid)
-                      ->with('user.store')
-                      ->firstOrFail();
+            ->with('user.store')
+            ->firstOrFail();
         $store = $table->user->store;
 
-        return view('guests.add-complete', compact('store', 'table'));
+        return view('guests.add-complete', compact('store', 'table', 'storeName', 'tableUuid'));
     })->name('cart.addComplete');
     Route::get('/cart', [OrderController::class, 'show'])->name('cart.show');
     Route::delete('/cart/{orderItem}', [OrderController::class, 'destroy'])->name('cart.destroy');
     Route::get('/cart/{orderItem}/edit', [OrderController::class, 'edit'])->name('cart.edit');
     Route::patch('/cart/{orderItem}', [OrderController::class, 'update'])->name('cart.update');
+
+    Route::get('/cart-count', [GuestController::class, 'cartCount'])
+        ->name('guest.cart.count');
+
     // 完了処理
     Route::post('/cart/complete', [OrderController::class, 'complete'])->name('cart.complete');
     Route::get('/order-complete', function ($storeName, $tableUuid) {

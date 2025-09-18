@@ -174,7 +174,7 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price）--}}
                         <div>
-                            <span class="fw-bold text-brown fs-4 ms-4">Total: </span>
+                            <span class="fw-bold text-brown fs-4 ms-4">Total: aaa </span>
                             <span class="h3 fw-bold text-brown" id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if($isPaid)
                                 <span class="text-muted ms-2 fw-bolder">(paid)</span>

@@ -12,9 +12,13 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'table_id',
+        'guest_count',
         'status',
         'total_price',
         'order_type',
+        'is_paid',
+        'payment_method',
+        'payment_id',
     ];
 
     // === リレーション ===
@@ -28,3 +32,4 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 }
+

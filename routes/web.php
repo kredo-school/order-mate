@@ -3,13 +3,19 @@
 use App\Http\Controllers\Admins\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StaffCallController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\TableController;
 use App\Models\Table;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +27,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     // 他にも保護したいルートをここへ
 });
+
+// Stripe Webhook
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
+    ->name('stripe.webhook')
+    ->withoutMiddleware([VerifyCsrfToken::class]);
 
 // Admin
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
@@ -41,9 +52,6 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::patch('/products/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-
-
-
 
     // Category routes
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -67,7 +75,29 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
     Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
     Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
+
+    // Tables routes
+    Route::get('/tables', function () {
+        $tables = Table::active()->orderBy('number')->get(); // 追加した number カラムで並べる
+        return view('managers.tables.tables', compact('tables'));
+    })->name('tables');
+    Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
+    ->name('tables.show');
+    Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
+    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
+    Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
+
+
+    // Orders routes
+    Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
+
+    // Manager 側
+    Route::get('/staff-calls', [StaffCallController::class, 'index'])->name('staffCalls.index');
+    Route::post('/staff-calls/{staffCall}/read', [StaffCallController::class, 'markAsRead'])->name('staffCalls.read');
 });
+Route::post('/order-items/{orderItem}/toggle-status', [OrderController::class, 'toggleStatus'])
+    ->name('orderItems.toggleStatus');
+
 
 // Guests
 Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], function () {
@@ -77,7 +107,8 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
     Route::get('/products/{categoryId}', [GuestController::class, 'byCategory'])
         ->name('products.byCategory');
     Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
-
+    Route::get('/welcome', [GuestController::class, 'welcome'])->name('welcome');
+    Route::match(['get', 'post'], '/start-order', [GuestController::class, 'startOrder'])->name('startOrder');
 
     // カート関連
     Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');
@@ -106,6 +137,24 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
         return view('guests.order-complete', compact('store', 'table'));
     })->name('order.complete');
     Route::get('/order-history', [OrderController::class, 'history'])->name('orderHistory');
+
+    // Guest 側 呼び出し
+    Route::post('/call',[StaffCallController::class, 'store'])->name('call.store');
+
+    // Payment (Stripe)
+    Route::post('/payment', [CheckoutController::class, 'payment'])->name('payment');
+
+    // checkout
+    Route::post('/checkout', function ($storeName, $tableUuid) {
+        $table = Table::where('uuid', $tableUuid)
+                      ->with('user.store')
+                      ->firstOrFail();
+        $store = $table->user->store;
+
+        return view('guests.checkout', compact('store', 'table'));
+    })->name('checkout');
+
+    Route::match(['get', 'post'], '/checkout/complete', [CheckoutController::class, 'checkout'])->name('checkout.complete');
 });
 
 

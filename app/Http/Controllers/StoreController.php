@@ -89,24 +89,52 @@ class StoreController extends Controller{
 
     public function generateQr(Request $request){
         $store = Auth::user()->store;
-
+    
         $start = (int)$request->input('table_start');
         $end   = (int)$request->input('table_end');
-
+    
         if ($start > $end) {
             return back()->withErrors('開始番号は終了番号以下にしてください');
         }
-
+    
+        // まず全テーブルを inactive にする（論理削除）
+        Table::where('user_id', $store->user_id)->update(['is_active' => false]);
+    
+        // 今回の範囲を active に復活 or 作成
         $tables = collect(range($start, $end))->map(function ($number) use ($store) {
-            $table = Table::firstOrCreate(
-                ['user_id' => $store->user_id, 'number' => $number], // ← ここを修正
-                ['uuid' => \Illuminate\Support\Str::uuid()]
+            $table = Table::firstOrNew(
+                ['user_id' => $store->user_id, 'number' => $number]
             );
+    
+            if (!$table->exists) {
+                $table->uuid = \Illuminate\Support\Str::uuid();
+            }
+    
+            $table->is_active = true; // アクティブ化
+            $table->save();
+    
             return $table;
         });
-
+    
         return view('managers.stores.qr', compact('store', 'tables'));
     }
 
+    public function tablesIndex()
+    {
+        $store = Auth::user()->store;
+
+        if (! $store) {
+            // 店舗がない場合は空のコレクション渡す or リダイレクト
+            $tables = collect();
+        } else {
+            // 同じストア(user_id)の is_active = true のやつだけ取得
+            $tables = Table::forStore($store->user_id)
+                        ->active()
+                        ->orderBy('number')
+                        ->get();
+        }
+
+        return view('managers.tables.tables', compact('tables'));
+    }
 }
 

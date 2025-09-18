@@ -109,19 +109,26 @@
                                 </div>
                             </div>
                         </div>
+
                     @endforeach
 
-                    {{-- 合計表示 --}}
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div>
-                            <small class="fw-light text-brown ms-3">Total</small><br>
-                            <span class="fs-4 fw-bold text-brown ms-3">{{ number_format($order->total_price) }} php</span>
-                        </div>
-                        <form
-                            action="{{ route('guest.cart.complete', [
-                                'storeName' => $store->store_name,
-                                'tableUuid' => $table->uuid,
-                            ]) }}"
+                   
+                                
+                     {{-- 合計表示 --}}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <div>
+            <small class="text-muted">Total</small><br>
+            <span class="fs-4 fw-bold">{{ number_format($totalPrice, 2) }} php</span>
+          </div>
+          <form action="{{ route('guest.cart.complete', [
+                      'storeName' => $store->store_name,
+                      'tableUuid' => $table->uuid
+                  ]) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-primary">Complete Order</button>
+          </form>
+
+]) }}"
                             method="POST">
                             @csrf
                             <button id="completeOrderBtn" type="submit" class="btn btn-primary btn-m px-5 me-5">
@@ -138,6 +145,20 @@
                     </div>
                 @endif
             </div>
+                                'orderItem' => $item->id
+                            ]) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        @endforeach
+
+       
         </div>
 
         {{-- hover時に浮き上がるエフェクト --}}

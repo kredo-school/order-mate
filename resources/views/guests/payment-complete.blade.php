@@ -1,0 +1,14 @@
+@extends('layouts.app')
+@section('title', 'Payment Complete')
+@section('content')
+<div class="container mt-5 text-center">
+  <h2 class="text-brown mt-5">Your payment is completed!</h2>
+  <div class="mt-5">
+    <a href="{{ route('guest.index', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="btn btn-primary me-3">Back to Menu</a>
+    <form method="POST" action="{{ route('guest.checkout.complete', [$storeName, $table->uuid]) }}" class="d-inline">
+      @csrf
+      <button type="submit" class="btn btn-primary">Checkout</button>
+    </form>
+  </div>
+</div>
+@endsection

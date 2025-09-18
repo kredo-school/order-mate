@@ -21,6 +21,7 @@
                 <h2 class="fw-bold text-center text-brown">{{ $product->name }}</h2>
                 <p class="fs-5 text-center text-brown">{{ number_format($product->price) }}php</p>
 
+
                 {{-- Edit Form --}}
                 <form
                     action="{{ route('guest.cart.update', [

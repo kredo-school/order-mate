@@ -370,3 +370,60 @@ form.product-search input.input-underline[type="search"]:focus {
   box-shadow: none !important;
 }
 
+/* guest order history */
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030; /* navbar より上に来るように */
+}
+
+main {
+  flex: 1; /* 画面いっぱいに広がる */
+  padding-bottom: 80px; /* フッターの高さ分 + 少し余裕 */
+}
+
+/* テーブルの全体背景 */
+.table-wrapper {
+  background-color: #F9EAD3;
+}
+
+/* 各行の背景 */
+.table .row-bg {
+  background-color: #FFF3E1;
+  transition: background-color 0.3s ease;
+}
+
+/* 行ホバー時（少し濃く） */
+.table .row-bg:hover {
+  background-color: #F5D9B8; /* 少し濃いベージュ */
+}
+
+/* footer内リンクのホバー色を薄茶色に */
+footer a.text-brown:hover {
+    color: #956c4d !important; /* 薄い茶色 */
+}
+
+/* guest delete */
+/* hover-card のみ */
+.hover-card {
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.hover-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+    transform: translateY(-2px);
+}
+
+
+/* cart anime */
+.fly-img {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 1s cubic-bezier(0.55, -0.55, 0.35, 1.55), opacity 1s;
+}
+

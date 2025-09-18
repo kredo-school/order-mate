@@ -78,44 +78,47 @@
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.category-link');
             const container = document.getElementById('products-container');
+            const searchInput = document.querySelector('input[name="search"]');
+
+            // Blade から渡された変数
+            const isGuestPage = @json($isGuestPage);
+            const storeName = @json($store->store_name ?? '');
+            const tableUuid = @json($table->uuid ?? '');
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', function(e) {
                     const categoryId = this.dataset.id;
-
-                    // "New"ボタンだけスルー
-                    if (!categoryId || categoryId === 'new') {
-                        return;
-                    }
+                    if (!categoryId) return;
 
                     e.preventDefault();
 
-                    // 検索フォームをリセット
-                    const searchInput = document.querySelector('input[name="search"]');
+                    // 🔹検索フォームをリセット
                     if (searchInput) {
                         searchInput.value = '';
                     }
 
-                    // Search Resultsタブを非表示にする
+                    // 🔹「Search Results」タブを消す（もし存在してたら）
                     const searchTab = document.querySelector('.search-results-tab');
                     if (searchTab) {
                         searchTab.remove();
                     }
 
-                    // active切り替え
+                    // active クラス切り替え
                     document.querySelectorAll('.category-tab').forEach(el => el.classList.remove(
                         'active'));
                     this.querySelector('.category-tab').classList.add('active');
 
-                    // "Search Results" はAjaxリクエストしない
-                    if (categoryId !== 'search') {
-                        fetch(`/manager/products/by-category/${categoryId}`)
-                            .then(res => res.text())
-                            .then(html => {
-                                container.innerHTML = html;
-                            })
-                            .catch(err => console.error(err));
-                    }
+                    // Ajax URL（検索条件はもうつけない）
+                    const url = isGuestPage ?
+                        `/guest/${storeName}/${tableUuid}/products/${categoryId}` :
+                        `/manager/products/by-category/${categoryId}`;
+
+                    fetch(url)
+                        .then(res => res.text())
+                        .then(html => {
+                            container.innerHTML = html;
+                        })
+                        .catch(err => console.error(err));
                 });
             });
         });

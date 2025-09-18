@@ -123,8 +123,12 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="{{route('manager.stores.index')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> Store Information
+                        <a href="{{ route('manager.stores.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            Store Information
                         </a>
                         <a href="{{ route('manager.products.index') }}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-utensils me-2"></i> Menu
@@ -159,6 +163,7 @@
             @yield('content')
         </main>
 
+
         {{-- ================= フッター ================= --}}
         @if(trim($__env->yieldContent('footer')) != '')
             @yield('footer')
@@ -169,8 +174,8 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price）--}}
                         <div>
-                            <span class="fw-bold">Total: </span>
-                            <span class="h3 fw-bold" id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
+                            <span class="fw-bold text-brown fs-4 ms-4">Total: </span>
+                            <span class="h3 fw-bold text-brown" id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if($isPaid)
                                 <span class="text-muted ms-2 fw-bolder">(paid)</span>
                             @endif
@@ -182,22 +187,28 @@
                             $tableUuid = request()->route('tableUuid');
                         @endphp
                         <div class="d-flex gap-3">
-                            <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Order History</a>
-                            <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0">Call Staff</a>
+                            <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0 fs-5 text-brown">Order History</a>
+                            <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0 fs-5 text-brown">Call Staff</a>
                             {{-- 未決済なら Payment を表示 --}}
                             @if (empty($isPaid) || ! $isPaid)
                                 <form action="{{ route('guest.payment', [$store->store_name, $table->uuid]) }}" method="POST" class="m-0">
                                     @csrf
-                                    <button type="submit" class="btn btn-link nav-link p-0">Payment</button>
+                                    <button type="submit" class="btn btn-link nav-link p-0 fs-5 text-brown">Payment</button>
                                 </form>
                             @endif
 
                             {{-- Checkout（確定）は常に表示）--}}
                             <form action="{{ route('guest.checkout', [$store->store_name, $table->uuid]) }}" method="POST" class="m-0">
                                 @csrf
-                                <button type="submit" class="btn btn-link nav-link p-0">Checkout</button>
+                                <button type="submit" class="btn btn-link nav-link p-0  fs-5 text-brown">Checkout</button>
                             </form>
-                            <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping"></i></a>
+                            <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="nav-link p-0"><i class="fa-solid fa-cart-shopping fa-3x me-4 ms-2"></i>
+                            <span id="cart-count"
+                                class="position-absolute badge rounded-pill bg-orange d-flex justify-content-center align-items-center"
+                                style="top: -9px; right: 10px; font-size: 1rem; width: 22px; height: 22px; {{ ($cartCount ?? 0) == 0 ? 'display:none;' : '' }}">
+                                {{ $cartCount ?? 0 }}
+                            </span>
+                            </a>
                         </div>
                     </div>
                 @endif
@@ -206,12 +217,24 @@
                 <div class="text-center py-2">
                     <p class="text-gray m-0">&copy; All Rights are reserved by ordermate</p>
                 </div>
-            </footer>
-        @endif
-        {{-- =============== /フッター =============== --}}
-        
+            @endif
+
+        </footer>
+
     </div>
 
-    @stack('scripts')
+   @if (request()->routeIs('guest.*'))
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cartCountEl = document.getElementById("cart-count");
+            const initialCount = parseInt("{{ $cartCount }}");
+            if (cartCountEl && initialCount > 0) {
+                cartCountEl.style.display = 'flex';
+            }
+        });
+    </script>
+    @stack('guest-scripts')
+@endif
+
 </body>
 </html>

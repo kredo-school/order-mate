@@ -28,10 +28,7 @@ class OrderController extends Controller
             ->where('status', 'pending')
             ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
             ->first();
-
-        return view('guests.cart', compact('store', 'table', 'order'));
                     
-       
         // 2. order_items を直接取得
         $orderItems = OrderItem::whereHas('order', function ($query) use ($table) {
             $query->where('table_id', $table->id)
@@ -44,7 +41,7 @@ class OrderController extends Controller
         // 3. 合計金額を算出
         $totalPrice = $orderItems->sum('price');
     
-        return view('guests.cart', compact('store', 'table', 'orderItems', 'totalPrice'));
+    return view('guests.cart', compact('store', 'table', 'order', 'orderItems', 'totalPrice'));
     }
 
     /**
@@ -53,9 +50,9 @@ class OrderController extends Controller
     public function add(Request $request, $storeName, $tableUuid, $menuId)
     {
         $menu     = Menu::findOrFail($menuId);
-        $quantity = $request->input('quantity', 1);
+        $quantity = $request->input('quantity', $request->json('quantity', 1));
+    $options  = $request->input('options', $request->json('options', []));
         $basePrice = $menu->price * $quantity;
-        $options   = $request->input('options', []);
 
         // === 1. table を取得 ===
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
@@ -419,7 +416,7 @@ class OrderController extends Controller
         }
 
         return view('managers.tables.show', compact('table', 'history', 'totalPrice', 'isPaid', 'paymentMethod'));
-    }
+    };
 
 
     public function checkoutComplete($storeName, $tableUuid)

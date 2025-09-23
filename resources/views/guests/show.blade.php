@@ -221,32 +221,19 @@
                     fetch(formAction, {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
-                            body: JSON.stringify(dataToSend)
+                            body: new FormData(addToCartForm)
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                // カート数を更新
-                                const cartCountEl = document.getElementById("cart-count");
-                                if (cartCountEl) {
-                                    cartCountEl.textContent = data.totalItems;
-                                    cartCountEl.style.display = data.totalItems > 0 ? 'flex' : 'none';
-                                }
-
-
-                                // 完了画面へリダイレクト
-                                window.location.href =
-                                    "{{ route('guest.cart.addComplete', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}";
-                            } else {
-                                alert('Failed to add to cart.');
-                            }
+                        .then(response => response.text())
+                        .then(() => {
+                            // Just redirect after success
+                            window.location.href =
+                                "{{ route('guest.cart.addComplete', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}";
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('An error occurred. Please try again.');
+                            alert('Failed to add to cart.');
                         });
                 });
             });

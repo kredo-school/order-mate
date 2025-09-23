@@ -90,8 +90,8 @@
         {{-- 合計表示 --}}
         <div class="d-flex justify-content-between align-items-center mt-4">
           <div>
-            <small class="text-muted">Sub Total</small><br>
-            <span class="fs-4 fw-bold">{{ number_format($subTotal, 2) }} php</span>
+            <small class="text-muted">Total</small><br>
+            <span class="fs-4 fw-bold">{{ number_format($totalPrice, 2) }} php</span>
           </div>
           <form action="{{ route('guest.cart.complete', [
                       'storeName' => $store->store_name,

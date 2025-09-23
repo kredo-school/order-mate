@@ -98,6 +98,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
+    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
     Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
 
 

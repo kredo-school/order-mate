@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
 use App\Models\Table;
 use App\Models\Order;
+use App\Models\OrderItem;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-// app/Providers/AppServiceProvider.php
+    // app/Providers/AppServiceProvider.php
 
     public function boot(Request $request): void
     {
@@ -33,13 +35,27 @@ class AppServiceProvider extends ServiceProvider
             $tableUuid = $request->route('tableUuid');
             $table = null;
             $storeName = null;
+            $cartCount = 0;
+
+            if ($tableUuid) {
+                $table = Table::where('uuid', $tableUuid)->first();
+                if ($table) {
+                    $cartCount = OrderItem::whereHas('order', function ($q) use ($table) {
+                        $q->where('table_id', $table->id)
+                            ->where('status', 'open');  // open の Order に限定
+                    })->where('status', 'pending')
+                        ->count();
+                }
+            }
+
+            $view->with(compact('table', 'storeName', 'tableUuid', 'cartCount'));
             $store = null;     // ← 追加
             $totalPrice = 0;   // ← 既に追加済み
 
             if ($tableUuid) {
                 $table = Table::where('uuid', $tableUuid)
-                            ->with('user.store')
-                            ->first();
+                    ->with('user.store')
+                    ->first();
 
                 if ($table && $table->user && $table->user->store) {
                     $store = $table->user->store;            // ← ここでモデルそのものを取り出す
@@ -47,9 +63,9 @@ class AppServiceProvider extends ServiceProvider
 
                     // open か closed どちらかの order を拾う
                     $order = Order::where('table_id', $table->id)
-                                ->whereIn('status', ['open', 'closed'])
-                                ->latest()
-                                ->first();
+                        ->whereIn('status', ['open', 'closed'])
+                        ->latest()
+                        ->first();
 
                     $isPaid = false;
                     if ($order) {
@@ -62,5 +78,4 @@ class AppServiceProvider extends ServiceProvider
             }
         });
     }
-
 }

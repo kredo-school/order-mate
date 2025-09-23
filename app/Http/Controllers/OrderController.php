@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\OrderItemCustomOption;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -52,18 +53,15 @@ class OrderController extends Controller
     public function add(Request $request, $storeName, $tableUuid, $menuId)
     {
         $menu     = Menu::findOrFail($menuId);
-        $quantity = $request->input('quantity', 1);
-        $basePrice = $menu->price * $quantity;
-        $options   = $request->input('options', []); 
-
-        // === 1. table を取得 ===
+        $quantity = max(1, (int)$request->input('quantity', 1));
+        $options  = $request->input('options', []); // [customOptionId => qty]
+    
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
-        // === 2. open の order を取得 or 作成 ===
+    
         $order = Order::firstOrCreate(
             [
                 'table_id' => $table->id,
-                'status'   => 'open', // ← "pending" を "open" に変更
+                'status'   => 'open',
             ],
             [
                 'user_id'     => $table->user_id,
@@ -71,47 +69,63 @@ class OrderController extends Controller
                 'order_type'  => 'dine-in',
             ]
         );
+    
+        DB::transaction(function() use ($menu, $quantity, $options, $order) {
 
-        // === 3. order_items を作成 ===
-        $orderItem = OrderItem::create([
-            'order_id' => $order->id,
-            'menu_id'  => $menu->id,
-            'quantity' => $quantity,
-            'price'    => $basePrice,
-            'status'   => 'pending',
-        ]);
-
-        $extraTotal = 0;
-
-        // === 4. カスタムオプション ===
-        foreach ($options as $optionId => $qty) {
-            if ($qty > 0) {
-                $option = CustomOption::findOrFail($optionId);
-                $extraTotal += $option->extra_price * $qty;
-
-                OrderItemCustomOption::create([
-                    'order_item_id'    => $orderItem->id,
-                    'custom_option_id' => $option->id,
-                    'quantity'         => $qty,
-                    'extra_price'      => $option->extra_price,
+            $extraPriceMap = [];
+            $optIds = array_keys($options);
+            $opts = CustomOption::whereIn('id', $optIds)->get()->keyBy('id');
+        
+            foreach ($options as $optId => $optQty) {
+                $extraPriceMap[$optId] = $opts[$optId]->extra_price ?? 0;
+            }
+        
+            // まず、オプションがある場合は1つずつ OrderItem を作成
+            foreach ($options as $optId => $optQty) {
+                for ($i = 0; $i < $optQty; $i++) {
+                    $itemPrice = $menu->price + ($extraPriceMap[$optId] ?? 0);
+                    $orderItem = OrderItem::create([
+                        'order_id' => $order->id,
+                        'menu_id'  => $menu->id,
+                        'quantity' => 1,
+                        'price'    => $itemPrice,
+                        'status'   => 'pending',
+                    ]);
+        
+                    OrderItemCustomOption::create([
+                        'order_item_id'    => $orderItem->id,
+                        'custom_option_id' => $optId,
+                        'quantity'         => 1,
+                        'extra_price'      => $extraPriceMap[$optId],
+                    ]);
+                }
+            }
+        
+            // オプション未選択の残り数量を作成
+            $totalOptionsQty = array_sum($options);
+            $remaining = $quantity - $totalOptionsQty;
+            for ($i = 0; $i < $remaining; $i++) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'menu_id'  => $menu->id,
+                    'quantity' => 1,
+                    'price'    => $menu->price,
+                    'status'   => 'pending',
                 ]);
             }
-        }
+        
+            // 合計金額更新
+            $order->total_price = $order->orderItems()->sum('price');
+            $order->save();
+        });
 
-        // === 5. order_item の価格更新 ===
-        $orderItem->update([
-            'price' => $basePrice + $extraTotal,
-        ]);
-
-        // === 6. order の total_price を更新 ===
-        $order->increment('total_price', $basePrice + $extraTotal);
-
-        // === 7. 完了画面へ遷移 ===
         return redirect()->route('guest.cart.addComplete', [
             'storeName' => $storeName,
             'tableUuid' => $tableUuid,
         ]);
     }
+    
+
 
     public function destroy($storeName, $tableUuid, OrderItem $orderItem)
     {

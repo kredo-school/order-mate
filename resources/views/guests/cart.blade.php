@@ -32,18 +32,15 @@
               {{-- 中央：商品名・価格 --}}
               <div class="flex-grow-1 px-3 d-flex flex-column justify-content-center">
                 <span class="fw-bold">{{ $item->menu->name }}</span>
-                <span class="text-muted">{{ number_format($item->menu->price, 2) }} php</span>
+                <span class="text-muted">{{ number_format($item->price, 2) }} php</span>
                 {{-- カスタムオプション --}}
                 @if ($item->customOptions->count() > 0)
                   <ul class="mb-0 small text-muted">
                     @foreach ($item->customOptions as $custom)
                       <li>
                         {{ $custom->customOption->name }}
-                        （{{ $custom->quantity }}）
                         @if ($custom->extra_price != 0)
                           <span>（{{ $custom->extra_price > 0 ? '+' : '' }}{{ number_format($custom->extra_price, 2) }} php）</span>
-                        @else
-                          <span>（±0 php）</span>
                         @endif
                       </li>
                     @endforeach
@@ -60,6 +57,7 @@
                 </button>
               </div>
             </div>
+
             {{-- 削除確認モーダル --}}
             <div class="modal fade" id="deleteModal-{{ $item->id }}" tabindex="-1" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
@@ -104,7 +102,6 @@
           </form>
         </div>
       @else
-        {{-- 空のとき --}}
         <p class="text-muted">Your cart is empty.</p>
         <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
            class="btn btn-outline-primary">Back to Menu</a>
@@ -112,7 +109,6 @@
   </div>
 </div>
 
-{{-- hover時に浮き上がるエフェクト --}}
 <style>
   .hover-card {
     transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
@@ -126,18 +122,14 @@
 @push('scripts')
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // カードをクリックしたらリンク先に飛ぶ
     document.querySelectorAll(".clickable-card").forEach(card => {
       card.addEventListener("click", () => {
         window.location.href = card.dataset.href;
       });
     });
 
-    // 削除ボタンはカードクリックを止める
     document.querySelectorAll(".btn[data-bs-toggle='modal']").forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-      });
+      btn.addEventListener("click", e => e.stopPropagation());
     });
   });
 </script>

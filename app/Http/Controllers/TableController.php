@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TableController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
         $tables = Table::where('is_active', true)
-        ->withCount(['orders as history_count' => function ($q) {
-            $q->where('status', 'open');
-        }])
-        ->get();
-    
-    dd($tables->toArray());
-    
-    
-        return view('managers.tables.index', compact('tables'));
+            ->where('user_id', $user->id) // 👈 ここで店舗ユーザーのみに絞る
+            ->withCount(['orders as open_count' => function ($q) {
+                $q->where('status', 'open');
+            }])
+            ->orderBy('number')
+            ->get();
+
+        return view('managers.tables.tables', compact('tables'));
     }
-    
 }

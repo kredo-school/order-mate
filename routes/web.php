@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminAnalyticsController;
 use App\Http\Controllers\Admins\AdminController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
@@ -39,6 +41,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::get('/stores/{id}', [AdminController::class, 'show'])->name('show');
     Route::post('/chat/broadcast', [ChatController::class, 'broadcastToManagers'])->name('chat.broadcast');
+    Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
+    
+    // Ajax 用
+    Route::get('/analytics/stats', [AdminAnalyticsController::class, 'getStats'])->name('analytics.stats');
+    Route::get('/analytics/custom', [AdminAnalyticsController::class, 'getCustomData'])->name('analytics.data');
+    Route::get('/analytics/top-products', [AdminAnalyticsController::class, 'getTopProducts'])->name('analytics.topProducts');
+    Route::get('/analytics/orders', [AdminAnalyticsController::class, 'getOrderDetails'])->name('analytics.orderDetails');
 });
 
 // Manager
@@ -76,15 +85,16 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
     Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
 
+    // Analytics routes
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/analytics/data', [AnalyticsController::class, 'getCustomData'])->name('analytics.data');
+    Route::get('/analytics/top-products', [AnalyticsController::class, 'getTopProducts'])->name('analytics.topProducts');
+    Route::get('/analytics/stats', [AnalyticsController::class, 'getStats'])
+    ->name('analytics.stats');
+    Route::get('/analytics/order_details', [AnalyticsController::class, 'getOrderDetails'])->name('analytics.orderDetails');
+
     // Tables routes
-    Route::get('/tables', function () {
-        $tables = Table::withCount([
-            'orders as open_count' => function ($q) {
-                $q->where('status', 'open');
-            }
-        ])->active()->orderBy('number')->get();
-        return view('managers.tables.tables', compact('tables'));
-    })->name('tables');
+    Route::get('/tables', [TableController::class, 'index'])->name('tables');
     Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
@@ -141,6 +151,7 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
 
     // Payment (Stripe)
     Route::post('/payment', [CheckoutController::class, 'payment'])->name('payment');
+    Route::get('/payment/success', [CheckoutController::class, 'success'])->name('payment.success');
 
     // checkout
     Route::post('/checkout', function ($storeName, $tableUuid) {

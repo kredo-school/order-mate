@@ -57,6 +57,14 @@
 </style>
 
 <div class="container py-4">
+   {{-- 戻るボタン --}}
+        <div class="d-flex justify-content-between mb-3">
+            <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
+                <h5 class="d-inline text-brown">
+                    <i class="fa-solid fa-angle-left text-orange"></i> Menu List
+                </h5>
+            </a>
+        </div>
   <h3 class="fw-bold mb-4 text-brown">Order History</h3>
 
   @if ($history->count() > 0)
@@ -80,16 +88,6 @@
             <td class="border-0">x{{ $row['quantity'] }}</td>
             <td class="border-0">{{ ucfirst($row['status']) }}</td>
           </tr>
-        </thead>
-        <tbody>
-          @foreach ($history as $row)
-            <tr>
-              <td class="text-brown border-0">{{ $row['menu_name'] }}</td>
-              <td class="text-brown border-0">{{ $row['options'] }}</td>
-              <td class="text-brown border-0">{{ number_format($row['price']) }} php</td>
-              <td class="text-brown border-0">x{{ $row['quantity'] }}</td>
-              <td class="text-brown border-0">{{ ucfirst($row['status']) }}</td>
-            </tr>
           @endforeach
         </tbody>
       </table>

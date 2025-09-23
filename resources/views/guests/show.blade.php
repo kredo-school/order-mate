@@ -41,14 +41,7 @@
                 {{-- アレルギー情報 --}}
                 @if (!empty($product->allergy))
                     <p> {{ $product->allergy }}</p>
-            @endif
-
-            {{-- タグ --}}
-            @if ($product->tag)
-                <div class="mt-2">
-                    <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" style="max-width:80px;">
-                </div>
-            @endif
+                @endif
 
 
                 {{-- Add to Cart Form --}}
@@ -236,12 +229,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                // カートの合計数を更新
+                                // カート数を更新
                                 const cartCountEl = document.getElementById("cart-count");
                                 if (cartCountEl) {
                                     cartCountEl.textContent = data.totalItems;
                                     cartCountEl.style.display = data.totalItems > 0 ? 'flex' : 'none';
                                 }
+
 
                                 // 完了画面へリダイレクト
                                 window.location.href =

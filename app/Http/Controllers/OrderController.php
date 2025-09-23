@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\OrderItemCustomOption;
 use App\Models\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -23,25 +24,23 @@ class OrderController extends Controller
             ->firstOrFail();
 
         $store = $table->user->store;
-
-        $order = Order::where('table_id', $table->id)
-            ->where('status', 'pending')
-            ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
-            ->first();
-                    
-        // 2. order_items を直接取得
+        // order_items のうち status = pending のみを取得
         $orderItems = OrderItem::whereHas('order', function ($query) use ($table) {
             $query->where('table_id', $table->id)
-                  ->where('status', 'open'); // ← order は open のまま
+                ->where('status', 'open');
         })
-        ->where('status', 'pending') // ← ここで order_items 側を絞る
-        ->with(['menu', 'customOptions.customOption'])
-        ->get();
-    
-        // 3. 合計金額を算出
-        $totalPrice = $orderItems->sum('price');
-    
-    return view('guests.cart', compact('store', 'table', 'order', 'orderItems', 'totalPrice'));
+            ->where('status', 'pending')
+            ->with(['menu', 'customOptions.customOption'])
+            ->orderBy('created_at')
+            ->get();
+        // === pending の小計 ===
+        $subTotal = $orderItems->sum('price');
+        // === これまで含めた全体合計 ===
+        $order = Order::where('table_id', $table->id)
+            ->where('status', 'open')
+            ->first();
+        $totalPrice = $order?->total_price ?? 0;
+        return view('guests.cart', compact('store', 'table', 'orderItems', 'subTotal', 'totalPrice'));
     }
 
     /**
@@ -50,18 +49,13 @@ class OrderController extends Controller
     public function add(Request $request, $storeName, $tableUuid, $menuId)
     {
         $menu     = Menu::findOrFail($menuId);
-        $quantity = $request->input('quantity', $request->json('quantity', 1));
-    $options  = $request->input('options', $request->json('options', []));
-        $basePrice = $menu->price * $quantity;
-
-        // === 1. table を取得 ===
+        $quantity = max(1, (int)$request->input('quantity', 1));
+        $options  = $request->input('options', []); // [customOptionId => qty]
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
-        // === 2. open の order を取得 or 作成 ===
         $order = Order::firstOrCreate(
             [
                 'table_id' => $table->id,
-                'status'   => 'open', // ← "pending" を "open" に変更
+                'status'   => 'open',
             ],
             [
                 'user_id'     => $table->user_id,
@@ -69,51 +63,62 @@ class OrderController extends Controller
                 'order_type'  => 'dine-in',
             ]
         );
-
-        // === 3. order_items を作成 ===
-        $orderItem = OrderItem::create([
-            'order_id' => $order->id,
-            'menu_id'  => $menu->id,
-            'quantity' => $quantity,
-            'price'    => $basePrice,
-            'status'   => 'pending',
-        ]);
-
-        $extraTotal = 0;
-
-        // === 4. カスタムオプション ===
-        foreach ($options as $optionId => $qty) {
-            if ($qty > 0) {
-                $option = CustomOption::findOrFail($optionId);
-                $extraTotal += $option->extra_price * $qty;
-
-                OrderItemCustomOption::create([
-                    'order_item_id'    => $orderItem->id,
-                    'custom_option_id' => $option->id,
-                    'quantity'         => $qty,
-                    'extra_price'      => $option->extra_price,
-                ]);
+        DB::transaction(function () use ($menu, $quantity, $options, $order) {
+            // 1) prepare option distribution maps
+            $assigned = []; // per item index map optionId => qty
+            $extraPriceMap = [];
+            // load extra prices
+            $optIds = array_keys($options);
+            $opts = CustomOption::whereIn('id', $optIds)->get()->keyBy('id');
+            foreach ($options as $optId => $optQty) {
+                $optQty = (int)$optQty;
+                $extraPriceMap[$optId] = $opts[$optId]->extra_price ?? 0;
+                for ($i = 0; $i < $optQty; $i++) {
+                    $idx = $i % $quantity;
+                    if (!isset($assigned[$idx])) $assigned[$idx] = [];
+                    $assigned[$idx][$optId] = ($assigned[$idx][$optId] ?? 0) + 1;
+                }
             }
-        }
-
-        // === 5. order_item の価格更新 ===
-        $orderItem->update([
-            'price' => $basePrice + $extraTotal,
-        ]);
-
-        // === 6. order の total_price を更新 ===
-        $order->increment('total_price', $basePrice + $extraTotal);
-
-        // === 7. 完了画面へ遷移 ===
-        // JSONレスポンスに修正 ????????
-        $totalItems = $order->orderItems->sum('quantity');
-
+            $createdItems = [];
+            $sumToIncrement = 0;
+            for ($idx = 0; $idx < $quantity; $idx++) {
+                $itemPrice = (float)$menu->price;
+                $optsForItem = $assigned[$idx] ?? [];
+                foreach ($optsForItem as $optId => $optQty) {
+                    $itemPrice += ($extraPriceMap[$optId] ?? 0) * $optQty;
+                }
+                $orderItem = OrderItem::create([
+                    'order_id' => $order->id,
+                    'menu_id'  => $menu->id,
+                    'quantity' => 1,
+                    'price'    => $itemPrice,
+                    'status'   => 'pending',
+                ]);
+                foreach ($optsForItem as $optId => $optQty) {
+                    OrderItemCustomOption::create([
+                        'order_item_id'    => $orderItem->id,
+                        'custom_option_id' => $optId,
+                        'quantity'         => $optQty,
+                        'extra_price'      => $extraPriceMap[$optId] ?? 0,
+                    ]);
+                }
+                $createdItems[] = $orderItem;
+                $sumToIncrement += $itemPrice;
+            }
+            // update order total_price
+            $order->increment('total_price', $sumToIncrement);
+        });
         return response()->json([
             'status' => 'success',
-            'message' => '商品がカートに追加されました！',
-            'totalItems' => $totalItems
+            'totalItems' => $order->orderItems()->count(),
+            'redirect' => route('guest.cart.addComplete', [
+                'storeName' => $storeName,
+                'tableUuid' => $tableUuid,
+            ]),
+
         ]);
     }
+
 
     public function destroy($storeName, $tableUuid, OrderItem $orderItem)
     {
@@ -136,26 +141,47 @@ class OrderController extends Controller
 
     public function edit($storeName, $tableUuid, OrderItem $orderItem)
     {
-        $table = Table::where('uuid', $tableUuid)->with('user.store')->firstOrFail();
+        // テーブル取得
+        $table = Table::where('uuid', $tableUuid)
+            ->with('user.store')
+            ->firstOrFail();
         $store = $table->user->store;
+
+        // 編集対象の商品（Menu）
         $product = $orderItem->menu;
 
         // 既存オプションの数量を取得
-        $selectedOptions = $orderItem->customOptions->pluck('quantity', 'custom_option_id')->toArray();
+        $selectedOptions = $orderItem->customOptions
+            ->pluck('quantity', 'custom_option_id')
+            ->toArray();
 
-        return view('guests.edit-cart', compact('store', 'table', 'orderItem', 'product', 'selectedOptions'));
+        return view('guests.edit-cart', compact(
+            'store',
+            'table',
+            'orderItem',
+            'product',
+            'selectedOptions'
+        ));
     }
 
     public function update(Request $request, $storeName, $tableUuid, OrderItem $orderItem)
     {
+        // === ここでステータスをチェック ===
+        if ($orderItem->status !== 'pending') {
+            return redirect()->route('guest.cart.show', [
+                'storeName' => $storeName,
+                'tableUuid' => $tableUuid,
+            ])->with('error', 'This item can no longer be edited.');
+        }
+
         $menu     = $orderItem->menu;
         $quantity = $request->input('quantity', 1);
         $options  = $request->input('options', []);
 
-        $basePrice = $menu->price * $quantity;
+        $basePrice  = $menu->price * $quantity;
         $extraTotal = 0;
 
-        // 既存オプション削除して再登録
+        // === 既存オプション削除して再登録 ===
         $orderItem->customOptions()->delete();
 
         foreach ($options as $optionId => $qty) {
@@ -172,13 +198,14 @@ class OrderController extends Controller
             }
         }
 
-        // orderItem 更新
+        // === orderItem 更新 ===
         $orderItem->update([
             'quantity' => $quantity,
             'price'    => $basePrice + $extraTotal,
+            // status は壊さずそのまま（基本 pending）
         ]);
 
-        // order の合計を再計算
+        // === order の合計を再計算 ===
         $order = $orderItem->order;
         $order->total_price = $order->orderItems()->sum('price');
         $order->save();
@@ -189,24 +216,25 @@ class OrderController extends Controller
         ])->with('success', 'Cart updated.');
     }
 
+
     public function complete($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
-    
+
         $order = Order::where('table_id', $table->id)
 
-        // order_items のステータスを updating
-                      ->where('status', 'open')
-                      ->with('orderItems')
-                      ->firstOrFail();
-    
+            // order_items のステータスを updating
+            ->where('status', 'open')
+            ->with('orderItems')
+            ->firstOrFail();
+
         // pending のものだけ preparing に更新
         foreach ($order->orderItems as $item) {
             if ($item->status === 'pending') {
                 $item->update(['status' => 'preparing']);
             }
         }
-    
+
         // order 自体は open のまま
         return redirect()->route('guest.order.complete', [
             'storeName' => $storeName,
@@ -214,79 +242,48 @@ class OrderController extends Controller
         ]);
     }
 
+    public function cartCount($tableUuid)
+{
+    $table = Table::where('uuid', $tableUuid)->firstOrFail();
+
+    $order = Order::where('table_id', $table->id)
+        ->where('status', 'open')
+        ->first();
+
+        // 2. そのテーブルにある open Order 全部の pending OrderItem をカウント
+    $count = OrderItem::whereHas('order', function($q) use ($table) {
+        $q->where('table_id', $table->id)
+          ->where('status', 'open');
+    })->where('status', 'pending')
+      ->count();
+
+    return $count;
+
+    return $order
+        ? $order->orderItems()->where('status', 'pending')->count()
+        : 0;
+}
+
     public function history($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)
             ->with('user.store')
             ->firstOrFail();
         $store = $table->user->store;
-
         $orders = Order::where('table_id', $table->id)
-                       ->where('status', '!=', 'pending')
-                       ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
-                       ->get();
-
+            ->whereNotIn('status', ['pending', 'closed'])
+            ->with(['orderItems.menu', 'orderItems.customOptions.customOption'])
+            ->get();
         $history = collect();
-
         foreach ($orders as $order) {
             foreach ($order->orderItems as $item) {
                 $menu = $item->menu;
                 $status = $item->status;
                 $orderedAt = $order->created_at;
-
                 // カスタムオプションがある場合：オプションごとに行を作る（quantity＝オプション数量）
                 if ($item->customOptions->isNotEmpty()) {
                     $sumOpts = (int) $item->customOptions->sum('quantity');
-
                     foreach ($item->customOptions as $opt) {
-                        $history[] = [
-                            'menu_name' => $item->menu->name,
-                            'options'   => $opt->customOption->name,
-                            'quantity'  => 1, // オプション1つにつき1行にする
-                            'price'     => $item->menu->price + ($opt->extra_price * $opt->quantity),
-                            'status'    => $item->status,
-                            'ordered_at' => $order->created_at,
-                        ];
-                    }
-                } else {
-                    // オプションなしの場合
-                    $history[] = [
-                        'menu_name' => $item->menu->name,
-                        'options'   => '-',
-                        'quantity'  => $item->quantity,
-                        'price'     => $item->price,
-                        'status'    => $item->status,
-                        'ordered_at' => $order->created_at,
-                    ];
-                }
-            }
-        }
-
-        $history = collect($history);
-
-        return view('guests.order-history', compact('store', 'table', 'history'));
-    }
-
-    /**
-     * カート内の合計アイテム数を取得
-     */
-    public function getCartCount(Request $request, $storeName, $tableUuid)
-    {
-        // テーブルのUUIDからテーブルIDを検索
-        $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
-        // 進行中の注文（カート）を取得
-        $order = Order::where('table_id', $table->id)
-            ->where('status', 'pending')
-            ->first();
-
-        // 注文が存在すれば、注文アイテムの合計数量を計算
-        $totalItems = $order ? $order->orderItems->sum('quantity') : 0;
-
-        return response()->json(['totalItems' => $totalItems]);
-    }
-}
-
                         $perUnit = (float) ($menu->price + ($opt->extra_price ?? 0)); // 単価
                         $history->push([
                             'menu_name'  => $menu->name,
@@ -297,7 +294,6 @@ class OrderController extends Controller
                             'ordered_at' => $orderedAt,
                         ]);
                     }
-
                     // オプション無しの残り個数があれば行を追加（options = '-'）
                     $leftover = $item->quantity - $sumOpts;
                     if ($leftover > 0) {
@@ -317,7 +313,6 @@ class OrderController extends Controller
                     $perUnit = $item->quantity > 0
                         ? (float) round($item->price / $item->quantity, 2)
                         : (float) $menu->price;
-
                     $history->push([
                         'menu_name'  => $menu->name,
                         'options'    => '-',
@@ -329,7 +324,6 @@ class OrderController extends Controller
                 }
             }
         }
-
         // ゲスト向けビューは $history という変数名を期待しているのでそのまま渡す
         return view('guests.order-history', compact('store', 'table', 'history'));
     }
@@ -341,35 +335,34 @@ class OrderController extends Controller
         } elseif ($orderItem->status === 'ready') {
             $orderItem->update(['status' => 'completed']);
         }
-
         return response()->json(['status' => $orderItem->status]);
     }
 
+
     public function historyByTable($tableId)
     {
-        $table = Table::findOrFail($tableId);
-
+        $table = Table::withCount([
+            'orders as open_count' => function ($q) {
+                $q->where('status', 'open');
+            }
+        ])->findOrFail($tableId);
         $orders = Order::with(['orderItems.menu', 'orderItems.customOptions.customOption'])
             ->where('table_id', $tableId)
+            ->where('status', 'open')
             ->get();
-
         $history = collect();
         $totalPrice = 0;
-
         // 最新の order をチェック（支払い状態参照）
-        $latestOrder = $orders->sortByDesc('created_at')->first();
-        $isPaid = $latestOrder?->is_paid ?? false;
+        $latestOrder   = $orders->sortByDesc('created_at')->first();
+        $isPaid        = $latestOrder?->is_paid ?? false;
         $paymentMethod = $latestOrder?->payment_method ?? null;
-
         foreach ($orders as $order) {
             foreach ($order->orderItems as $item) {
-                $menu = $item->menu;
-                $status = $item->status;
+                $menu      = $item->menu;
+                $status    = $item->status;
                 $orderedAt = $order->created_at;
-
                 if ($item->customOptions->isNotEmpty()) {
                     $sumOpts = (int) $item->customOptions->sum('quantity');
-
                     foreach ($item->customOptions as $opt) {
                         $perUnit = (float) ($menu->price + ($opt->extra_price ?? 0));
                         $lineQty = (int) $opt->quantity;
@@ -383,7 +376,6 @@ class OrderController extends Controller
                         ]);
                         $totalPrice += $perUnit * $lineQty;
                     }
-
                     $leftover = $item->quantity - $sumOpts;
                     if ($leftover > 0) {
                         $perUnit = (float) $menu->price;
@@ -401,7 +393,6 @@ class OrderController extends Controller
                     $perUnit = $item->quantity > 0
                         ? (float) round($item->price / $item->quantity, 2)
                         : (float) $menu->price;
-
                     $history->push([
                         'menu_name'  => $menu->name,
                         'options'    => '-',
@@ -414,9 +405,15 @@ class OrderController extends Controller
                 }
             }
         }
-
-        return view('managers.tables.show', compact('table', 'history', 'totalPrice', 'isPaid', 'paymentMethod'));
-    };
+        // btn-primary 切り替え用に open_count を渡す
+        return view('managers.tables.show', compact(
+            'table',
+            'history',
+            'totalPrice',
+            'isPaid',
+            'paymentMethod'
+        ));
+    }
 
 
     public function checkoutComplete($storeName, $tableUuid)
@@ -426,5 +423,4 @@ class OrderController extends Controller
 
         return view('guests.checkout-complete', compact('store', 'table'));
     }
-
 }

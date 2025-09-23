@@ -369,8 +369,6 @@ form.product-search input.input-underline[type="search"]:focus {
   outline: none !important;
   box-shadow: none !important;
 }
-<<<<<<< HEAD
-=======
 
 /* guest order history */
 
@@ -431,5 +429,3 @@ footer button.text-brown:hover {
   z-index: 9999;
   transition: transform 1s cubic-bezier(0.55, -0.55, 0.35, 1.55), opacity 1s;
 }
-
->>>>>>> 6bd537375fe2ef7c90b134b4582bda9f0684a4cf

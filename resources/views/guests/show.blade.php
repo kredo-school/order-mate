@@ -41,65 +41,7 @@
                 {{-- アレルギー情報 --}}
                 @if (!empty($product->allergy))
                     <p> {{ $product->allergy }}</p>
-            @endif
-
-            {{-- タグ --}}
-            @if ($product->tag)
-                <div class="mt-2">
-                    <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" style="max-width:80px;">
-                </div>
-            @endif
-
-            {{-- Add to Cart Form --}}
-            <form action="{{ route('guest.cart.add', [
-                    'storeName' => $store->store_name,
-                    'tableUuid' => $table->uuid,
-                    'menu'      => $product->id
-                ]) }}" method="POST" id="add-to-cart-form">
-                @csrf
-
-                {{-- 商品数量 --}}
-                <div class="mt-3 text-center">
-                    <h5 class="fw-semibold">数量</h5>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <button type="button" class="btn btn-outline-secondary btn-sm product-decrement">-</button>
-                        <span id="product-quantity" class="mx-2">0</span>
-                        <button type="button" class="btn btn-outline-secondary btn-sm product-increment">+</button>
-                    </div>
-                </div>
-                <input type="hidden" name="quantity" value="0" id="product-quantity-input">
-
-                {{-- カスタムオプション --}}
-                @if ($product->customGroups && $product->customGroups->count())
-                    <div class="mt-4">
-                        @foreach ($product->customGroups as $group)
-                            <div class="mb-3">
-                                <h5 class="mb-1 fw-semibold">{{ $group->title }}</h5>
-                                <ul class="list-unstyled ms-3 custom-group">
-                                    @foreach ($group->customOptions as $option)
-                                        <li class="d-flex align-items-center justify-content-between mb-2">
-                                            <div>
-                                                {{ $option->name }}
-                                                @if ($option->extra_price)
-                                                    <span class="text-muted">
-                                                        （{{ $option->extra_price > 0 ? '+' : ($option->extra_price < 0 ? '-' : '±') }}{{ number_format(abs($option->extra_price)) }}）
-                                                    </span>
-                                                @endif
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm decrement">-</button>
-                                                <span class="mx-2 quantity" data-option-id="{{ $option->id }}">0</span>
-                                                <button type="button" class="btn btn-outline-secondary btn-sm increment">+</button>
-                                            </div>
-                                        </li>
-                                        <input type="hidden" name="options[{{ $option->id }}]" value="0" id="option-input-{{ $option->id }}">
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endforeach
-                    </div>
                 @endif
-
 
 
                 {{-- Add to Cart Form --}}
@@ -287,12 +229,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                // カートの合計数を更新
+                                // カート数を更新
                                 const cartCountEl = document.getElementById("cart-count");
                                 if (cartCountEl) {
                                     cartCountEl.textContent = data.totalItems;
                                     cartCountEl.style.display = data.totalItems > 0 ? 'flex' : 'none';
                                 }
+
 
                                 // 完了画面へリダイレクト
                                 window.location.href =

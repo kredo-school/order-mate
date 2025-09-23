@@ -21,7 +21,7 @@
                 <h4 class="me-3 mb-0">Broadcast to Managers</h4>
                 
                 <div class="dropdown flex-grow-1">
-                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" 
+                    <button class="btn btn-outline-secondary dropdown-toggle text-start" 
                             type="button" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
@@ -53,6 +53,11 @@
                         @endforeach
                     </ul>
                 </div>
+
+                {{-- Analyticsボタンを追加 --}}
+                <a href="{{ route('admin.analytics') }}" class="btn btn-primary ms-2">
+                    Analytics
+                </a>
             </div>
     
             {{-- メッセージ入力欄 --}}

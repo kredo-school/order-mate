@@ -52,6 +52,7 @@ class OrderController extends Controller
         $quantity = max(1, (int)$request->input('quantity', 1));
         $options  = $request->input('options', []); // [customOptionId => qty]
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
+
         $order = Order::firstOrCreate(
             [
                 'table_id' => $table->id,
@@ -63,61 +64,63 @@ class OrderController extends Controller
                 'order_type'  => 'dine-in',
             ]
         );
-        DB::transaction(function () use ($menu, $quantity, $options, $order) {
-            // 1) prepare option distribution maps
-            $assigned = []; // per item index map optionId => qty
+
+        DB::transaction(function() use ($menu, $quantity, $options, $order) {
+
             $extraPriceMap = [];
-            // load extra prices
             $optIds = array_keys($options);
             $opts = CustomOption::whereIn('id', $optIds)->get()->keyBy('id');
+
             foreach ($options as $optId => $optQty) {
-                $optQty = (int)$optQty;
                 $extraPriceMap[$optId] = $opts[$optId]->extra_price ?? 0;
-                for ($i = 0; $i < $optQty; $i++) {
-                    $idx = $i % $quantity;
-                    if (!isset($assigned[$idx])) $assigned[$idx] = [];
-                    $assigned[$idx][$optId] = ($assigned[$idx][$optId] ?? 0) + 1;
-                }
             }
-            $createdItems = [];
-            $sumToIncrement = 0;
-            for ($idx = 0; $idx < $quantity; $idx++) {
-                $itemPrice = (float)$menu->price;
-                $optsForItem = $assigned[$idx] ?? [];
-                foreach ($optsForItem as $optId => $optQty) {
-                    $itemPrice += ($extraPriceMap[$optId] ?? 0) * $optQty;
-                }
-                $orderItem = OrderItem::create([
-                    'order_id' => $order->id,
-                    'menu_id'  => $menu->id,
-                    'quantity' => 1,
-                    'price'    => $itemPrice,
-                    'status'   => 'pending',
-                ]);
-                foreach ($optsForItem as $optId => $optQty) {
+
+            // まず、オプションがある場合は1つずつ OrderItem を作成
+            foreach ($options as $optId => $optQty) {
+                for ($i = 0; $i < $optQty; $i++) {
+                    $itemPrice = $menu->price + ($extraPriceMap[$optId] ?? 0);
+                    $orderItem = OrderItem::create([
+                        'order_id' => $order->id,
+                        'menu_id'  => $menu->id,
+                        'quantity' => 1,
+                        'price'    => $itemPrice,
+                        'status'   => 'pending',
+                    ]);
+
                     OrderItemCustomOption::create([
                         'order_item_id'    => $orderItem->id,
                         'custom_option_id' => $optId,
-                        'quantity'         => $optQty,
-                        'extra_price'      => $extraPriceMap[$optId] ?? 0,
+                        'quantity'         => 1,
+                        'extra_price'      => $extraPriceMap[$optId],
                     ]);
                 }
-                $createdItems[] = $orderItem;
-                $sumToIncrement += $itemPrice;
             }
-            // update order total_price
-            $order->increment('total_price', $sumToIncrement);
-        });
-        return response()->json([
-            'status' => 'success',
-            'totalItems' => $order->orderItems()->count(),
-            'redirect' => route('guest.cart.addComplete', [
-                'storeName' => $storeName,
-                'tableUuid' => $tableUuid,
-            ]),
 
+            // オプション未選択の残り数量を作成
+            $totalOptionsQty = array_sum($options);
+            $remaining = $quantity - $totalOptionsQty;
+            for ($i = 0; $i < $remaining; $i++) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'menu_id'  => $menu->id,
+                    'quantity' => 1,
+                    'price'    => $menu->price,
+                    'status'   => 'pending',
+                ]);
+            }
+
+            // 合計金額更新
+            $order->total_price = $order->orderItems()->sum('price');
+            $order->save();
+        });
+
+        return redirect()->route('guest.cart.addComplete', [
+            'storeName' => $storeName,
+            'tableUuid' => $tableUuid,
         ]);
     }
+    
+
 
 
     public function destroy($storeName, $tableUuid, OrderItem $orderItem)

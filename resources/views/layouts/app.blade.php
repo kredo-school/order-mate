@@ -154,6 +154,9 @@
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-table me-2"></i> Table
                         </a>
+                        <a href="{{route('manager.analytics')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-chart-simple me-2"></i> Analytics
+                        </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

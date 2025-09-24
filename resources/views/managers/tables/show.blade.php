@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Table ' . $table->number . ' - Order History')
+@section('title', 'Table Order History')
 
 @section('content')
 <div class="container">

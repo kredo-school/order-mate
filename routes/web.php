@@ -94,11 +94,11 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/analytics/order_details', [AnalyticsController::class, 'getOrderDetails'])->name('analytics.orderDetails');
 
     // Tables routes
-    Route::get('/tables', [TableController::class, 'index'])->name('tables');
+    // Route::get('/tables', [TableController::class, 'index'])->name('tables');
+    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
     Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
-    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
     Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
 
 

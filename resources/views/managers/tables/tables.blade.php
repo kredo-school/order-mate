@@ -15,7 +15,7 @@
         <div class="row">
             @foreach($tables as $table)
                 <div class="col-6 col-md-3 mb-3">
-                    <a href="{{ route('manager.tables.show', $table->id) }}" class="btn btn-outline-primary w-100">
+                    <a href="{{ route('manager.tables.show', $table) }}" class="btn btn-outline w-100">
                         {{ $table->number }}
                     </a>
                 </div>

@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(Request $request): void
     {
-        View::composer('*', function ($view) use ($request) {
+        View::composer('guests*', function ($view) use ($request) {
             $userStore = Auth::check() ? Auth::user()->store : null;
             $view->with('userStore', $userStore);
 
@@ -77,5 +77,13 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        // view()->composer('*', function ($view) {
+        //     if (Auth::check()) {
+        //         $user = Auth::user();
+        //         $userStore = $user->store ?? null;
+        //         $view->with('userStore', $userStore);
+       
+        // }});
     }
 }

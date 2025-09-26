@@ -96,6 +96,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+  console.log("スクリプト開始");
     /** ----------------
      * Sales Trend (Line)
      * ----------------*/
@@ -331,6 +332,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tr.classList.remove("table-primary");
         }
     });
+    console.log("スクリプト終了"); 
 });
 </script>
 @endpush

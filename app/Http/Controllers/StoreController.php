@@ -129,9 +129,15 @@ class StoreController extends Controller{
         } else {
             // 同じストア(user_id)の is_active = true のやつだけ取得
             $tables = Table::forStore($store->user_id)
-                        ->active()
-                        ->orderBy('number')
-                        ->get();
+            ->active()
+            ->withCount([
+                'orders as open_count' => function ($q) {
+                    $q->where('status', 'open');
+                }
+            ])
+            ->orderBy('number')
+            ->get();
+
         }
 
         return view('managers.tables.tables', compact('tables'));

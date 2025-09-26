@@ -45,8 +45,10 @@ class OrderListController extends Controller
                     foreach ($item->customOptions as $opt) {
                         $orderRows->push([
                             'id'        => $item->id,
+                            'orderId'   => $order->id,
                             'table'     => $order->table->number,
                             'time'      => $timeLabel,
+                            'updatedAt' => $item->updated_at->toIso8601String(),
                             'item'      => $menuName,
                             'option'    => $opt->customOption->name ?? '-',
                             'quantity'  => (int) $opt->quantity,
@@ -61,8 +63,10 @@ class OrderListController extends Controller
                     if ($leftover > 0) {
                         $orderRows->push([
                             'id'        => $item->id,
+                            'orderId'   => $order->id,
                             'table'     => $order->table->number,
                             'time'      => $timeLabel,
+                            'updatedAt' => $item->updated_at->toIso8601String(),
                             'item'      => $menuName,
                             'option'    => '-',
                             'quantity'  => $leftover,
@@ -74,8 +78,10 @@ class OrderListController extends Controller
                 } else {
                     $orderRows->push([
                         'id'        => $item->id,
+                        'orderId'   => $order->id,
                         'table'     => $order->table->number,
                         'time'      => $timeLabel,
+                        'updatedAt' => $item->updated_at->toIso8601String(),
                         'item'      => $menuName,
                         'option'    => '-',
                         'quantity'  => $item->quantity,

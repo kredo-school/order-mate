@@ -18,13 +18,12 @@ class OrderController extends Controller
      */
     public function show($storeName, $tableUuid)
     {
-        // 1. テーブル取得
         $table = Table::where('uuid', $tableUuid)
             ->with('user.store')
             ->firstOrFail();
 
         $store = $table->user->store;
-        // order_items のうち status = pending のみを取得
+
         $orderItems = OrderItem::whereHas('order', function ($query) use ($table) {
             $query->where('table_id', $table->id)
                 ->where('status', 'open');
@@ -33,13 +32,15 @@ class OrderController extends Controller
             ->with(['menu', 'customOptions.customOption'])
             ->orderBy('created_at')
             ->get();
-        // === pending の小計 ===
+
         $subTotal = $orderItems->sum('price');
-        // === これまで含めた全体合計 ===
+
         $order = Order::where('table_id', $table->id)
             ->where('status', 'open')
             ->first();
+
         $totalPrice = $order?->total_price ?? 0;
+
         return view('guests.cart', compact('store', 'table', 'orderItems', 'subTotal', 'totalPrice'));
     }
 
@@ -50,8 +51,11 @@ class OrderController extends Controller
     {
         $menu     = Menu::findOrFail($menuId);
         $quantity = max(1, (int)$request->input('quantity', 1));
-        $options  = $request->input('options', []); // [customOptionId => qty]
+        $options  = $request->input('options', []);
         $table = Table::where('uuid', $tableUuid)->firstOrFail();
+
+        // === テーブル番号が 0 なら takeout にする ===
+        $orderType = ($table->number == 0) ? 'takeout' : 'dine-in';
 
         $order = Order::firstOrCreate(
             [
@@ -61,7 +65,7 @@ class OrderController extends Controller
             [
                 'user_id'     => $table->user_id,
                 'total_price' => 0,
-                'order_type'  => 'dine-in',
+                'order_type'  => $orderType,
             ]
         );
 
@@ -75,7 +79,6 @@ class OrderController extends Controller
                 $extraPriceMap[$optId] = $opts[$optId]->extra_price ?? 0;
             }
 
-            // まず、オプションがある場合は1つずつ OrderItem を作成
             foreach ($options as $optId => $optQty) {
                 for ($i = 0; $i < $optQty; $i++) {
                     $itemPrice = $menu->price + ($extraPriceMap[$optId] ?? 0);
@@ -96,7 +99,6 @@ class OrderController extends Controller
                 }
             }
 
-            // オプション未選択の残り数量を作成
             $totalOptionsQty = array_sum($options);
             $remaining = $quantity - $totalOptionsQty;
             for ($i = 0; $i < $remaining; $i++) {
@@ -109,7 +111,6 @@ class OrderController extends Controller
                 ]);
             }
 
-            // 合計金額更新
             $order->total_price = $order->orderItems()->sum('price');
             $order->save();
         });
@@ -119,10 +120,6 @@ class OrderController extends Controller
             'tableUuid' => $tableUuid,
         ]);
     }
-    
-
-
-
     public function destroy($storeName, $tableUuid, OrderItem $orderItem)
     {
         $order = $orderItem->order;

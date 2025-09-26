@@ -1,4 +1,4 @@
-<table class="table mb-0">
+<table class="table mb-0 shadow-lg">
     <thead class="table-light">
         <tr>
             <th>Date (Created)</th>

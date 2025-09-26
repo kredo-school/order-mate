@@ -68,7 +68,7 @@
 
                     <!-- 右側メニュー -->
                     <ul class="navbar-nav ms-auto">
-                        @guest
+                        @if (request()->routeIs('guest.*'))
                             <li class="nav-item">
                                 <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
                                     data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
@@ -82,7 +82,7 @@
                                     <i class="fa-solid fa-bars fa-2x text-orange"></i>
                                 </a>
                             </li>
-                        @endguest
+                        @endif
                     </ul>
                 </div>
             </nav>
@@ -90,7 +90,7 @@
         {{-- =============== /ヘッダー =============== --}}
 
         <!-- 未ログイン時のオフキャンバス（言語切替メニュー） -->
-        @guest
+        @if (request()->routeIs('guest.*'))
             <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="langMenu"
                 aria-labelledby="langMenuLabel" style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-        @endguest
+        @endif
 
         <!-- オフキャンバスメニュー -->
         @auth
@@ -126,10 +126,7 @@
                     <div class="nav flex-column flex-grow-1">
                         <a href="{{ route('manager.stores.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <span class="me-2 d-flex justify-content-center" style="width: 24px;">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
-                            Store Information
+                            <i class="fa-solid fa-user me-2"></i> Store Information
                         </a>
                         <a href="{{ route('manager.products.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
@@ -138,9 +135,6 @@
                         <a href="{{ route('manager.order-list') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-list-ul me-2"></i> Order List
-                        </a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-boxes-packing me-2"></i> Takeout
                         </a>
                         <a href="{{ route('manager.custom.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
@@ -254,7 +248,7 @@
         </script>
         @stack('guest-scripts')
     @endif
-
+    @stack('scripts')
 </body>
 
 </html>

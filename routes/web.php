@@ -15,7 +15,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffCallController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\TableController;
+use App\Http\Controllers\TakeoutController;
 use App\Models\Table;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
@@ -52,8 +52,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
 
 // Manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');  // ← ここを修正
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create'); // ← ここも揃える
+    // Products
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/by-category/{id}', [ProductController::class, 'byCategory'])
         ->name('products.byCategory');
@@ -96,7 +97,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     // Tables routes
     // Route::get('/tables', [TableController::class, 'index'])->name('tables');
     Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
-    Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
+    Route::get('/tables/{tableId}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
     Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
@@ -105,7 +106,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     // Orders routes
     Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
 
-    // Manager 側
+    // Call Staff
     Route::get('/staff-calls', [StaffCallController::class, 'index'])->name('staffCalls.index');
     Route::post('/staff-calls/{staffCall}/read', [StaffCallController::class, 'markAsRead'])->name('staffCalls.read');
 });

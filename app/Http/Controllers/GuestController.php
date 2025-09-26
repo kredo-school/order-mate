@@ -46,17 +46,13 @@ class GuestController extends Controller
         $cart = session()->get("cart_{$table->uuid}", []);
         $cartCount = array_sum(array_column($cart, 'quantity'));
 
-        return view('guests.index', compact('store', 'table', 'all_categories', 'products'))
-            ->with('isGuestPage', true);
-                     
-    
         // 最新の注文を取得
         $latestOrder = $table->orders()->latest()->first();
     
         if (!$latestOrder || $latestOrder->status === 'closed') {
             // まだ注文がない or 直前の注文が閉じられている → 新しい来店扱い
             return view('guests.welcome', compact('store', 'table'))
-                   ->with('isGuestPage', true);
+            ->with('isGuestPage', true)->with('context', 'guest');
         }
     
         // open order がある場合 → メニュー表示
@@ -69,8 +65,7 @@ class GuestController extends Controller
     
         $menus = Menu::where('user_id', $store->user_id)->with('category')->get();
     
-        return view('guests.index', compact('store', 'table', 'menus', 'all_categories', 'products'))
-               ->with('isGuestPage', true);
+        return view('guests.index', compact('store', 'table', 'menus', 'all_categories', 'products'))->with('isGuestPage', true)->with('context', 'guest');
     }
     
     public function welcome($storeName, $tableUuid)
@@ -80,8 +75,7 @@ class GuestController extends Controller
                     ->where('uuid', $tableUuid)
                     ->firstOrFail();
 
-        return view('guests.welcome', compact('store', 'table'))
-            ->with('isGuestPage', true);
+        return view('guests.welcome', compact('store', 'table'))->with('isGuestPage', true)->with('context', 'guest');
     }
 
     public function startOrder(Request $request, $storeName, $tableUuid)
@@ -101,6 +95,9 @@ class GuestController extends Controller
             return redirect()->route('guest.index', [$storeName, $tableUuid]);
         }
 
+        // === テーブル番号が 0 なら takeout にする ===
+        $orderType = ($table->number == 0) ? 'takeout' : 'dine-in';
+
         // 新しい注文を作成
         $table->orders()->create([
             'status'      => 'open',
@@ -108,7 +105,7 @@ class GuestController extends Controller
             'is_paid'     => false,
             'user_id'     => $table->user_id,
             'total_price' => 0,
-            'order_type' => 'dine-in',
+            'order_type'  => $orderType,
         ]);
 
         return redirect()->route('guest.index', [$storeName, $tableUuid]);
@@ -119,8 +116,6 @@ class GuestController extends Controller
         $store = Store::where('store_name', $storeName)->firstOrFail();
         $all_categories = Category::where('user_id', $store->user_id)->get();
         $table = Table::where('user_id', $store->user_id)
-
-          
                       ->where('uuid', $tableUuid)
                       ->firstOrFail();
     
@@ -138,7 +133,7 @@ class GuestController extends Controller
             ->firstOrFail();
 
         return view('guests.show', compact('store', 'table', 'all_categories', 'product'))
-            ->with('isGuestPage', true);
+        ->with('isGuestPage', true)->with('context', 'guest');
     }
     
 
@@ -150,7 +145,7 @@ class GuestController extends Controller
             ->firstOrFail();
 
         return view('guests.call', compact('store', 'table'))
-            ->with('isGuestPage', true);
+        ->with('isGuestPage', true)->with('context', 'guest');
     }
 
 
@@ -169,11 +164,11 @@ class GuestController extends Controller
     }
 
     public function cartCount($storeName, $tableUuid)
-{
-    $table = Table::where('uuid', $tableUuid)->firstOrFail();
-    $cart = session()->get("cart_{$table->uuid}", []);
-    $totalItems = array_sum(array_column($cart, 'quantity'));
+    {
+        $table = Table::where('uuid', $tableUuid)->firstOrFail();
+        $cart = session()->get("cart_{$table->uuid}", []);
+        $totalItems = array_sum(array_column($cart, 'quantity'));
 
-    return response()->json(['totalItems' => $totalItems]);
-}
+        return response()->json(['totalItems' => $totalItems]);
+    }
 }

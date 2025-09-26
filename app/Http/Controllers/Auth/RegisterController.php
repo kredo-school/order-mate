@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use App\Mail\WelcomeMail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -52,7 +55,15 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)       // 8文字以上
+                    ->letters()       // 英字を必須
+                    ->mixedCase()     // 大文字・小文字を含む
+                    ->numbers()       // 数字を必須
+                    ->symbols(),      // 記号を必須
+            ],
         ]);
     }
 
@@ -73,8 +84,12 @@ class RegisterController extends Controller
         // 👇 ユーザー作成後に自動で店舗を作成
         Store::create([
             'user_id'    => $user->id,
-            'store_name' => $user->name . 'の店舗',
+            'store_name' => $user->name,
         ]);
+
+        // 👇 ユーザー登録完了メールを送信
+        Mail::to($user->email)->send(new WelcomeMail());
+
 
         return $user;
     }

@@ -47,6 +47,14 @@
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">
                             {{ $store->user->email ?? Auth::user()->email }}</p>
                     </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-coins fa-2x me-2 text-brown"></i>
+                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">
+                            {{-- 選択された通貨コードをラベルに変換して表示 --}}
+                            {{ config('currencies')[$store->currency] ?? '' }}
+                        </p>
+                    </div>
+
                 </div>
 
                 {{-- Chat Column --}}

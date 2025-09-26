@@ -79,12 +79,18 @@
             <th class="text-brown border-0">Status</th>
         </tr>
       </thead>
+                  @php
+                $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php
+                $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
+            @endphp
+
       <tbody>
         @foreach ($history as $row)
           <tr class="border-0">
             <td class="border-0">{{ $row['menu_name'] }}</td>
             <td class="border-0">{{ $row['options'] }}</td>
-            <td class="border-0">{{ number_format($row['price'], 2) }} php</td>
+            <td class="border-0">{{ explode(' - ', $currencyLabel)[0] }}
+                                {{ number_format($row['price'], 2) }}</td>
             <td class="border-0">x{{ $row['quantity'] }}</td>
             <td class="border-0">{{ ucfirst($row['status']) }}</td>
           </tr>

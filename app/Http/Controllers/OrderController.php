@@ -242,28 +242,6 @@ class OrderController extends Controller
         ]);
     }
 
-    public function cartCount($tableUuid)
-{
-    $table = Table::where('uuid', $tableUuid)->firstOrFail();
-
-    $order = Order::where('table_id', $table->id)
-        ->where('status', 'open')
-        ->first();
-
-        // 2. そのテーブルにある open Order 全部の pending OrderItem をカウント
-    $count = OrderItem::whereHas('order', function($q) use ($table) {
-        $q->where('table_id', $table->id)
-          ->where('status', 'open');
-    })->where('status', 'pending')
-      ->count();
-
-    return $count;
-
-    return $order
-        ? $order->orderItems()->where('status', 'pending')->count()
-        : 0;
-}
-
     public function history($storeName, $tableUuid)
     {
         $table = Table::where('uuid', $tableUuid)

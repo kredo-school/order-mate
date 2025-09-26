@@ -69,11 +69,19 @@
                     data-status="{{ $row['status'] }}"
                     style="cursor: pointer;">
                     <td>{{ $row['table'] }}</td>
-                    <td>{{ $row['time'] }}</td>
+                    <td>
+                        <span class="elapsed-time" data-created-at="{{ $row['updatedAt'] }}">
+                            00:00
+                        </span>
+                    </td>
                     <td>{{ $row['item'] }}</td>
                     <td>{{ $row['option'] }}</td>
                     <td>{{ $row['quantity'] }}</td>
-                    <td>{{ $row['orderType'] }}</td>
+                    <td>{{ $row['orderType'] }} 
+                        @if ($row['orderType'] == 'takeout')
+                            #{{ $row['orderId'] }}
+                        @endif
+                    </td>
                     <td>{{ $row['category'] }}</td>
                     <td class="status-cell">{!! $progressDot !!} {{ $progressLabel }}</td>
                 </tr>
@@ -122,12 +130,14 @@
   // =========================
   function updateElapsedTimes() {
       document.querySelectorAll('.elapsed-time').forEach(el => {
-          const createdAt = new Date(el.dataset.createdAt);
-          const now = new Date();
-          const diff = Math.floor((now - createdAt) / 1000);
-          const minutes = Math.floor(diff / 60);
-          const seconds = diff % 60;
-          el.textContent = `${minutes}m ${seconds}s`;
+            const createdAt = new Date(el.dataset.createdAt);
+            const now = new Date();
+            const diff = Math.floor((now - createdAt) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            const mm = String(minutes).padStart(2, '0');
+            const ss = String(seconds).padStart(2, '0');
+            el.textContent = `${mm}:${ss}`;
       });
   }
   setInterval(updateElapsedTimes, 1000);

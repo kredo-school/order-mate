@@ -15,7 +15,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffCallController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\TableController;
+use App\Http\Controllers\TakeoutController;
 use App\Models\Table;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
@@ -52,8 +52,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
 
 // Manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');  // ← ここを修正
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create'); // ← ここも揃える
+    // Products
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/by-category/{id}', [ProductController::class, 'byCategory'])
         ->name('products.byCategory');
@@ -94,18 +95,18 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
     Route::get('/analytics/order_details', [AnalyticsController::class, 'getOrderDetails'])->name('analytics.orderDetails');
 
     // Tables routes
-    Route::get('/tables', [TableController::class, 'index'])->name('tables');
-    Route::get('/tables/{table}', [OrderController::class, 'historyByTable'])
+    // Route::get('/tables', [TableController::class, 'index'])->name('tables');
+    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
+    Route::get('/tables/{tableId}', [OrderController::class, 'historyByTable'])
     ->name('tables.show');
     Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
-    Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
     Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
 
 
     // Orders routes
     Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
 
-    // Manager 側
+    // Call Staff
     Route::get('/staff-calls', [StaffCallController::class, 'index'])->name('staffCalls.index');
     Route::post('/staff-calls/{staffCall}/read', [StaffCallController::class, 'markAsRead'])->name('staffCalls.read');
 });
@@ -152,8 +153,12 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
     })->name('order.complete');
     Route::get('/order-history', [OrderController::class, 'history'])->name('orderHistory');
 
-    // Guest 側 呼び出し
-    Route::post('/call',[StaffCallController::class, 'store'])->name('call.store');
+    // ゲスト側のスタッフ呼び出し（POST）
+    Route::post('/call', [GuestController::class, 'storeCall'])->name('call.store');
+    // 呼び出し完了画面 (GET)
+    Route::get('/call-complete/{call}', [GuestController::class, 'callComplete'])->name('call.complete');
+    // 呼び出しの順位を返す API（GET）
+    Route::get('/staff-calls/{call}/priority', [GuestController::class, 'callPriority'])->name('call.priority');
 
     // Payment (Stripe)
     Route::post('/payment', [CheckoutController::class, 'payment'])->name('payment');

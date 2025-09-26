@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Table ' . $table->number . ' - Order History')
+@section('title', 'Table Order History')
 
 @section('content')
 <div class="container">
@@ -10,7 +10,7 @@
             <i class="fa-solid fa-angle-left text-orange"></i> Back to Tables
         </h5>
     </a>
-    <h3 class="fw-bold">Table {{ $table->number }} - Order History</h3>
+    <h3 class="fw-bold">Table {{ $table->number ?? '不明' }} - Order History</h3>
   </div>
 
   @if ($history->count() > 0)

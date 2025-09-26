@@ -148,7 +148,8 @@
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-table me-2"></i> Table
                         </a>
-                        <a href="{{route('manager.analytics')}}" class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                        <a href="{{ route('manager.analytics') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-chart-simple me-2"></i> Analytics
                         </a>
                         <a href="{{ route('logout') }}"
@@ -167,6 +168,11 @@
             @yield('content')
         </main>
 
+        @php
+            $currencyCode = $store->currency ?? 'php'; // DBに保存されたコード、なければ php
+            $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
+        @endphp
+
 
         {{-- ================= フッター ================= --}}
         @if (trim($__env->yieldContent('footer')) != '')
@@ -178,7 +184,8 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price） --}}
                         <div>
-                            <span class="fw-bold text-brown fs-4 ms-4">Total : </span>
+                            <span class="fw-bold text-brown fs-4 ms-4">Total   {{ explode(' - ', $currencyLabel)[0] }}
+                            </span>
                             <span class="h3 fw-bold text-brown"
                                 id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if ($isPaid)

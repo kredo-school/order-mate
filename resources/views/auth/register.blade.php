@@ -37,7 +37,11 @@
 
             {{-- Password --}}
             <div class="mb-3">
-                <label for="password">Password</label>
+                <label for="password">Password
+                </label>
+                <small class="form-text text-muted" style="line-height:1;">
+                    * Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.
+                </small>
                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                     name="password" required autocomplete="new-password">
                 @error('password')

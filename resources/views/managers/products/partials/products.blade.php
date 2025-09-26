@@ -10,15 +10,15 @@
     <div class="row">
         @foreach ($list as $product)
             <div class="col-md-3 mb-4">
-                <a href="{{ $isGuestPage 
+                <a href="{{ $isGuestPage
                     ? route('guest.show', [
                         'storeName' => $store->store_name,
                         'tableUuid' => $table->uuid,
-                        'id' => $product->id
-                    ]) 
-                    : route('manager.products.show', $product->id) }}" 
+                        'id' => $product->id,
+                    ])
+                    : route('manager.products.show', $product->id) }}"
                     class="text-decoration-none text-brown">
-                    
+
                     <div class="card h-100 border-0 shadow-none position-relative">
                         @if ($product->tag)
                             <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
@@ -35,10 +35,15 @@
                             </div>
                         @endif
 
+                        @php
+                            $currencyCode = $store->currency ?? 'php'; // DBに保存されたコード、なければ php
+                            $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
+                        @endphp
+
                         <div class="card-body text-center p-2">
                             <h5 class="card-title mb-1 text-brown fw-bold mt-1">{{ $product->name }}</h5>
                             @if (isset($product->price))
-                                <p class="mb-0 text-brown">{{ number_format($product->price, 2) }}php</p>
+                                <p class="mb-0 text-brown">{{ explode(' - ', $currencyLabel)[0] }} {{ number_format($product->price, 2) }}</p>
                             @endif
                         </div>
                     </div>

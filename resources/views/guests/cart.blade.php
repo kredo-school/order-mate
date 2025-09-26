@@ -32,10 +32,14 @@
                                         class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
                                 </div>
 
+                                @php $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php 
+                                $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP'; 
+                                @endphp
+
                                 {{-- 中央：商品名・価格 --}}
                                 <div class="flex-grow-1 px-3 d-flex flex-column justify-content-center">
                                     <span class="fw-bold text-brown">{{ $item->menu->name }}</span>
-                                    <span class="fw-light text-brown">{{ number_format($item->menu->price) }} php</span>
+                                    <span class="fw-light text-brown">{{ explode(' - ', $currencyLabel)[0] }} {{ number_format($item->menu->price) }}</span>
                                     {{-- カスタムオプション --}}
                                     @if ($item->customOptions->count() > 0)
                                         <ul class="mb-0 small text-muted text-brown">
@@ -45,10 +49,10 @@
                                                     {{ $custom->quantity }}
                                                     @if ($custom->extra_price != 0)
                                                         <span
-                                                            class="text-brown">{{ $custom->extra_price > 0 ? '+' : '' }}{{ number_format($custom->extra_price) }}
-                                                            php</span>
+                                                            class="text-brown">{{ $custom->extra_price > 0 ? '+' : '' }}{{ explode(' - ', $currencyLabel)[0] }} {{ number_format($custom->extra_price) }}
+                                                            </span>
                                                     @else
-                                                        <span class="text-brown">±0 php</span>
+                                                        <span class="text-brown">{{ explode(' - ', $currencyLabel)[0] }} ±0</span>
                                                     @endif
                                                 </li>
                                             @endforeach
@@ -111,12 +115,6 @@
 
 
 
-                {{-- 合計表示 --}}
-                {{-- <div class="d-flex justify-content-between align-items-center mt-4">
-          <div>
-            <small class="text-muted">Total</small><br>
-            <span class="fs-4 fw-bold">{{ number_format($totalPrice, 2) }} php</span>
-          </div> --}}
                 <div class="d-flex justify-content-end mb-5">
 
                     <form

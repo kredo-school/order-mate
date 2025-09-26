@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class StoreController extends Controller{
+class StoreController extends Controller
+{
     public function index()
     {
         $store = Auth::user()->store;
@@ -24,10 +25,10 @@ class StoreController extends Controller{
             $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
 
             $firstUnreadId = $chat->messages()
-            ->where('user_id', '!=', Auth::id())
-            ->where('is_read', false)
-            ->orderBy('id', 'asc')
-            ->value('id');
+                ->where('user_id', '!=', Auth::id())
+                ->where('is_read', false)
+                ->orderBy('id', 'asc')
+                ->value('id');
         } else {
             $chat = null;
             $messages = collect();
@@ -37,9 +38,13 @@ class StoreController extends Controller{
         return view('managers.stores.index', compact('store', 'chat', 'messages', 'firstUnreadId'));
     }
 
-    public function edit(){
+    public function edit()
+    {
         $store = Store::where('user_id', Auth::id())->first(); // 既存のストアを取得（なければnull）
-        return view('managers.stores.save', compact('store'));
+        // config/currencies.php から呼び出し
+        $currencies = config('currencies.supported');
+
+        return view('managers.stores.save', compact('store', 'currencies'));
     }
 
     public function save(Request $request)
@@ -54,6 +59,8 @@ class StoreController extends Controller{
             'open_hours'   => 'nullable|string',
             'password'     => 'nullable|string|min:8|confirmed',
             'email'        => 'nullable|email|max:255', // users.email の更新用
+            'currency'     => 'nullable|string|max:3',
+
         ]);
 
         // store_photo
@@ -83,39 +90,41 @@ class StoreController extends Controller{
         return redirect()->route('manager.stores.index');
     }
 
-    public function qrCode(){
+    public function qrCode()
+    {
         return view('managers.stores.qr');
     }
 
-    public function generateQr(Request $request){
+    public function generateQr(Request $request)
+    {
         $store = Auth::user()->store;
-    
+
         $start = (int)$request->input('table_start');
         $end   = (int)$request->input('table_end');
-    
+
         if ($start > $end) {
             return back()->withErrors('開始番号は終了番号以下にしてください');
         }
-    
+
         // まず全テーブルを inactive にする（論理削除）
         Table::where('user_id', $store->user_id)->update(['is_active' => false]);
-    
+
         // 今回の範囲を active に復活 or 作成
         $tables = collect(range($start, $end))->map(function ($number) use ($store) {
             $table = Table::firstOrNew(
                 ['user_id' => $store->user_id, 'number' => $number]
             );
-    
+
             if (!$table->exists) {
                 $table->uuid = \Illuminate\Support\Str::uuid();
             }
-    
+
             $table->is_active = true; // アクティブ化
             $table->save();
-    
+
             return $table;
         });
-    
+
         return view('managers.stores.qr', compact('store', 'tables'));
     }
 
@@ -143,4 +152,3 @@ class StoreController extends Controller{
         return view('managers.tables.tables', compact('tables'));
     }
 }
-

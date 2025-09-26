@@ -28,10 +28,16 @@
                 @endif
             </div>
 
+            @php
+                $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php
+                $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
+            @endphp
+
             {{-- 右側（商品情報） --}}
             <div class="col-md-7">
                 <h2 class="fw-bold text-center text-brown fs-1 mt-5 mb-1">{{ $product->name }}</h2>
-                <p class="fs-5 text-center text-brown">{{ number_format($product->price) }}php</p>
+                <p class="fs-5 text-center text-brown">{{ explode(' - ', $currencyLabel)[0] }}
+                    {{ number_format($product->price) }}</p>
 
                 {{-- 説明 --}}
                 @if (!empty($product->description))

@@ -153,8 +153,12 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.'], fu
     })->name('order.complete');
     Route::get('/order-history', [OrderController::class, 'history'])->name('orderHistory');
 
-    // Guest 側 呼び出し
-    Route::post('/call',[StaffCallController::class, 'store'])->name('call.store');
+    // ゲスト側のスタッフ呼び出し（POST）
+    Route::post('/call', [GuestController::class, 'storeCall'])->name('call.store');
+    // 呼び出し完了画面 (GET)
+    Route::get('/call-complete/{call}', [GuestController::class, 'callComplete'])->name('call.complete');
+    // 呼び出しの順位を返す API（GET）
+    Route::get('/staff-calls/{call}/priority', [GuestController::class, 'callPriority'])->name('call.priority');
 
     // Payment (Stripe)
     Route::post('/payment', [CheckoutController::class, 'payment'])->name('payment');

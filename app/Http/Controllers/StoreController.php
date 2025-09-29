@@ -50,32 +50,39 @@ class StoreController extends Controller
     public function save(Request $request)
     {
         $validated = $request->validate([
-            'store_name'   => 'nullable|string|max:255',
-            'store_url'    => 'nullable|string|max:255',
-            'address'      => 'nullable|string',
-            'phone'        => 'nullable|string|max:255',
-            'manager_name' => 'nullable|string|max:255',
-            'store_photo'  => 'nullable|image|max:2048',
-            'open_hours'   => 'nullable|string',
-            'password'     => 'nullable|string|min:8|confirmed',
-            'email'        => 'nullable|email|max:255', // users.email の更新用
-            'currency'     => 'nullable|string|max:3',
-
+            'store_name'       => 'nullable|string|max:255',
+            'store_url'        => 'nullable|string|max:255',
+            'address'          => 'nullable|string',
+            'phone'            => 'nullable|string|max:255',
+            'manager_name'     => 'nullable|string|max:255',
+            'store_photo'      => 'nullable|image|max:2048',
+            'open_hours'       => 'nullable|string',
+            'password'         => 'nullable|string|min:8|confirmed',
+            'email'            => 'nullable|email|max:255', // users.email の更新用
+            'currency'         => 'nullable|string|max:3',
+            'payment_enabled'  => 'nullable', // ← 追加
         ]);
-
+    
         // store_photo
         if ($request->hasFile('store_photo')) {
             $validated['store_photo'] = $request->file('store_photo')->store('store_photos', 'public');
         }
-
+    
         // store 用のデータだけ抜き出す（email / password は user 用なので除外）
         $storeData = collect($validated)->except(['email', 'password'])->toArray();
+    
+        // チェックボックスは存在すれば true、なければ false にする
+        $storeData['payment_enabled'] = $request->has('payment_enabled');
+    
+        $store = Store::firstOrNew(['user_id' => Auth::id()]);
 
-        // Store 更新（既存 or 新規）
-        Store::updateOrCreate(
-            ['user_id' => Auth::id()],
-            $storeData
-        );
+        // store_photo やフォームの値を設定
+        $store->fill($storeData);
+        
+        // payment_enabled はチェックボックスの状態でセット
+        $store->payment_enabled = $request->has('payment_enabled');
+        
+        $store->save();
 
         // User 更新
         $user = User::find(Auth::id());
@@ -86,7 +93,7 @@ class StoreController extends Controller
             $user->password = Hash::make($validated['password']);
         }
         $user->save();
-
+    
         return redirect()->route('manager.stores.index');
     }
 

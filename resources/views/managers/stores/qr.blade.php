@@ -22,7 +22,12 @@
                     <div class="col-12 col-md-2 mb-3 d-flex flex-column">
                         <table>
                             <tr>
-                                <td class="text-brown fs-5" colspan="2">Table number</td>
+                                <td class="text-brown text-center fs-4" colspan="2">Table number</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted text-center fs-5" colspan="2">
+                                    If you would like to receive takeout order, please start from No.0
+                                </td>
                             </tr>
                             <tr>
                                 <td class="d-flex align-items-center"><label for="table_start" class="form-label text-brown mb-0">Start</label></td>

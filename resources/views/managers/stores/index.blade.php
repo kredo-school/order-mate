@@ -26,28 +26,28 @@
 
                     <h2 class="fw-bold mb-5 text-center text-brown">{{ $store->store_name ?? 'No Name' }}</h2>
 
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-2x fa-location-dot me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->address ?? '-' }}</p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-phone fa-2x me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->phone ?? '-' }}</p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-user-tie fa-2x me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->manager_name ?? '-' }}</p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-clock fa-2x me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->open_hours ?? '-' }}</p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-envelope fa-2x me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">
                             {{ $store->user->email ?? Auth::user()->email }}</p>
                     </div>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-coins fa-2x me-2 text-brown"></i>
                         <p class="mb-0 text-brown" style="font-size: 1.05rem;">
                             {{-- 選択された通貨コードをラベルに変換して表示 --}}

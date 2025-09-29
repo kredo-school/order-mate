@@ -42,6 +42,9 @@
                 --bs-offcanvas-width: 100% !important;
                 width: 100% !important;
             }
+            .store-info{
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -199,17 +202,31 @@
                             $tableUuid = request()->route('tableUuid');
                         @endphp
                         <div class="d-flex gap-3">
+                            {{-- Order History --}}
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown">Order History</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">Order History</a>
+                            <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
+                                class="nav-link p-0 text-brown d-inline d-md-none">
+                                <i class="fa-solid fa-list"></i>
+                            </a>
+                            {{-- Call Staff --}}
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown">Call Staff</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">Call Staff</a>
+                            <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
+                                class="nav-link p-0 text-brown d-inline d-md-none">
+                                <i class="fa-solid fa-bell"></i>
+                            </a>
                             {{-- 未決済なら Payment を表示 --}}
-                            @if (empty($isPaid) || !$isPaid)
+                            @if (($store->payment_enabled ?? true) && (empty($isPaid) || !$isPaid))
                                 <form action="{{ route('guest.payment', [$store->store_name, $table->uuid]) }}"
                                     method="POST" class="m-0">
                                     @csrf
                                     <button type="submit"
-                                        class="btn btn-link nav-link p-0 fs-5 text-brown">Payment</button>
+                                    class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">Payment</button>
+                                    <button type="submit"
+                                        class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                    </button>
                                 </form>
                             @endif
 
@@ -218,7 +235,11 @@
                                 method="POST" class="m-0">
                                 @csrf
                                 <button type="submit"
-                                    class="btn btn-link nav-link p-0 fs-5 text-brown">Checkout</button>
+                                class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">Checkout</button>
+                                <button type="submit"
+                                    class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
                             </form>
                             <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown"><i
@@ -237,9 +258,8 @@
                 <div class="text-center py-2">
                     <p class="text-gray m-0">&copy; All Rights are reserved by ordermate</p>
                 </div>
+            </footer>
         @endif
-
-        </footer>
 
     </div>
 

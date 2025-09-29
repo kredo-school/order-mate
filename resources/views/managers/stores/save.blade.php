@@ -25,7 +25,16 @@
                     <div class="mt-3">
                         <input type="file" class="form-control" id="store_photo" name="store_photo" accept="image/*">
                     </div>
+
+                    {{-- Payment On/Off --}}
+                    <div class="form-check form-switch mt-3">
+                        <label class="form-check-label" for="payment_enabled">Enable Payment</label>
+                        <input class="form-check-input" type="checkbox" id="payment_enabled"
+                            name="payment_enabled" value="1"
+                            {{ old('payment_enabled', $store->payment_enabled ?? true) ? 'checked' : '' }}>
+                    </div>
                 </div>
+
 
                 {{-- update store info --}}
                 <div class="col">

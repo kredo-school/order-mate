@@ -5,9 +5,9 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between mb-3">
-            <a href="{{ route('home') }}" class="">
+            <a href="{{ route('manager.home') }}" class="">
                 <h5 class="d-inline text-brown">
-                    <i class="fa-solid fa-angle-left text-orange"></i> Store Info
+                    <i class="fa-solid fa-angle-left text-orange"></i> {{ __('manager.store_info') }}
                 </h5>
             </a>
         </div>
@@ -62,16 +62,16 @@
 
                 <div class="mt-4 d-flex justify-content-center">
                     <a href="{{ route('manager.stores.edit') }}" class="btn btn-outline me-2">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                        <i class="fa-solid fa-pen-to-square"></i> {{ __('manager.edit') }}
                     </a>
                     <a href="{{ route('manager.stores.qrCode') }}" class="btn btn-primary">
-                        <i class="fa-solid fa-qrcode"></i> Create QR Code
+                        <i class="fa-solid fa-qrcode"></i> {{ __('manager.create_qr_code') }}
                     </a>
                 </div>
             @else
                 <div class="alert alert-warning">
-                    Store information has not been registered yet.<br>
-                    <a href="{{ route('manager.stores.edit') }}" class="btn btn-sm btn-primary mt-2">Create account</a>
+                    {{__('manager.not_store_info_yet')}}<br>
+                    <a href="{{ route('manager.stores.edit') }}" class="btn btn-sm btn-primary mt-2">{{__('manager.create_store_info')}}</a>
                 </div>
         @endif
     </div>

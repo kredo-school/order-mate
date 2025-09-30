@@ -3,9 +3,9 @@
 @endphp
 
 @if (request()->has('search') && $list->isEmpty())
-    <p class="text-gray">No results found</p>
+    <p class="text-gray">{{__('manager.no_results')}}</p>
 @elseif ($list->isEmpty())
-    <p class="text-gray">No products in this category.</p>
+    <p class="text-gray">{{__('manager.no_products')}}</p>
 @else
 <div class="row">
     @foreach ($list as $product)
@@ -31,7 +31,7 @@
                     @else
                         <div class="bg-light d-flex align-items-center justify-content-center"
                             style="padding-top: 56.25%;"> {{-- 16:9 比例のスペース --}}
-                            <span class="text-muted">No Image</span>
+                            <span class="text-muted">{{__('manager.no_image')}}</span>
                         </div>
                     @endif
 

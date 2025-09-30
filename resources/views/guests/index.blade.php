@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between">
-            <h5 class="d-inline text-brown">Menu List</h5>
+            <h5 class="d-inline text-brown">{{__('guest.menu_list')}}</h5>
             <form action="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
                 method="GET" class="product-search d-flex align-items-center mx-3" role="search">
                 <input type="search" name="search" class="input-underline" placeholder="Search products..."

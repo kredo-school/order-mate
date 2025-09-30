@@ -6,12 +6,12 @@
     <div class="container">
         <div class="d-flex justify-content-between">
             <a href="{{ url()->previous() }}" class="">
-                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>
+                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.menu_list')}}</h5>
             </a>
             {{-- 検索フォーム（下線＋アイコンのみ） --}}
             <form action="{{ route('manager.products.index') }}" method="GET"
                 class="product-search d-flex align-items-center mx-3" role="search">
-                <input type="search" name="search" class="input-underline" placeholder="Search products..."
+                <input type="search" name="search" class="input-underline" placeholder="{{__('manager.search_products')}}"
                     value="{{ request('search') }}" aria-label="Search products">
                 <button type="submit" class="btn-icon text-orange ms-2" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -19,7 +19,7 @@
             </form>
 
             <a href="{{ route('manager.products.create') }}" class="text-orange">
-                <i class="fa-solid fa-plus"></i> Add menu
+                <i class="fa-solid fa-plus"></i> {{ __('manager.add_menu') }}
             </a>
         </div>
 
@@ -46,7 +46,7 @@
                         <a href="#" class="category-link search-results-tab" data-id="search">
                             <div class="p-0">
                                 <span class="category-tab active">
-                                    Search Results
+                                    {{ __('manager.search_results') }} ({{ $products->count() }})
                                 </span>
                             </div>
                         </a>
@@ -57,7 +57,7 @@
                 <a href="{{ route('manager.categories.index') }}" class="new-btn category-link">
                     <div class="p-0">
                         <span class="category-tab">
-                            <i class="fa-solid fa-plus"></i> New
+                            <i class="fa-solid fa-plus"></i> {{__('manager.new_category')}}
                         </span>
                     </div>
                 </a>

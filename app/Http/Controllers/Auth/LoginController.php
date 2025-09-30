@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -25,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/manager';
 
     /**
      * Create a new controller instance.
@@ -38,12 +39,29 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
-    protected function authenticated($request, $user){
-        if ($user->role == 2) {
-            return redirect()->route('admin.index'); // ✅ ここ
+    protected function authenticated($request, $user)
+    {
+        // ✅ Manager
+        if ($user->role == User::ROLE_MANAGER) {
+            if ($user->store) {
+                session(['manager_locale' => $user->store->language]);
+                app()->setLocale($user->store->language);
+            }
+    
+            return redirect()->route('manager.home');
         }
-
-        return redirect('/'); // 一般ユーザー用
+    
+        // ✅ Admin
+        if ($user->role == User::ROLE_ADMIN) {
+            return redirect()->route('admin.index');
+        }
+    
+        // デフォルト
+        return redirect('/manager');
     }
-
+    
+    protected function loggedOut($request)
+    {
+        return redirect('/login'); // ログアウト後に飛ばしたいURL
+    }
 }

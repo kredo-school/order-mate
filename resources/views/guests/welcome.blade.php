@@ -10,7 +10,15 @@
         <div class="mb-3">
             <input type="number" name="guest_count" min="1" max="20" class="form-control w-50 mx-auto" placeholder="Number of guests" required>
         </div>
-        <button type="submit" class="btn btn-primary">Start Order</button>
+        {{-- 言語選択 --}}
+        <div class="mb-3">
+            <label for="language" class="form-label">Language</label>
+            <select name="language" id="language" class="form-select w-50 mx-auto">
+                <option value="en" {{ old('language') === 'en' ? 'selected' : '' }}>English</option>
+                <option value="ja" {{ old('language') === 'ja' ? 'selected' : '' }}>日本語</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">{{ __('guest.start_order') }}</button>
     </form>
 </div>
 @endsection

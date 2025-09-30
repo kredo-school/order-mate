@@ -19,7 +19,7 @@
       <div class="row">
         {{-- custom left side --}}
         <div class="col">
-          <div class="card card-body">
+          <div class="card card-body mb-3">
             <form action="{{route('manager.custom.store')}}" method="post">
               @csrf
               {{-- custom title and add button --}}
@@ -66,7 +66,7 @@
         {{-- custom right side --}}
         <div class="col">
           @foreach ($all_customGroups as $group)
-            <div class="card card-body mb-3">
+            <div class="card card-body mb-2">
               {{-- タイトル部分 --}}
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <h5 class="mb-0">{{ $group->title }}</h5>

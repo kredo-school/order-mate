@@ -8,6 +8,7 @@ use App\Models\Table;
 use App\Models\Category;
 use App\Models\StaffCall;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class GuestController extends Controller
 {
@@ -75,31 +76,36 @@ class GuestController extends Controller
 
     public function startOrder(Request $request, $storeName, $tableUuid)
     {
-        $request->validate([
+        $validated = $request->validate([
             'guest_count' => 'required|integer|min:1|max:20',
+            'language'    => 'required|string|in:en,ja',
         ]);
-
+    
         $store = Store::where('store_name', $storeName)->firstOrFail();
         $table = Table::where('user_id', $store->user_id)
                     ->where('uuid', $tableUuid)
                     ->firstOrFail();
-
+    
         $existingOrder = $table->orders()->where('status', 'open')->latest()->first();
         if ($existingOrder) {
             return redirect()->route('guest.index', [$storeName, $tableUuid]);
         }
-
+    
         $orderType = ($table->number == 0) ? 'takeout' : 'dine-in';
-
+    
         $table->orders()->create([
             'status'      => 'open',
-            'guest_count' => $request->guest_count,
+            'guest_count' => $validated['guest_count'],
             'is_paid'     => false,
             'user_id'     => $table->user_id,
             'total_price' => 0,
             'order_type'  => $orderType,
         ]);
-
+    
+        // セッションに保存（guest_locale）
+        Session::put('guest_locale', $validated['language']);
+        Session::put('guests', $validated['guest_count']);
+    
         return redirect()->route('guest.index', [$storeName, $tableUuid]);
     }
 

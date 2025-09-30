@@ -5,9 +5,9 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Order List</h1>
+        <h3>{{__('manager.order_list')}}</h3>
         <button id="toggleCompletedBtn" class="btn btn-outline-secondary">
-            🔁 Show Completed
+            🔁 {{__('manager.show_completed')}}
         </button>
     </div>
 
@@ -24,70 +24,72 @@
     @endif
 
     {{-- 注文一覧テーブル --}}
-    <table id="orderTable" class="table table-striped table-hover text-center align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>Table No.</th> {{-- ← 表示は table.number --}}
-          <th>Time</th>
-          <th class="filterable" data-column="item">
-              <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Item</a>
-              <ul class="dropdown-menu p-3 filter-menu" data-column="item"></ul>
-          </th>
-          <th>Option</th>
-          <th>Quantity</th>
-          <th class="filterable" data-column="order_type">
-              <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Order Type</a>
-              <ul class="dropdown-menu p-3 filter-menu" data-column="order_type"></ul>
-          </th>
-          <th class="filterable" data-column="category">
-              <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Category</a>
-              <ul class="dropdown-menu p-3 filter-menu" data-column="category"></ul>
-          </th>
-          <th class="filterable" data-column="progress">
-              <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Progress</a>
-              <ul class="dropdown-menu p-3 filter-menu" data-column="progress"></ul>
-          </th>
-        </tr>
-      </thead>
-        <tbody>
-            @foreach($orderRows as $row)
-                @php
-                    $progress = $row['status'];
-                    $progressLabel = ucfirst($progress);
-                    $progressDot = $progress === 'preparing'
-                        ? '<span class="status-dot text-primary">●</span>'
-                        : ($progress === 'ready'
-                            ? '<span class="status-dot text-success">●</span>'
-                            : '<span class="status-dot text-secondary">●</span>');
-                @endphp
-                <tr class="order-row"
-                    data-id="{{ $row['id'] }}"
-                    data-item="{{ $row['item'] }}"
-                    data-order_type="{{ $row['orderType'] }}"
-                    data-category="{{ $row['category'] }}"
-                    data-progress="{{ $progress }}"
-                    data-status="{{ $row['status'] }}"
-                    style="cursor: pointer;">
-                    <td>{{ $row['table'] }}</td>
-                    <td>
-                        <span class="elapsed-time" data-created-at="{{ $row['updatedAt'] }}">
-                            00:00
-                        </span>
-                    </td>
-                    <td>{{ $row['item'] }}</td>
-                    <td>{{ $row['option'] }}</td>
-                    <td>{{ $row['quantity'] }}</td>
-                    <td>{{ $row['orderType'] }} 
-                        @if ($row['orderType'] == 'takeout')
-                            #{{ $row['orderId'] }}
-                        @endif
-                    </td>
-                    <td>{{ $row['category'] }}</td>
-                    <td class="status-cell">{!! $progressDot !!} {{ $progressLabel }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="table-responsive-sm">
+        <table id="orderTable" class="table table-striped table-hover text-center align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Table No.</th> {{-- ← 表示は table.number --}}
+              <th>Time</th>
+              <th class="filterable" data-column="item">
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Item</a>
+                  <ul class="dropdown-menu p-3 filter-menu" data-column="item"></ul>
+              </th>
+              <th>Option</th>
+              <th>Quantity</th>
+              <th class="filterable" data-column="order_type">
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Order Type</a>
+                  <ul class="dropdown-menu p-3 filter-menu" data-column="order_type"></ul>
+              </th>
+              <th class="filterable" data-column="category">
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Category</a>
+                  <ul class="dropdown-menu p-3 filter-menu" data-column="category"></ul>
+              </th>
+              <th class="filterable" data-column="progress">
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Progress</a>
+                  <ul class="dropdown-menu p-3 filter-menu" data-column="progress"></ul>
+              </th>
+            </tr>
+          </thead>
+            <tbody>
+                @foreach($orderRows as $row)
+                    @php
+                        $progress = $row['status'];
+                        $progressLabel = ucfirst($progress);
+                        $progressDot = $progress === 'preparing'
+                            ? '<span class="status-dot text-primary">●</span>'
+                            : ($progress === 'ready'
+                                ? '<span class="status-dot text-success">●</span>'
+                                : '<span class="status-dot text-secondary">●</span>');
+                    @endphp
+                    <tr class="order-row"
+                        data-id="{{ $row['id'] }}"
+                        data-item="{{ $row['item'] }}"
+                        data-order_type="{{ $row['orderType'] }}"
+                        data-category="{{ $row['category'] }}"
+                        data-progress="{{ $progress }}"
+                        data-status="{{ $row['status'] }}"
+                        style="cursor: pointer;">
+                        <td>{{ $row['table'] }}</td>
+                        <td>
+                            <span class="elapsed-time" data-created-at="{{ $row['updatedAt'] }}">
+                                00:00
+                            </span>
+                        </td>
+                        <td>{{ $row['item'] }}</td>
+                        <td>{{ $row['option'] }}</td>
+                        <td>{{ $row['quantity'] }}</td>
+                        <td>{{ $row['orderType'] }} 
+                            @if ($row['orderType'] == 'takeout')
+                                #{{ $row['orderId'] }}
+                            @endif
+                        </td>
+                        <td>{{ $row['category'] }}</td>
+                        <td class="status-cell">{!! $progressDot !!} {{ $progressLabel }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {{-- 右下の白背景の正方形5つ --}}
@@ -122,6 +124,13 @@
     font-size: 20px;
     font-weight: bold;
   }
+
+  @media (max-width: 768px) {
+  #orderTable th, #orderTable td, label.form-check-label {
+    font-size: 12px;
+  }
+  
+}
 </style>
 
 <script>

@@ -109,7 +109,7 @@
 
                     {{-- Add ボタン --}}
                     <div class="mt-4 text-center">
-                        <button type="submit" class="btn btn-primary btn-lg" id="add-to-cart-btn">Add</button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="add-to-cart-btn">{{__('guest.add_to_cart')}}</button>
                     </div>
                 </form>
             </div>

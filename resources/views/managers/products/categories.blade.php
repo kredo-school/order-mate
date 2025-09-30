@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-  <div class="">
+  <div class="mb-3">
     <a href="{{url()->previous()}}" class="">
       <h3 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Category</h3>
     </a>
@@ -19,7 +19,7 @@
           <input type="text" name="name" id="name" class="form-control" placeholder="Category Name" autofocus required>
         </div>
         <div class="col-3">
-          <button type="submit" class="btn bg-orange text-white p-2 ms-2"><i class="fa-solid fa-plus"></i> Add </button>
+          <button type="submit" class="btn btn-primary p-2 ms-2"><i class="fa-solid fa-plus"></i> Add </button>
         </div>
       </div>
     </form>

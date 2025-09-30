@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between mb-3">
-        <a href="{{ route('home')}}" class="">
+        <a href="{{ route('manager.home')}}" class="">
             <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Table Management</h5>
         </a>
     </div>

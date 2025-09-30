@@ -60,7 +60,8 @@ class StoreController extends Controller
             'password'         => 'nullable|string|min:8|confirmed',
             'email'            => 'nullable|email|max:255', // users.email の更新用
             'currency'         => 'nullable|string|max:3',
-            'payment_enabled'  => 'nullable', // ← 追加
+            'payment_enabled'  => 'nullable',
+            'language'         => 'nullable|string|max:5', // ★ 追加
         ]);
     
         // store_photo
@@ -75,14 +76,24 @@ class StoreController extends Controller
         $storeData['payment_enabled'] = $request->has('payment_enabled');
     
         $store = Store::firstOrNew(['user_id' => Auth::id()]);
-
+    
         // store_photo やフォームの値を設定
         $store->fill($storeData);
-        
+    
         // payment_enabled はチェックボックスの状態でセット
         $store->payment_enabled = $request->has('payment_enabled');
-        
+    
+        // language を保存（fillでも入るけど念のため）
+        if ($request->filled('language')) {
+            $store->language = $request->language;
+        }
+    
         $store->save();
+
+        // 選択した言語をセッションに反映
+        if ($store->language) {
+            session(['manager_locale' => $store->language]);
+        }
 
         // User 更新
         $user = User::find(Auth::id());

@@ -1,6 +1,6 @@
 <div class="col-md-8">
     <div class="border rounded p-3 h-100 d-flex flex-column" style="background-color: #FEFAEF;">
-        <h5 class="fw-bold mb-3 text-brown">Chat</h5>
+        <h5 class="fw-bold mb-3 text-brown">{{__('manager.chat')}}</h5>
 
         {{-- メッセージ一覧 --}}
         <div id="messages-container" style="height:300px; overflow-y:auto;">
@@ -23,7 +23,7 @@
                     </div>
                 @endforeach
             @else
-                <p class="text-muted">No messages yet</p>
+                <p class="text-muted">{{__('manager.no_messages')}}</p>
             @endif
         </div>
 
@@ -36,7 +36,7 @@
                 @csrf
                 <div class="d-flex align-items-center form-underline">
                     <input type="text" name="content" class="form-control flex-grow-1" id="chat-input"
-                        placeholder="Enter message..." required>
+                        placeholder="{{__('manager.enter_message')}}" required>
                     <button type="submit" class="btn-icon text-orange ms-2">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>

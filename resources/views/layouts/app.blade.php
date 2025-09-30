@@ -61,7 +61,7 @@
                     <a class="navbar-brand"
                         @if (Route::is('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
                         @else
-                            href="{{ url('/') }}" @endif>
+                            href="{{ url('/manager') }}" @endif>
                         <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                     </a>
 
@@ -107,10 +107,10 @@
                                 class="fa-solid fa-flag me-2"></i> Japanese</a>
                         <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
                                 class="fa-solid fa-flag me-2"></i> English</a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
+                        {{-- <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
                                 class="fa-solid fa-flag me-2"></i> Chinese</a>
                         <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
-                                class="fa-solid fa-flag me-2"></i> Korean</a>
+                                class="fa-solid fa-flag me-2"></i> Korean</a> --}}
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
             <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="sideMenu"
                 aria-labelledby="sideMenuLabel" style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sideMenuLabel">Menu</h5>
+                    <h5 class="offcanvas-title" id="sideMenuLabel">{{__('manager.menu')}}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
@@ -129,36 +129,36 @@
                     <div class="nav flex-column flex-grow-1">
                         <a href="{{ route('manager.stores.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> Store Information
+                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
                         </a>
                         <a href="{{ route('manager.products.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-utensils me-2"></i> Menu
+                            <i class="fa-solid fa-utensils me-2"></i> {{__('manager.menu')}}
                         </a>
                         <a href="{{ route('manager.order-list') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-list-ul me-2"></i> Order List
+                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
                         </a>
                         <a href="{{ route('manager.custom.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table-cells me-2"></i> Custom
+                            <i class="fa-solid fa-table-cells me-2"></i> {{__('manager.custom')}}
                         </a>
                         <a href="{{ route('manager.categories.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-layer-group me-2"></i> Category
+                            <i class="fa-solid fa-layer-group me-2"></i> {{__('manager.category')}}
                         </a>
                         <a href="{{ route('manager.tables') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table me-2"></i> Table
+                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
                         </a>
                         <a href="{{ route('manager.analytics') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-chart-simple me-2"></i> Analytics
+                            <i class="fa-solid fa-chart-simple me-2"></i> {{__('manager.analytics')}}
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Logout') }}
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('manager.logout') }}
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf
                         </form>

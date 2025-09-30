@@ -5,9 +5,9 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Order List</h1>
+        <h3>{{__('manager.order_list')}}</h3>
         <button id="toggleCompletedBtn" class="btn btn-outline-secondary">
-            🔁 Show Completed
+            🔁 {{__('manager.show_completed')}}
         </button>
     </div>
 
@@ -24,7 +24,7 @@
     @endif
 
     {{-- 注文一覧テーブル --}}
-    <div class="table-responsive">
+    <div class="table-responsive-sm">
         <table id="orderTable" class="table table-striped table-hover text-center align-middle">
           <thead class="table-light">
             <tr>
@@ -126,9 +126,10 @@
   }
 
   @media (max-width: 768px) {
-  #orderTable th, #orderTable td {
+  #orderTable th, #orderTable td, label.form-check-label {
     font-size: 12px;
   }
+  
 }
 </style>
 

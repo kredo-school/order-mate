@@ -11,9 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // グローバルに必ず実行されるミドルウェア
+        $middleware->append(\App\Http\Middleware\SetLocale::class);
+
         // ルートミドルウェアを登録する場合
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'managerLocale'=> \App\Http\Middleware\ManagerLocale::class,
+            'guestLocale'  => \App\Http\Middleware\GuestLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

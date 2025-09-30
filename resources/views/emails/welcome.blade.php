@@ -12,14 +12,14 @@
     style="margin:0;padding:0;background:#f6f6f6;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#3b3b3b;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="min-width:320px;">
         <tr>
-            <td align="center" style="padding:32px 16px;">
+            <td class="align-center" style="padding:32px 16px;">
                 <table role="presentation" width="680" cellpadding="0" cellspacing="0"
                     style="max-width:680px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
                     {{-- Header --}}
                     <tr>
                         <td
                             style="padding:24px 28px 0;text-align:center;background:linear-gradient(180deg,#fff6ea,#fff);">
-                            <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="OrderMate" width="140"
+                            <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="OrderMate"
                                 style="display:block; margin:0 auto 12px;">
                             <h1 style="margin:0;font-size:22px;color:#5C3D2E;">Welcome to OrderMate!</h1>
                         </td>

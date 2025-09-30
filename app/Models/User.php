@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-   /**
+/**
  * @property int $role
  * @method bool isAdmin()
  * @method bool isManager()
@@ -86,5 +86,9 @@ class User extends Authenticatable
         return $this->hasMany(Chat::class);
     }
 
-
+    // App\Models\User.php のクラス内に追加
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotificationCustom($token));
+    }
 }

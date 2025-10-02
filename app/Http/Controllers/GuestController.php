@@ -70,8 +70,38 @@ class GuestController extends Controller
         $table = Table::where('user_id', $store->user_id)
                     ->where('uuid', $tableUuid)
                     ->firstOrFail();
+        $sessionLocale = session('locale');
+            if ($sessionLocale) {
+                app()->setLocale($sessionLocale);
+            } elseif (isset($store) && !empty($store->language)) {
+                // manager が設定した stores.language を優先して session に入れる
+                session(['locale' => $store->language]);
+                app()->setLocale($store->language);
+            }
 
         return view('guests.welcome', compact('store', 'table'))->with('isGuestPage', true);
+    }
+
+    // 許可するロケール一覧（必要なら config に移す）
+    protected $allowed = ['ja', 'en'];
+
+    /**
+     * POST /guest/set-locale
+     * body: locale=ja|en
+     */
+    public function setLocale(Request $request, $storeName, $tableUuid)
+    {
+        $data = $request->validate([
+            'locale' => ['required', 'string', 'in:' . implode(',', $this->allowed)],
+        ]);
+    
+        session(['guest_locale' => $data['locale']]);
+    
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'ok', 'locale' => $data['locale']]);
+        }
+    
+        return back();
     }
 
     public function startOrder(Request $request, $storeName, $tableUuid)

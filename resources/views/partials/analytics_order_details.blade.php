@@ -1,12 +1,13 @@
-<table class="table mb-0 shadow-lg">
+<table class="table table-bordered table-hover mb-0 shadow-lg">
     <thead class="table-light">
         <tr>
-            <th>Date (Created)</th>
-            <th>Stay Duration</th>
-            <th>Sales</th>
-            <th>Guests</th>
-            <th>Avg. Spend</th>
-            <th>Payment Methods</th>
+            <th>{{__('manager.date_time')}}</th>
+            <th>{{__('manager.stay_duration')}}</th>
+            <th>{{__('manager.sales')}}</th>
+            <th>{{__('manager.guests')}}</th>
+            <th>{{__('manager.ave_spend')}}</th>
+            <th>{{__('manager.order_type')}}</th>
+            <th>{{__('manager.payment_method')}}</th>
         </tr>
     </thead>
     <tbody id="order-table-body">
@@ -17,6 +18,7 @@
             <td>{{ number_format($order->total_price, 2) }}</td>
             <td>{{ $order->guest_count }}</td>
             <td>{{ number_format($order->avg_spend, 2) }}</td>
+            <td>{{ ucfirst($order->order_type) }}</td>
             <td>{{ $order->payment_method }}</td>
         </tr>
         @endforeach

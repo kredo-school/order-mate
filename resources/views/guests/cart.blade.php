@@ -4,14 +4,14 @@
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
                 <h5 class="d-inline text-brown">
-                    <i class="fa-solid fa-angle-left text-orange"></i> Menu List
+                    <i class="fa-solid fa-angle-left text-orange"></i> {{__('guest.menu_list')}}
                 </h5>
             </a>
         </div>
 
         {{-- カート一覧 --}}
         <div class="row mt-3">
-            <h3 class="fw-bold mb-4 text-brown">Cart</h3>
+            {{-- <h3 class="fw-bold mb-4 text-brown">Cart</h3> --}}
 
             @if ($orderItems->count() > 0)
                 @foreach ($orderItems as $item)
@@ -79,7 +79,7 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title text-brown d-flex align-items-center">
                                         <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                                        Confirm Delete
+                                        {{__('guest.confirm_delete')}}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
@@ -87,13 +87,12 @@
                                     <img src="{{ asset('storage/' . $item->menu->image) }}" alt="{{ $item->menu->name }}"
                                         class="img-fluid rounded mb-3" style="max-height: 150px;">
                                     <p class="text-brown">
-                                        Are you sure you want to delete
-                                        <strong>“{{ $item->menu->name }}”</strong> from your cart?
+                                        {!!__('guest.delete_confirmation', ['item'=>$item->menu->name]) !!}
                                     </p>
                                 </div>
                                 <div class="modal-footer justify-content-center">
                                     <button type="button" class="btn btn-secondary px-5"
-                                        data-bs-dismiss="modal">Cancel</button>
+                                        data-bs-dismiss="modal">{{__('guest.cancel')}}</button>
                                     <form
                                         action="{{ route('guest.cart.destroy', [
                                             'storeName' => $store->store_name,
@@ -104,7 +103,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger px-5">
-                                            Delete
+                                            {{__('guest.delete')}}
                                         </button>
                                     </form>
                                 </div>
@@ -124,16 +123,15 @@
                         ]) }}"
                         method="POST">
                         @csrf
-                        <button type="submit" id="completeOrderBtn" class="btn btn-primary btn-m px-5 me-2">Complete
-                            Order</button>
+                        <button type="submit" id="completeOrderBtn" class="btn btn-primary btn-m px-5 me-2">{{__('guest.complete_order')}}</button>
                     </form>
                 </div>
             @else
                 {{-- 空のとき --}}
                 <div class="d-flex flex-column justify-content-center align-items-center" style="height: 300px;">
-                    <h2 class="text-brown mb-4">Your cart is empty.</h2>
+                    <h2 class="text-brown mb-4">{{__('guest.cart_is_empty')}}</h2>
                     <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
-                        class="btn btn-outline btn-m">Back to Menu</a>
+                        class="btn btn-outline btn-m">{{__('guest.back_to_menu')}}</a>
                 </div>
             @endif
         </div>
@@ -160,7 +158,7 @@
                             trigger: 'manual',
                             placement: 'bottom',
                             title: 'Info',
-                            content: 'Click this button to confirm your order'
+                            content: '{{__('guest.confirm_order_alert')}}'
                         });
                         completePopover.show();
                         completeBtn.addEventListener('click', () => {

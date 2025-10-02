@@ -28,24 +28,24 @@
         <table id="orderTable" class="table table-striped table-hover text-center align-middle">
           <thead class="table-light">
             <tr>
-              <th>Table No.</th> {{-- ← 表示は table.number --}}
-              <th>Time</th>
+              <th>{{__('manager.table_no')}}</th> {{-- ← 表示は table.number --}}
+              <th>{{__('manager.time')}}</th>
               <th class="filterable" data-column="item">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Item</a>
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.item')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="item"></ul>
               </th>
-              <th>Option</th>
-              <th>Quantity</th>
+              <th>{{__('manager.option')}}</th>
+              <th>{{__('manager.quantity')}}</th>
               <th class="filterable" data-column="order_type">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Order Type</a>
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.order_type')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="order_type"></ul>
               </th>
               <th class="filterable" data-column="category">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Category</a>
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.category')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="category"></ul>
               </th>
               <th class="filterable" data-column="progress">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">Progress</a>
+                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.progress')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="progress"></ul>
               </th>
             </tr>
@@ -276,7 +276,7 @@
           body: JSON.stringify({})
         })
         .then(res => {
-          if (!res.ok) throw new Error("通信エラー");
+          if (!res.ok) throw new Error("{{__('manager.connection_error')}}");
           return res.json();
         })
         .then(data => {
@@ -302,7 +302,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert("更新に失敗しました");
+          alert(__('manager.update_failed'));
         });
       });
     });

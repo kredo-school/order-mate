@@ -5,7 +5,7 @@
   <div class="d-flex justify-content-between mb-3">
       <a href="{{ route('manager.stores.index') }}" class="">
           <h5 class="d-inline text-brown">
-              <i class="fa-solid fa-angle-left text-orange"></i> Store Analytics
+              <i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.store_analytics')}}
           </h5>
       </a>
   </div>
@@ -13,10 +13,10 @@
   {{-- タブ --}}
   <ul class="nav nav-tabs mb-3" id="analyticsTab" role="tablist">
       <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales-content" type="button" role="tab">Sales</button>
+          <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales-content" type="button" role="tab">{{__('manager.sales')}}</button>
       </li>
       <li class="nav-item" role="presentation">
-          <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-content" type="button" role="tab">Products</button>
+          <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-content" type="button" role="tab">{{__('manager.products')}}</button>
       </li>
   </ul>
 
@@ -25,18 +25,18 @@
       <div class="tab-pane fade show active" id="sales-content" role="tabpanel">
           <div class="card mb-4 p-0">
               <div class="card-body">
-                  <h5 class="card-title">Sales Trend</h5>
+                  <h5 class="card-title">{{__('manager.sales_trend')}}</h5>
                   <div class="mb-3 justify-content-between d-flex">
                       <div>
-                        <button class="btn btn-sm btn-outline me-2" data-range="daily" data-chart="sales">Daily</button>
-                        <button class="btn btn-sm btn-outline me-2" data-range="weekly" data-chart="sales">Weekly</button>
-                        <button class="btn btn-sm btn-outline" data-range="monthly" data-chart="sales">Monthly</button>
+                        <button class="btn btn-sm btn-outline me-2" data-range="daily" data-chart="sales">{{__('manager.daily')}}</button>
+                        <button class="btn btn-sm btn-outline me-2" data-range="weekly" data-chart="sales">{{__('manager.weekly')}}</button>
+                        <button class="btn btn-sm btn-outline" data-range="monthly" data-chart="sales">{{__('manager.monthly')}}</button>
                       </div>
                       <div>
                         <label><input type="date" id="custom-start"></label>
                         <label>~ <input type="date" id="custom-end"></label>
-                        <a href="{{route('manager.analytics')}}" class="btn btn-sm btn-outline">Reset</a>
-                        <button class="btn btn-sm btn-primary" id="apply-custom">Apply</button>
+                        <a href="{{route('manager.analytics')}}" class="btn btn-sm btn-outline">{{__('manager.reset')}}</a>
+                        <button class="btn btn-sm btn-primary" id="apply-custom">{{__('manager.apply')}}</button>
                       </div>
                   </div>
 
@@ -47,15 +47,15 @@
           </div>
 
           {{-- 日別テーブル --}}
-          <table class="table table-bordered mt-4">
+          <table class="table table-bordered table-hover mt-4">
               <thead class="table-light" id="analytics-thead">
                   <tr>
-                      <th>Date</th>
-                      <th>Day</th>
-                      <th>Sales</th>
-                      <th>Guests</th>
-                      <th>Avg. Spend</th>
-                      <th>Payment Methods</th>
+                      <th>{{__('manager.date')}}</th>
+                      <th>{{__('manager.day')}}</th>
+                      <th>{{__('manager.sales')}}</th>
+                      <th>{{__('manager.guests')}}</th>
+                      <th>{{__('manager.ave_spend')}}</th>
+                      <th>{{__('manager.payment_method')}}</th>
                   </tr>
               </thead>
               <tbody id="analytics-tbody">
@@ -68,18 +68,18 @@
       <div class="tab-pane fade" id="products-content" role="tabpanel">
           <div class="card mb-4 p-0">
               <div class="card-body">
-                  <h5 class="card-title">Top 5 Products</h5>
+                  <h5 class="card-title">{{__('manager.top_5_products')}}</h5>
                   <div class="mb-3 justify-content-between d-flex">
                       <div>
-                          <button class="btn btn-sm btn-outline me-2" data-range="daily" data-chart="products">Daily</button>
-                          <button class="btn btn-sm btn-outline me-2" data-range="weekly" data-chart="products">Weekly</button>
-                          <button class="btn btn-sm btn-outline" data-range="monthly" data-chart="products">Monthly</button>
+                          <button class="btn btn-sm btn-outline me-2" data-range="daily" data-chart="products">{{__('manager.daily')}}</button>
+                          <button class="btn btn-sm btn-outline me-2" data-range="weekly" data-chart="products">{{__('manager.weekly')}}</button>
+                          <button class="btn btn-sm btn-outline" data-range="monthly" data-chart="products">{{__('manager.monthly')}}</button>
                       </div>
                       <div>
                           <label><input type="date" id="products-start"></label>
                           <label>~ <input type="date" id="products-end"></label>
-                          <a href="{{route('manager.analytics')}}" class="btn btn-sm btn-outline">Reset</a>
-                          <button class="btn btn-sm btn-primary" id="products-apply">Apply</button>
+                          <a href="{{route('manager.analytics')}}" class="btn btn-sm btn-outline">{{__('manager.reset')}}</a>
+                          <button class="btn btn-sm btn-primary" id="products-apply">{{__('manager.apply')}}</button>
                       </div>
                   </div>
                   <div style="height:350px;">
@@ -96,7 +96,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("スクリプト開始");
     /** ----------------
      * Sales Trend (Line)
      * ----------------*/
@@ -290,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('apply-custom').addEventListener('click', function() {
         const start = document.getElementById('custom-start').value;
         const end   = document.getElementById('custom-end').value;
-        if (!start || !end) { alert("Please select both start and end dates"); return; }
+        if (!start || !end) { alert("{{__('manager.term_alert')}}"); return; }
 
         fetch(`{{ route('manager.analytics.data') }}?start=${start}&end=${end}`)
             .then(res => res.json())
@@ -332,7 +331,6 @@ document.addEventListener("DOMContentLoaded", function() {
             tr.classList.remove("table-primary");
         }
     });
-    console.log("スクリプト終了"); 
 });
 </script>
 @endpush

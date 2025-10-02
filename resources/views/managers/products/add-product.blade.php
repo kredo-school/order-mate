@@ -6,7 +6,7 @@
     <main class="bg-light-mode">
         <div class="d-flex justify-content-between mt-4 mx-3">
             <a href="{{ route('manager.products.index') }}" class="">
-                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>
+                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i>{{__('manager.menu_list')}}</h5>
             </a>
         </div>
         <div class="container page-center w-50">
@@ -18,14 +18,14 @@
                     <!-- Image upload section -->
                     <div class="form-section mb-4 row align-items-center">
                         <div class="col-4">
-                            <label for="image" class="form-label text-brown">Image</label>
+                            <label for="image" class="form-label text-brown">{{__('manager.image')}}</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
                             <input type="file" id="image" name="image" class="d-none"
                                 onchange="previewMenuImage(event)">
                             <button type="button" onclick="document.getElementById('image').click()"
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
-                                <i class="fas fa-upload me-2"></i>Upload menu image
+                                <i class="fas fa-upload me-2"></i>{{__('manager.upload_menu_image')}}
                             </button>
                             <!-- プレビューエリア -->
                             <div id="menu-image-preview" class="ms-3"></div>
@@ -35,7 +35,7 @@
                     <!-- Name field -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">{{__('manager.menu_name')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder=""
@@ -46,7 +46,7 @@
                     <!-- Price field -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="price" class="form-label">Price</label>
+                            <label for="price" class="form-label">{{__('manager.price')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="price" name="price" value="{{ old('price') }}" placeholder=""
@@ -57,7 +57,7 @@
                     <!-- Description field -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">{{__('manager.description')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="description" name="description" value="{{ old('description') }}"
@@ -68,14 +68,14 @@
                     <!-- Category dropdown -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="menu_category_id" class="form-label text-brown">Category</label>
+                            <label for="menu_category_id" class="form-label text-brown">{{__('manager.category')}}</label>
                         </div>
                         <div class="col-8">
                             <select id="menu_category_id" class="form-select me-2" name="menu_category_id">
                                 @if ($all_categories->isEmpty())
-                                    <option value="" class="text-brown" selected>Please add a category first</option>
+                                    <option value="" class="text-brown" selected>{{__('manager.add_category_first')}}</option>
                                 @else
-                                    <option value="">Select Category</option>
+                                    <option value="">{{__('manager.select_category')}}</option>
                                     @foreach ($all_categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ old('menu_category_id') == $category->id ? 'selected' : '' }}>
@@ -92,14 +92,14 @@
                     <!-- Tag field (画像アップロードに変更) -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="tag" class="form-label text-brown">Tag</label>
+                            <label for="tag" class="form-label text-brown">{{__('manager.tag')}}</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
                             <input type="file" id="tag" name="tag" accept="image/*" class="d-none"
                                 onchange="previewTagImage(event)">
                             <button type="button" onclick="document.getElementById('tag').click()"
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
-                                <i class="fas fa-upload me-2"></i>Upload Tag
+                                <i class="fas fa-upload me-2"></i>{{__('manager.upload_tag_image')}}
                             </button>
                             <!-- プレビュー -->
                             <div id="tag-preview" class="ms-3">
@@ -111,7 +111,7 @@
 
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label class="form-label text-brown">Allergens</label>
+                            <label class="form-label text-brown">{{__('manager.allergens')}}</label>
                         </div>
                         <div class="col-8 d-flex flex-wrap gap-3">
                             @php
@@ -145,7 +145,7 @@
                     <!-- Custom options section -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="custom_groups" class="form-label">Custom</label>
+                            <label for="custom_groups" class="form-label">{{__('manager.custom_options')}}</label>
                         </div>
 
                         <div class="d-grid gap-2 col-8">
@@ -154,7 +154,7 @@
                                 <div class="d-flex mb-2 align-items-center custom-group-row">
                                     <select name="custom_groups[0][id]" class="form-select me-2 custom-group-select"
                                         data-index="0">
-                                        <option value=""> Select Custom Group </option>
+                                        <option value=""> {{__('manager.select_custom')}} </option>
                                         @foreach ($customGroups as $group)
                                             <option value="{{ $group->id }}">{{ $group->title }}</option>
                                         @endforeach
@@ -163,7 +163,7 @@
                                     <div class="form-check me-2">
                                         <input type="checkbox" name="custom_groups[0][is_required]" value="1"
                                             class="form-check-input">
-                                        <label class="form-check-label">Required</label>
+                                        <label class="form-check-label">{{__('manager.required')}}</label>
                                     </div>
 
                                     {{-- <input type="number" name="custom_groups[0][max_selectable]" value="1"
@@ -177,9 +177,8 @@
                             <div class="d-flex justify-content-between text-brown">
                                 <button type="button" id="add-custom-group"
                                     class="btn btn-link p-0 text-brown custom-link" style="text-decoration: none;">+
-                                    Add</button>
-                                <a href="{{ route('manager.custom.index') }}" class="text-brown custom-link">see all
-                                    custom</a>
+                                    {{__('manager.add_option')}}</button>
+                                <a href="{{ route('manager.custom.index') }}" class="text-brown custom-link">{{__('manager.see_all_customs')}}</a>
                             </div>
                         </div>
                     </div>
@@ -187,7 +186,7 @@
 
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary btn-block btn-m">
-                        <i class="fas fa-plus me-1"></i>Add</button>
+                        <i class="fas fa-plus me-1"></i>{{__('manager.add_menu')}}</button>
                 </form>
             </div>
         </div>
@@ -292,14 +291,14 @@
             <select name="custom_groups[${index}][id]" 
                     class="form-select me-2 custom-group-select" 
                     data-index="${index}">
-                <option value=""> Select Custom Group </option>
+                <option value=""> {{__('manager.select_custom')}} </option>
                 ${customGroups.map(group => `<option value="${group.id}">${group.title}</option>`).join('')}
             </select>
 
             <div class="form-check me-2">
                 <input type="checkbox" name="custom_groups[${index}][is_required]" value="1"
                        class="form-check-input">
-                <label class="form-check-label">Required</label>
+                <label class="form-check-label">{{__('manager.required')}}</label>
             </div>
 
             <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>

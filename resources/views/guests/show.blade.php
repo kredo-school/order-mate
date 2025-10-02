@@ -7,7 +7,7 @@
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
                 <h5 class="d-inline text-brown">
-                    <i class="fa-solid fa-angle-left text-orange"></i> Menu List
+                    <i class="fa-solid fa-angle-left text-orange"></i> {{__('guest.menu_list')}}
                 </h5>
             </a>
         </div>
@@ -24,7 +24,7 @@
                             style="top: -5%; left: 15%; max-width: 60px; transform: translate(0, 0); border-radius:5px;">
                     @endif
                 @else
-                    <div class="text-muted" style="width:250px; height:auto;">No Image</div>
+                    <div class="text-muted" style="width:250px; height:auto;">{{__('guest.no_image')}}</div>
                 @endif
             </div>
 
@@ -62,7 +62,7 @@
 
                     {{-- 商品数量 --}}
                     <div class="mt-3 text-center">
-                        <h5 class="fw-semibold text-brown">Quantity</h5>
+                        <h5 class="fw-semibold text-brown">{{__('guest.quantity')}}</h5>
                         <div class="d-flex justify-content-center align-items-center">
                             <button type="button" class="btn btn-outline-secondary btn-m product-decrement">-</button>
                             <span id="product-quantity" class="mx-2 text-brown fs-3">0</span>
@@ -156,7 +156,7 @@
                             sum, q) => sum + parseInt(q.textContent), 0);
 
                         if (maxQty === 0) {
-                            alert("Please set the product quantity to at least 1 first.");
+                            alert("{{__('guest.add_to_cart_alert')}}");
                             return;
                         }
 
@@ -166,8 +166,7 @@
                             document.getElementById("option-input-" + quantityEl.dataset.optionId)
                                 .value = value;
                         } else {
-                            alert("The total quantity for this group cannot exceed the product quantity of" +
-                                maxQty + ".");
+                            alert("{{__('guest.custom_alert')}}");
                         }
                     });
                 });
@@ -205,7 +204,7 @@
 
                     const qty = parseInt(productQtyInput.value);
                     if (qty < 1) {
-                        alert("Please set the quantity to at least 1.");
+                        alert("{{__('guest.add_to_cart_alert')}}");
                         return;
                     }
 
@@ -239,7 +238,7 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('Failed to add to cart.');
+                            alert('{{__('guest.failed_add_alert')}}');
                         });
                 });
             });

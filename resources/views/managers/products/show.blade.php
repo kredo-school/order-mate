@@ -14,7 +14,7 @@
                             style="max-height:400px;">
                     @else
                         <div class="bg-light d-flex align-items-center justify-content-center" style="height:400px;">
-                            No Image
+                            {{__('manager.no_image')}}
                         </div>
                     @endif
 
@@ -54,7 +54,7 @@
                                 <i class="fa-solid fa-circle-exclamation text-danger fs-5" title="{{ $allergy->name }}"></i>
                             @endforeach
                         @else
-                            <span class="text-brown">No Allergies</span>
+                            <span class="text-brown">{{__('manager.no_allergens')}}</span>
                         @endif
                     </div>
 
@@ -62,14 +62,14 @@
                     <div class="d-flex justify-content-center gap-2">
                         <a href="{{ route('manager.products.edit', $product->id) }}"
                             class="btn btn-light border text-brown d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-pen"></i> Edit
+                            <i class="fa-solid fa-pen"></i> {{__('manager.edit')}}
                         </a>
                         <form action="{{ route('manager.products.destroy', $product->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-light border text-brown d-flex align-items-center gap-1"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                <i class="fa-solid fa-trash"></i> Delete
+                                <i class="fa-solid fa-trash"></i> {{__('manager.delete')}}
                             </button>
                         </form>
                     </div>
@@ -91,13 +91,13 @@
                     <div class="mb-3">
                         <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
                     </div>
-                    <h5 class="mb-3">Are you sure you want to delete "{{ $product->name ?? '' }}"?</h5>
+                    <h5 class="mb-3">{!!__('manager.delete_product', ['product'=>$product->name])!!}</h5>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('manager.cancel')}}</button>
                         <form action="{{ route('manager.products.destroy', $product->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">{{__('manager.delete')}}</button>
                         </form>
                     </div>
                 </div>

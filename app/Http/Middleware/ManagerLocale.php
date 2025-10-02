@@ -10,12 +10,16 @@ class ManagerLocale
 {
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
-        if ($user) {
-            $store = $user->store; // User → Store 関係がある前提
-            $locale = $store?->language ?? config('app.locale');
-            App::setLocale($locale);
+        $locale = config('app.locale'); // fallback
+
+        if (Auth::check()) {
+            $store = Auth::user()->store;
+            if ($store && $store->language) {
+                $locale = $store->language;
+            }
         }
+
+        App::setLocale($locale);
 
         return $next($request);
     }

@@ -6,13 +6,14 @@
             <h5 class="d-inline text-brown">{{__('guest.menu_list')}}</h5>
             <form action="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
                 method="GET" class="product-search d-flex align-items-center mx-3" role="search">
-                <input type="search" name="search" class="input-underline" placeholder="Search products..."
+                <input type="search" name="search" class="input-underline" placeholder="{{__('guest.search_products')}}"
                     value="{{ request('search') }}" aria-label="Search products">
                 <button type="submit" class="btn-icon text-orange ms-2" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
         </div>
+
 
         {{-- category --}}
         <div class="position-relative mt-5">
@@ -32,7 +33,7 @@
                     @if (request()->filled('search'))
                         <a href="#" class="category-link search-results-tab" data-id="search">
                             <div class="p-0">
-                                <span class="category-tab active">Search Results</span>
+                                <span class="category-tab active">{{__('guest.search_results')}} ({{$products->count()}})</span>
                             </div>
                         </a>
                     @endif

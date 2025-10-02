@@ -12,7 +12,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // グローバルに必ず実行されるミドルウェア
-        $middleware->append(\App\Http\Middleware\SetLocale::class);
 
         // ルートミドルウェアを登録する場合
         $middleware->alias([

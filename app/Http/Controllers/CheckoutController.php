@@ -31,7 +31,7 @@ class CheckoutController extends Controller
             return view('guests.checkout-complete', [
                 'table'     => $table,
                 'order'     => $order,
-                'message'   => 'Thank you for coming!',
+                'message'   => __('guest.thank_you_paid'),
                 'showTotal' => false,
             ]);
         }
@@ -39,7 +39,7 @@ class CheckoutController extends Controller
         return view('guests.checkout-complete', [
             'table'     => $table,
             'order'     => $order,
-            'message'   => 'Thank you for coming, please proceed to the cashier.',
+            'message'   => __('guest.thank_you_unpaid'),
             'showTotal' => true,
         ]);
     }

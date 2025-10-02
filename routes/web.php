@@ -128,6 +128,8 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.', 'mi
     Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
     Route::get('/welcome', [GuestController::class, 'welcome'])->name('welcome');
     Route::match(['get', 'post'], '/start-order', [GuestController::class, 'startOrder'])->name('startOrder');
+    Route::post('/set-locale', [GuestController::class, 'setLocale'])
+    ->name('set_locale');
 
     // カート関連
     Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');

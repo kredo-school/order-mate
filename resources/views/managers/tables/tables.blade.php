@@ -6,11 +6,11 @@
 <div class="container">
     <div class="d-flex justify-content-between mb-3">
         <a href="{{ route('manager.home')}}" class="">
-            <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Table Management</h5>
+            <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.table_list')}}</h5>
         </a>
     </div>
     @if($tables->isEmpty())
-        <p>No tables found.</p>
+        <p>{{__('manager.no_tables')}}</p>
     @else
         <div class="row">
             @foreach($tables as $table)

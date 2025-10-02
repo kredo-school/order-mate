@@ -6,7 +6,7 @@
 <div class="container">
   <div class="mb-3">
     <a href="{{url()->previous()}}" class="">
-      <h3 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Category</h3>
+      <h3 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.category')}}</h3>
     </a>
   </div>
 
@@ -16,10 +16,10 @@
       @csrf
       <div class="row">
         <div class="col-9">
-          <input type="text" name="name" id="name" class="form-control" placeholder="Category Name" autofocus required>
+          <input type="text" name="name" id="name" class="form-control" placeholder="{{__('manager.add_category')}}" autofocus required>
         </div>
         <div class="col-3">
-          <button type="submit" class="btn btn-primary p-2 ms-2"><i class="fa-solid fa-plus"></i> Add </button>
+          <button type="submit" class="btn btn-primary p-2 ms-2"><i class="fa-solid fa-plus"></i> {{__('manager.add')}}</button>
         </div>
       </div>
     </form>
@@ -27,7 +27,7 @@
     <table class="table table-hover mt-4">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>{{__('manager.category_list')}}</th>
           <th></th>
           <th></th>
         </tr>
@@ -47,7 +47,7 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="editCategoryModalLabel{{ $category->id }}">Edit Category</h5>
+                    <h5 class="modal-title" id="editCategoryModalLabel{{ $category->id }}">{{__('manager.edit_category')}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <form action="{{ route('manager.categories.update', $category->id) }}" method="POST">
@@ -61,8 +61,8 @@
                       </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
-                      <button type="submit" class="btn btn-cat btn-primary text-white">Save</button>
+                      <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{__('manager.cancel')}}</button>
+                      <button type="submit" class="btn btn-cat btn-primary text-white">{{__('manager.save')}}</button>
                     </div>
                   </form>
                 </div>

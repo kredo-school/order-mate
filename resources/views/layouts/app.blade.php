@@ -97,15 +97,15 @@
             <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="langMenu"
                 aria-labelledby="langMenuLabel" style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="langMenuLabel">Language</h5>
+                    <h5 class="offcanvas-title" id="langMenuLabel">{{__('guest.language')}}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
-                                class="fa-solid fa-flag me-2"></i> Japanese</a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"  onclick="changeLocale('ja')"><i
+                                class="fa-solid fa-flag me-2"></i> 日本語</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"  onclick="changeLocale('en')"><i
                                 class="fa-solid fa-flag me-2"></i> English</a>
                         {{-- <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
                                 class="fa-solid fa-flag me-2"></i> Chinese</a>
@@ -187,12 +187,12 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price） --}}
                         <div>
-                            <span class="fw-bold text-brown fs-4 ms-4">Total   {{ explode(' - ', $currencyLabel)[0] }}
+                            <span class="fw-bold text-brown fs-4 ms-4">{{__('guest.total')}}   {{ explode(' - ', $currencyLabel)[0] }}
                             </span>
                             <span class="h3 fw-bold text-brown"
                                 id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if ($isPaid)
-                                <span class="text-muted ms-2 fw-bolder">(paid)</span>
+                                <span class="text-muted ms-2 fw-bolder">({{__('guest.paid')}})</span>
                             @endif
                         </div>
 
@@ -204,14 +204,14 @@
                         <div class="d-flex gap-3">
                             {{-- Order History --}}
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">Order History</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.order_history')}}</a>
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown d-inline d-md-none">
                                 <i class="fa-solid fa-list"></i>
                             </a>
                             {{-- Call Staff --}}
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">Call Staff</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.call_staff')}}</a>
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown d-inline d-md-none">
                                 <i class="fa-solid fa-bell"></i>
@@ -222,7 +222,7 @@
                                     method="POST" class="m-0">
                                     @csrf
                                     <button type="submit"
-                                    class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">Payment</button>
+                                    class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.payment')}}</button>
                                     <button type="submit"
                                         class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
                                         <i class="fa-solid fa-credit-card"></i>
@@ -235,7 +235,7 @@
                                 method="POST" class="m-0">
                                 @csrf
                                 <button type="submit"
-                                class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">Checkout</button>
+                                class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.checkout')}}</button>
                                 <button type="submit"
                                     class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
                                     <i class="fa-solid fa-check"></i>
@@ -272,6 +272,27 @@
                     cartCountEl.style.display = 'flex';
                 }
             });
+            
+            function changeLocale(locale) {
+                fetch("{{ route('guest.set_locale', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: new URLSearchParams({locale: locale})
+                }).then(res => {
+                    if (res.ok) {
+                        // オフキャンバスは閉じてからリロードしたい場合は以下を使う
+                        // const offcanvasEl = document.querySelector('#langMenu');
+                        // const bs = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                        // if (bs) bs.hide();
+                        window.location.reload();
+                    } else {
+                        alert('{{__('guest.failed_change_language')}}');
+                    }
+                }).catch(() => alert('{{__('guest.network_error')}}'));
+            }
         </script>
         @stack('guest-scripts')
     @endif

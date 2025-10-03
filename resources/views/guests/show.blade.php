@@ -45,10 +45,45 @@
                 @endif
 
                 {{-- アレルギー情報 --}}
-                @if (!empty($product->allergy))
-                    <p> {{ $product->allergy }}</p>
-                @endif
-
+                @php
+                    // DB に保存されている可能性のあるフォーマットを正規化して配列にする
+                    $allergenKeys = [];
+                
+                    if (!empty($product->allergy)) {
+                        if (is_array($product->allergy)) {
+                            $allergenKeys = $product->allergy;
+                        } elseif (is_string($product->allergy)) {
+                            $decoded = json_decode($product->allergy, true);
+                            if (is_array($decoded)) {
+                                $allergenKeys = $decoded;
+                            } else {
+                                // カンマ区切りの旧フォーマットへフォールバック
+                                $allergenKeys = array_filter(array_map('trim', explode(',', $product->allergy)));
+                            }
+                        }
+                    } elseif (!empty($product->allergies) && method_exists($product->allergies, 'pluck')) {
+                        // 万一リレーションで保存している場合（将来の移行に備え）
+                        $allergenKeys = $product->allergies->pluck('key')->filter()->map(fn($v) => (string)$v)->all();
+                    }
+                
+                    // 型の正規化（文字列配列）
+                    $allergenKeys = array_map('strval', (array)$allergenKeys);
+                @endphp
+                
+                <div class="mb-3 d-flex justify-content-center gap-2 flex-wrap">
+                    @if (!empty($allergenKeys))
+                        @foreach ($allergenKeys as $key)
+                            <div class="d-flex align-items-center">
+                                {{-- アイコン partial があれば表示（ファイルが無ければ無視） --}}
+                                @includeIf("icons.allergens.{$key}")
+                                {{-- 翻訳ラベルがあれば使う。resources/lang/{lang}/guest.php に allergen_labels を用意しても良い --}}
+                                <span class="ms-2 text-brown">{{ __('guest.allergen_labels.' . $key) !== 'guest.allergen_labels.' . $key ? __('guest.allergen_labels.' . $key) : ucfirst($key) }}</span>
+                            </div>
+                        @endforeach
+                    @else
+                        <span class="text-brown">{{ __('guest.no_allergens') ?? __('manager.no_allergens') }}</span>
+                    @endif
+                </div>
 
                 {{-- Add to Cart Form --}}
                 <form

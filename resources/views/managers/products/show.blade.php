@@ -47,14 +47,38 @@
                         {{ trim($product->description) !== '' ? $product->description : 'No Description' }}
                     </div>
 
-                    <!-- Allergies -->
+                    {{-- 変更点: Allergies 表示ブロックを menu->allergy (配列) に合わせて描画 --}}
                     <div class="mb-3 d-flex justify-content-center gap-2 flex-wrap">
-                        @if ($product->allergies && $product->allergies->count() > 0)
-                            @foreach ($product->allergies as $allergy)
-                                <i class="fa-solid fa-circle-exclamation text-danger fs-5" title="{{ $allergy->name }}"></i>
+                        @php
+                            // 互換のため: 単一カラム名が 'allergy' または 'allergies' の可能性がある場合に対応
+                            $allergenKeys = [];
+                            if (!empty($product->allergy) && is_array($product->allergy)) {
+                                $allergenKeys = $product->allergy;
+                            } elseif (!empty($product->allergies) && is_array($product->allergies)) {
+                                // 万一リレーションでCollectionが返る場合（将来の移行対応）
+                                $allergenKeys = $product->allergies->pluck('key')->filter()->all();
+                            } elseif (!empty($product->allergy) && is_string($product->allergy)) {
+                                // JSON文字列やカンマ区切りが残っている場合に備えて
+                                $decoded = json_decode($product->allergy, true);
+                                if (is_array($decoded)) {
+                                    $allergenKeys = $decoded;
+                                } else {
+                                    $allergenKeys = array_filter(array_map('trim', explode(',', $product->allergy)));
+                                }
+                            }
+                        @endphp
+
+                        @if (!empty($allergenKeys))
+                            @foreach ($allergenKeys as $key)
+                                <div class="d-flex align-items-center">
+                                    {{-- アイコン partial があれば表示（ファイルが無ければ無視） --}}
+                                    @includeIf("icons.allergens.{$key}")
+                                    {{-- 翻訳ラベルがあれば使う。resources/lang/{lang}/guest.php に allergen_labels を用意しても良い --}}
+                                    <span class="ms-2 text-brown">{{ __('guest.allergen_labels.' . $key) !== 'guest.allergen_labels.' . $key ? __('guest.allergen_labels.' . $key) : ucfirst($key) }}</span>
+                                </div>
                             @endforeach
                         @else
-                            <span class="text-brown">{{__('manager.no_allergens')}}</span>
+                            <span class="text-brown">{{ __('manager.no_allergens') }}</span>
                         @endif
                     </div>
 

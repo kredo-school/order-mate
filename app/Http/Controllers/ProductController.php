@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\CustomGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log; // Ensure this line is present
 
 class ProductController extends Controller
 {
@@ -78,8 +79,10 @@ class ProductController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric',
             'menu_category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image',
-            'tag' => 'nullable|image',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:10240',
+            'tag' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:10240',
+            'allergens' => 'nullable|array',
+            'allergens.*' => 'string',
         ]);
 
         // Menu 作成
@@ -89,6 +92,7 @@ class ProductController extends Controller
         $menu->description = $request->description;
         $menu->menu_category_id = $request->menu_category_id;
         $menu->user_id = Auth::id();
+        $menu->allergy = $request->input('allergens', []); // 配列として保存
 
 
         // 画像アップロード
@@ -145,14 +149,17 @@ class ProductController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric',
             'menu_category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image',
-            'tag' => 'nullable|image',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:10240',
+            'tag' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:10240',
+            'allergens' => 'nullable|array',
+            'allergens.*' => 'string',
         ]);
 
         $menu->name = $request->name;
         $menu->price = $request->price;
         $menu->description = $request->description ?? '';
         $menu->menu_category_id = $request->menu_category_id;
+        $menu->allergy = $request->input('allergens', []);
 
         // 画像更新
         if ($request->hasFile('image')) {

@@ -14,8 +14,16 @@ class Menu extends Model{
         'name',
         'price',
         'description',
+        'tag',
+        'image',
+        'allergy',
     ];
     protected $table = 'menus';
+
+    // allergy を配列として扱う（DB には JSON として保存される）
+    protected $casts = [
+        'allergy' => 'array',
+    ];
 
     public function category()
     {

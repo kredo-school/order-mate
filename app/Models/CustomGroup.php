@@ -20,4 +20,9 @@ class CustomGroup extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function options()
+    {
+        return $this->customOptions();
+    }
 }

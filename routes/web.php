@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
     
         // Orders routes
         Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
+        Route::get('/order-list/json', [OrderListController::class, 'json'])->name('order-list.json');
     
         // Call Staff
         Route::get('/staff-calls', [StaffCallController::class, 'index'])->name('staffCalls.index');

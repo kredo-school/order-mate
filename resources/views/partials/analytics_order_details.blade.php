@@ -1,5 +1,5 @@
-<table class="table table-bordered table-hover mb-0 shadow-lg">
-    <thead class="table-light">
+<table class="table table-bordered table-hover mb-0 shadow-lg table-secondary">
+    <thead class="">
         <tr>
             <th>{{__('manager.date_time')}}</th>
             <th>{{__('manager.stay_duration')}}</th>

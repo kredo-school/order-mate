@@ -38,8 +38,10 @@
                             <label for="name" class="form-label">{{__('manager.menu_name')}}</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder=""
-                                class="form-control">
+                            <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="" class="form-control" required>
+                            @error('name')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -49,8 +51,10 @@
                             <label for="price" class="form-label">{{__('manager.price')}}</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="price" name="price" value="{{ old('price') }}" placeholder=""
-                                class="form-control">
+                            <input type="text" id="price" name="price" value="{{ old('price') }}" placeholder="" class="form-control" required>
+                            @error('price')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -71,7 +75,7 @@
                             <label for="menu_category_id" class="form-label text-brown">{{__('manager.category')}}</label>
                         </div>
                         <div class="col-8">
-                            <select id="menu_category_id" class="form-select me-2" name="menu_category_id">
+                            <select id="menu_category_id" class="form-select me-2" name="menu_category_id" required>
                                 @if ($all_categories->isEmpty())
                                     <option value="" class="text-brown" selected>{{__('manager.add_category_first')}}</option>
                                 @else
@@ -101,6 +105,9 @@
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
                                 <i class="fas fa-upload me-2"></i>{{__('manager.upload_tag_image')}}
                             </button>
+                            @error('tag')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                             <!-- プレビュー -->
                             <div id="tag-preview" class="ms-3">
                             </div>
@@ -194,6 +201,7 @@
 @endsection
 
 @push('scripts')
+<script> document.addEventListener('DOMContentLoaded', ()=> { const f = document.querySelector('form[action*="/manager/products"][method="post"]'); if (!f) { console.log('フォームが見つかりません'); return; } f.addEventListener('submit', (e) => { console.log('FORM submit triggered.'); }); }); </script>
     <script>
         const customGroups = @json($customGroups);
 

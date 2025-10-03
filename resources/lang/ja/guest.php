@@ -38,6 +38,17 @@ return [
     'add_to_cart_alert' => 'まず、商品の数量を1以上に設定してください。',
     'custom_alert' => 'このカスタムの合計数量は、商品の数量を超えることはできません。',
     'failed_add_alert' => 'カートへの追加に失敗しました。もう一度お試しください。',
+    'allergen_labels'   =>  [
+        'milk' => '乳製品',
+        'egg' => '卵',
+        'fish' => '魚',
+        'shrimp' => 'エビ',
+        'soy' => '大豆',
+        'wheat' => '小麦',
+        'sesame' => 'ごま',
+        'cashew' => 'カシューナッツ',
+        'walnut' => 'クルミ',
+    ],
 
     // add-complete
     'add_success' => 'メニューが正常に追加されました！',

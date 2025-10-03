@@ -15,7 +15,6 @@ return [
     'cancel'        => 'Cancel',
     'back'          => 'Back',
     'update'        => 'Update',
-    
 
     // welcome
     'welcome'        => 'Welcome to :store!',
@@ -38,6 +37,17 @@ return [
     'add_to_cart_alert' => 'Please add the product quantity to at least 1 first.',
     'custom_alert' => 'The total quantity for this custom cannot exceed the product quantity.',
     'failed_add_alert' => 'Failed to add to cart. Please try again.',
+    'allergen_labels'   =>  [
+        'milk' => 'Milk',
+        'egg' => 'Eggs',
+        'fish' => 'Fish',
+        'shrimp' => 'Shrimp',
+        'soy' => 'Soy',
+        'wheat' => 'Wheat',
+        'sesame' => 'Sesame',
+        'cashew' => 'Cashew',
+        'walnut' => 'Walnut',
+    ],
 
     // add-complete
     'add_success' => 'Menu Added successfully!',

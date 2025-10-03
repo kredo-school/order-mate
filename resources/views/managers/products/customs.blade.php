@@ -111,9 +111,12 @@
                             </div>
                     
                             {{-- Add option button --}}
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOptionField({{ $group->id }})">
-                              <i class="fa-solid fa-plus"></i> {{__('manager.add_option')}}
-                            </button>
+                            <div class="d-flex justify-content-between">
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOptionField({{ $group->id }})">
+                                <i class="fa-solid fa-plus"></i> {{__('manager.add_option')}}
+                              </button>
+                              <button type="submit" class="btn btn-primary btn-sm">{{__('manager.update')}}</button>
+                            </div>
                           </div>
                         </form>
                       </div>

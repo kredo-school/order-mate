@@ -76,6 +76,10 @@
                         searchTab.remove();
                     }
 
+                    // 🔹URLの ?search=◯◯ を削除して履歴更新
+                    const newUrl = window.location.pathname;
+                    window.history.pushState({}, '', newUrl);
+
                     // activeクラス切り替え
                     document.querySelectorAll('.category-tab').forEach(el => el.classList.remove(
                         'active'));

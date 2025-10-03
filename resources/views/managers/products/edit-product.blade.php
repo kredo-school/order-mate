@@ -109,7 +109,7 @@
                         </div>
                     </div>
 
-                    {{-- Allergens --}}
+                    {{-- 置き換え対象：Allergens ブロック --}}
                     <div class="form-section mb-4 row">
                         <div class="col-4"><label class="form-label text-brown">{{__('manager.allergens')}}</label></div>
                         <div class="col-8 d-flex flex-wrap gap-3">
@@ -125,20 +125,39 @@
                                     'cashew' => 'Cashew',
                                     'walnut' => 'Walnut',
                                 ];
-                                $selectedAllergens = old('allergens', $product->allergens ?? []);
-                                // 文字列なら配列に変換
-                                if (is_string($selectedAllergens)) {
-                                    $selectedAllergens = explode(',', $selectedAllergens);
+
+                                $selectedAllergens = old('allergens');
+
+                                if (is_null($selectedAllergens)) {
+                                    if (!empty($product->allergy)) {
+                                        if (is_array($product->allergy)) {
+                                            $selectedAllergens = $product->allergy;
+                                        } elseif (is_string($product->allergy)) {
+                                            $decoded = json_decode($product->allergy, true);
+                                            $selectedAllergens = is_array($decoded) ? $decoded : array_filter(array_map('trim', explode(',', $product->allergy)));
+                                        } else {
+                                            $selectedAllergens = [];
+                                        }
+                                    } elseif (!empty($product->allergies) && method_exists($product->allergies, 'pluck')) {
+                                        $selectedAllergens = $product->allergies->pluck('key')->filter()->map(fn($v) => (string)$v)->all();
+                                    } else {
+                                        $selectedAllergens = [];
+                                    }
                                 }
+
+                                $selectedAllergens = array_map('strval', (array)$selectedAllergens);
                             @endphp
+
                             @foreach ($allergens as $key => $label)
+                                @php $isChecked = in_array($key, $selectedAllergens); @endphp
                                 <div class="form-check text-center">
                                     <input type="checkbox" name="allergens[]" value="{{ $key }}"
                                         id="allergen-{{ $key }}" class="form-check-input d-none"
-                                        {{ in_array($key, $selectedAllergens) ? 'checked' : '' }}>
-                                    <label for="allergen-{{ $key }}"
-                                        class="allergen-label">@include("icons.allergens.$key")<span
-                                            class="tooltip-text">{{ $label }}</span></label>
+                                        {{ $isChecked ? 'checked' : '' }}>
+                                    <label for="allergen-{{ $key }}" class="allergen-label {{ $isChecked ? 'selected' : '' }}">
+                                        @include("icons.allergens.$key")
+                                        <span class="tooltip-text">{{ $label }}</span>
+                                    </label>
                                 </div>
                             @endforeach
                         </div>

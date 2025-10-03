@@ -26,6 +26,10 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
+    {{-- favicon --}}
+<link rel="icon" href="{{ asset('images/ordermate_logo_nav.png?v=1') }}" type="image/png">
+
+
     {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 

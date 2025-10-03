@@ -16,6 +16,7 @@ use App\Http\Controllers\StaffCallController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\TakeoutController;
+use App\Http\Controllers\ContactController;
 use App\Models\Table;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,18 @@ use Illuminate\Support\Facades\Route;
 
 // 認証ルート
 Auth::routes();
+
+// LP
+
+Route::get('/', function () {
+    return view('landing/landing'); // 'landing'は landing.blade.php を指します
+})->name('lp.index');
+
+
+// ⭐ 2. お問い合わせフォーム送信用のルートを追加 ⭐
+// POSTメソッドで /contact にアクセスがあった場合、ContactControllerのsendメソッドを実行する
+Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
+
 
 // 認証が必要なルート
 Route::group(['middleware' => 'auth'], function () {
@@ -42,51 +55,51 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('/products/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-    
+
         // Category routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
         Route::patch('/categories/update/{id}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    
+
         // Custom routes
         Route::get('/custom', [CustomController::class, 'index'])->name('custom.index');
         Route::post('/custom/store', [CustomController::class, 'store'])->name('custom.store');
         Route::patch('/custom/update/{id}', [CustomController::class, 'update'])->name('custom.update');
         Route::delete('/custom/delete/{id}', [CustomController::class, 'destroy'])->name('custom.destroy');
-    
+
         // Custom group の options を取得する Ajax 用ルート
         Route::get('/custom/{id}/options', [CustomController::class, 'options'])
             ->name('custom.options');
-    
+
         // Stores routes
         Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
         Route::get('/stores/edit', [StoreController::class, 'edit'])->name('stores.edit');
         Route::post('/stores/save', [StoreController::class, 'save'])->name('stores.save');
         Route::get('/stores/qr-code', [StoreController::class, 'qrCode'])->name('stores.qrCode');
         Route::post('/stores/generate-qr', [StoreController::class, 'generateQr'])->name('stores.generateQr');
-    
+
         // Analytics routes
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/analytics/data', [AnalyticsController::class, 'getCustomData'])->name('analytics.data');
         Route::get('/analytics/top-products', [AnalyticsController::class, 'getTopProducts'])->name('analytics.topProducts');
         Route::get('/analytics/stats', [AnalyticsController::class, 'getStats'])
-        ->name('analytics.stats');
+            ->name('analytics.stats');
         Route::get('/analytics/order_details', [AnalyticsController::class, 'getOrderDetails'])->name('analytics.orderDetails');
-    
+
         // Tables routes
         // Route::get('/tables', [TableController::class, 'index'])->name('tables');
         Route::get('/tables', [StoreController::class, 'tablesIndex'])->name('tables');
         Route::get('/tables/{tableId}', [OrderController::class, 'historyByTable'])
-        ->name('tables.show');
+            ->name('tables.show');
         Route::post('/tables/{table}/checkout', [CheckoutController::class, 'checkoutByManager'])->name('tables.checkout');
         Route::post('/tables/{table}/pay', [CheckoutController::class, 'payByManager'])->name('tables.pay');
-    
-    
+
+
         // Orders routes
         Route::get('/order-list', [OrderListController::class, 'index'])->name('order-list');
         Route::get('/order-list/json', [OrderListController::class, 'json'])->name('order-list.json');
-    
+
         // Call Staff
         Route::get('/staff-calls', [StaffCallController::class, 'index'])->name('staffCalls.index');
         Route::post('/staff-calls/{staffCall}/read', [StaffCallController::class, 'markAsRead'])->name('staffCalls.read');
@@ -106,7 +119,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], f
     Route::get('/stores/{id}', [AdminController::class, 'show'])->name('show');
     Route::post('/chat/broadcast', [ChatController::class, 'broadcastToManagers'])->name('chat.broadcast');
     Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics');
-    
+
     // Ajax 用
     Route::get('/analytics/stats', [AdminAnalyticsController::class, 'getStats'])->name('analytics.stats');
     Route::get('/analytics/custom', [AdminAnalyticsController::class, 'getCustomData'])->name('analytics.data');
@@ -130,7 +143,7 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.', 'mi
     Route::get('/welcome', [GuestController::class, 'welcome'])->name('welcome');
     Route::match(['get', 'post'], '/start-order', [GuestController::class, 'startOrder'])->name('startOrder');
     Route::post('/set-locale', [GuestController::class, 'setLocale'])
-    ->name('set_locale');
+        ->name('set_locale');
 
     // カート関連
     Route::post('/cart/add/{menu}', [OrderController::class, 'add'])->name('cart.add');
@@ -174,8 +187,8 @@ Route::group(['prefix' => 'guest/{storeName}/{tableUuid}', 'as' => 'guest.', 'mi
     // checkout
     Route::post('/checkout', function ($storeName, $tableUuid) {
         $table = Table::where('uuid', $tableUuid)
-                      ->with('user.store')
-                      ->firstOrFail();
+            ->with('user.store')
+            ->firstOrFail();
         $store = $table->user->store;
 
         return view('guests.checkout', compact('store', 'table'));

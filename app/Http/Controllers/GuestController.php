@@ -21,48 +21,48 @@ class GuestController extends Controller
         $table = Table::where('user_id', $store->user_id)
             ->where('uuid', $tableUuid)
             ->firstOrFail();
-
-        $query = Menu::where('user_id', $store->user_id)
-            ->with('customGroups.customOptions');
-
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%");
-            });
-        } else {
-            if ($initialCategory) {
-                $query->where('menu_category_id', $initialCategory->id);
-            } else {
-                $query->whereRaw('1=0');
-            }
-        }
-
-        $products = $query->get();
-
-        $cart = session()->get("cart_{$table->uuid}", []);
-        $cartCount = array_sum(array_column($cart, 'quantity'));
-
-        $latestOrder = $table->orders()->latest()->first();
     
+        // --- latest order / welcome 判定（元のロジックを維持） ---
+        $latestOrder = $table->orders()->latest()->first();
         if (!$latestOrder || $latestOrder->status === 'closed') {
             return view('guests.welcome', compact('store', 'table'))
                 ->with('isGuestPage', true);
         }
     
-        $products = $initialCategory
-            ? Menu::where('menu_category_id', $initialCategory->id)
-                  ->where('user_id', $store->user_id)
-                  ->with('customGroups.customOptions')
-                  ->get()
-            : collect();
+        // --- 検索 / カテゴリ / 初期カテゴリ の順で products を決定 ---
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $products = Menu::where('user_id', $store->user_id)
+                ->with('customGroups.customOptions')
+                ->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                      ->orWhere('description', 'LIKE', "%{$search}%");
+                })
+                ->get();
+        } elseif ($request->filled('category')) {
+            $categoryId = $request->input('category');
+            $products = Menu::where('user_id', $store->user_id)
+                ->where('menu_category_id', $categoryId)
+                ->with('customGroups.customOptions')
+                ->get();
+        } else {
+            $products = $initialCategory
+                ? Menu::where('menu_category_id', $initialCategory->id)
+                      ->where('user_id', $store->user_id)
+                      ->with('customGroups.customOptions')
+                      ->get()
+                : collect();
+        }
     
         $menus = Menu::where('user_id', $store->user_id)->with('category')->get();
     
-        return view('guests.index', compact('store', 'table', 'menus', 'all_categories', 'products'))
+        $cart = session()->get("cart_{$table->uuid}", []);
+        $cartCount = array_sum(array_column($cart, 'quantity'));
+    
+        return view('guests.index', compact('store', 'table', 'menus', 'all_categories', 'products', 'cartCount'))
             ->with('isGuestPage', true);
     }
+    
     
     public function welcome($storeName, $tableUuid)
     {
@@ -70,8 +70,38 @@ class GuestController extends Controller
         $table = Table::where('user_id', $store->user_id)
                     ->where('uuid', $tableUuid)
                     ->firstOrFail();
+        $sessionLocale = session('locale');
+            if ($sessionLocale) {
+                app()->setLocale($sessionLocale);
+            } elseif (isset($store) && !empty($store->language)) {
+                // manager が設定した stores.language を優先して session に入れる
+                session(['locale' => $store->language]);
+                app()->setLocale($store->language);
+            }
 
         return view('guests.welcome', compact('store', 'table'))->with('isGuestPage', true);
+    }
+
+    // 許可するロケール一覧（必要なら config に移す）
+    protected $allowed = ['ja', 'en'];
+
+    /**
+     * POST /guest/set-locale
+     * body: locale=ja|en
+     */
+    public function setLocale(Request $request, $storeName, $tableUuid)
+    {
+        $data = $request->validate([
+            'locale' => ['required', 'string', 'in:' . implode(',', $this->allowed)],
+        ]);
+    
+        session(['guest_locale' => $data['locale']]);
+    
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'ok', 'locale' => $data['locale']]);
+        }
+    
+        return back();
     }
 
     public function startOrder(Request $request, $storeName, $tableUuid)

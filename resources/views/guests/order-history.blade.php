@@ -61,45 +61,44 @@
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
                 <h5 class="d-inline text-brown">
-                    <i class="fa-solid fa-angle-left text-orange"></i> Menu List
+                    <i class="fa-solid fa-angle-left text-orange"></i> {{__('guest.menu_list')}}
                 </h5>
             </a>
         </div>
-  <h3 class="fw-bold mb-4 text-brown">Order History</h3>
+  <h3 class="fw-bold mb-4 text-brown">{{__('guest.order_history')}}</h3>
 
   @if ($history->count() > 0)
     <div class="p-2 rounded table-wrapper">
       <table class="table border-0 mb-0">
         <thead>
           <tr>
-            <th class="text-brown border-0">Menu</th>
-            <th class="text-brown border-0">Options</th>
-            <th class="text-brown border-0">Price</th>
-            <th class="text-brown border-0">Qty</th>
-            <th class="text-brown border-0">Status</th>
-        </tr>
-      </thead>
-                  @php
+            <th class="text-brown border-0">{{__('guest.menu')}}</th>
+            <th class="text-brown border-0">{{__('guest.option')}}</th>
+            <th class="text-brown border-0">{{__('guest.price')}}</th>
+            <th class="text-brown border-0">{{__('guest.qty')}}</th>
+            <th class="text-brown border-0">{{__('guest.status')}}</th>
+          </tr>
+        </thead>
+            @php
                 $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php
                 $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
             @endphp
-
-      <tbody>
-        @foreach ($history as $row)
-          <tr class="border-0">
-            <td class="border-0">{{ $row['menu_name'] }}</td>
-            <td class="border-0">{{ $row['options'] }}</td>
-            <td class="border-0">{{ explode(' - ', $currencyLabel)[0] }}
-                                {{ number_format($row['price'], 2) }}</td>
-            <td class="border-0">x{{ $row['quantity'] }}</td>
-            <td class="border-0">{{ ucfirst($row['status']) }}</td>
-          </tr>
+        <tbody>
+          @foreach ($history as $row)
+            <tr class="border-0">
+              <td class="border-0">{{ $row['menu_name'] }}</td>
+              <td class="border-0">{{ $row['options'] }}</td>
+              <td class="border-0">{{ explode(' - ', $currencyLabel)[0] }}
+                                  {{ number_format($row['price'], 2) }}</td>
+              <td class="border-0">x{{ $row['quantity'] }}</td>
+              <td class="border-0">{{ ucfirst($row['status']) }}</td>
+            </tr>
           @endforeach
         </tbody>
       </table>
     </div>
   @else
-    <p class="text-muted text-brown">No order history.</p>
+    <p class="text-muted text-brown">{{__('guest.no_orders')}}</p>
   @endif
 </div>
 @endsection

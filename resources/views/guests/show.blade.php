@@ -7,7 +7,7 @@
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
                 <h5 class="d-inline text-brown">
-                    <i class="fa-solid fa-angle-left text-orange"></i> Menu List
+                    <i class="fa-solid fa-angle-left text-orange"></i> {{__('guest.menu_list')}}
                 </h5>
             </a>
         </div>
@@ -24,7 +24,7 @@
                             style="top: -5%; left: 15%; max-width: 60px; transform: translate(0, 0); border-radius:5px;">
                     @endif
                 @else
-                    <div class="text-muted" style="width:250px; height:auto;">No Image</div>
+                    <div class="text-muted" style="width:250px; height:auto;">{{__('guest.no_image')}}</div>
                 @endif
             </div>
 
@@ -45,10 +45,45 @@
                 @endif
 
                 {{-- アレルギー情報 --}}
-                @if (!empty($product->allergy))
-                    <p> {{ $product->allergy }}</p>
-                @endif
-
+                @php
+                    // DB に保存されている可能性のあるフォーマットを正規化して配列にする
+                    $allergenKeys = [];
+                
+                    if (!empty($product->allergy)) {
+                        if (is_array($product->allergy)) {
+                            $allergenKeys = $product->allergy;
+                        } elseif (is_string($product->allergy)) {
+                            $decoded = json_decode($product->allergy, true);
+                            if (is_array($decoded)) {
+                                $allergenKeys = $decoded;
+                            } else {
+                                // カンマ区切りの旧フォーマットへフォールバック
+                                $allergenKeys = array_filter(array_map('trim', explode(',', $product->allergy)));
+                            }
+                        }
+                    } elseif (!empty($product->allergies) && method_exists($product->allergies, 'pluck')) {
+                        // 万一リレーションで保存している場合（将来の移行に備え）
+                        $allergenKeys = $product->allergies->pluck('key')->filter()->map(fn($v) => (string)$v)->all();
+                    }
+                
+                    // 型の正規化（文字列配列）
+                    $allergenKeys = array_map('strval', (array)$allergenKeys);
+                @endphp
+                
+                <div class="mb-3 d-flex justify-content-center gap-2 flex-wrap">
+                    @if (!empty($allergenKeys))
+                        @foreach ($allergenKeys as $key)
+                            <div class="d-flex align-items-center">
+                                {{-- アイコン partial があれば表示（ファイルが無ければ無視） --}}
+                                @includeIf("icons.allergens.{$key}")
+                                {{-- 翻訳ラベルがあれば使う。resources/lang/{lang}/guest.php に allergen_labels を用意しても良い --}}
+                                <span class="ms-2 text-brown">{{ __('guest.allergen_labels.' . $key) !== 'guest.allergen_labels.' . $key ? __('guest.allergen_labels.' . $key) : ucfirst($key) }}</span>
+                            </div>
+                        @endforeach
+                    @else
+                        <span class="text-brown">{{ __('guest.no_allergens') ?? __('manager.no_allergens') }}</span>
+                    @endif
+                </div>
 
                 {{-- Add to Cart Form --}}
                 <form
@@ -62,7 +97,7 @@
 
                     {{-- 商品数量 --}}
                     <div class="mt-3 text-center">
-                        <h5 class="fw-semibold text-brown">Quantity</h5>
+                        <h5 class="fw-semibold text-brown">{{__('guest.quantity')}}</h5>
                         <div class="d-flex justify-content-center align-items-center">
                             <button type="button" class="btn btn-outline-secondary btn-m product-decrement">-</button>
                             <span id="product-quantity" class="mx-2 text-brown fs-3">0</span>
@@ -156,7 +191,7 @@
                             sum, q) => sum + parseInt(q.textContent), 0);
 
                         if (maxQty === 0) {
-                            alert("Please set the product quantity to at least 1 first.");
+                            alert("{{__('guest.add_to_cart_alert')}}");
                             return;
                         }
 
@@ -166,8 +201,7 @@
                             document.getElementById("option-input-" + quantityEl.dataset.optionId)
                                 .value = value;
                         } else {
-                            alert("The total quantity for this group cannot exceed the product quantity of" +
-                                maxQty + ".");
+                            alert("{{__('guest.custom_alert')}}");
                         }
                     });
                 });
@@ -205,7 +239,7 @@
 
                     const qty = parseInt(productQtyInput.value);
                     if (qty < 1) {
-                        alert("Please set the quantity to at least 1.");
+                        alert("{{__('guest.add_to_cart_alert')}}");
                         return;
                     }
 
@@ -239,7 +273,7 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('Failed to add to cart.');
+                            alert('{{__('guest.failed_add_alert')}}');
                         });
                 });
             });

@@ -3,25 +3,29 @@
 @section('title', 'Table Order History')
 
 @section('content')
+@php
+$currencyCode = $store->currency ?? 'php'; // DBに保存されたコード、なければ php
+$currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
+@endphp
 <div class="container">
   <div class="d-flex justify-content-between mb-4">
     <a href="{{ route('manager.tables') }}" class="">
         <h5 class="d-inline text-brown">
-            <i class="fa-solid fa-angle-left text-orange"></i> Back to Tables
+            <i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.back_to_tables')}}
         </h5>
     </a>
-    <h3 class="fw-bold">Table {{ $table->number ?? '不明' }} - Order History</h3>
+    <h3 class="fw-bold">{{__('manager.table')}} {{ $table->number ?? '不明' }}</h3>
   </div>
 
   @if ($history->count() > 0)
     <table class="table table-hover border-0">
       <thead class="border-0">
         <tr class="border-0">
-          <th class="border-0">Menu</th>
-          <th class="border-0">Options</th>
-          <th class="border-0">Price</th>
-          <th class="border-0">Qty</th>
-          <th class="border-0">Status</th>
+          <th class="border-0">{{__('manager.menu')}}</th>
+          <th class="border-0">{{__('manager.options')}}</th>
+          <th class="border-0">{{__('manager.price')}}</th>
+          <th class="border-0">{{__('manager.qty')}}</th>
+          <th class="border-0">{{__('manager.status')}}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +33,7 @@
           <tr class="border-0">
             <td class="border-0">{{ $row['menu_name'] }}</td>
             <td class="border-0">{{ $row['options'] }}</td>
-            <td class="border-0">{{ number_format($row['price'], 2) }} php</td>
+            <td class="border-0">{{ number_format($row['price'], 2) }} {{ explode(' - ', $currencyLabel)[0] }}</td>
             <td class="border-0">x{{ $row['quantity'] }}</td>
             <td class="border-0">{{ ucfirst($row['status']) }}</td>
           </tr>
@@ -38,12 +42,13 @@
     </table>
     <div class="d-flex justify-content-between align-items-center py-2">
         <div>
-            <span class="fw-bold">Total: </span>
+            <span class="fw-bold">{{__('manager.total')}}: </span>
             <span class="h3 fw-bold">{{ number_format($totalPrice, 2) }}</span>
+            <span class="fw-bold">{{ explode(' - ', $currencyLabel)[0] }}</span>
             @if($isPaid)
-                <span class="text-success ms-2 fw-bolder">(paid via {{ $paymentMethod ?? 'unknown' }})</span>
+                <span class="text-success ms-2 fw-bolder">({{__('manager.paid_via')}}: {{ $paymentMethod ?? 'unknown' }})</span>
             @else
-                <span class="text-danger ms-2 fw-bolder">(unpaid)</span>
+                <span class="text-danger ms-2 fw-bolder">({{__('manager.unpaid')}})</span>
             @endif
         </div>
     
@@ -51,12 +56,12 @@
           @if (! $isPaid)
               <!-- Payment ボタン -->
               <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal">
-                  Payment
+                  {{__('manager.payment')}}
               </button>
           @endif
                 <form action="{{ route('manager.tables.checkout', $table->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-primary">Checkout</button>
+                    <button type="submit" class="btn btn-primary">{{__('manager.checkout')}}</button>
                 </form>
         </div>
         <!-- Payment Modal -->
@@ -66,35 +71,35 @@
               @csrf
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="paymentModalLabel">Select Payment Method</h5>
+                  <h5 class="modal-title" id="paymentModalLabel">{{__('manager.select_payment')}}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash" checked>
-                    <label class="form-check-label" for="cash">Cash</label>
+                    <label class="form-check-label" for="cash">{{__('manager.cash')}}</label>
                   </div>
 
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="payment_method" id="credit" value="credit card">
-                    <label class="form-check-label" for="credit">Credit Card</label>
+                    <label class="form-check-label" for="credit">{{__('manager.credit_card')}}</label>
                   </div>
 
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="payment_method" id="qr" value="qr code">
-                    <label class="form-check-label" for="qr">QR Code</label>
+                    <label class="form-check-label" for="qr">{{__('manager.qr_code')}}</label>
                   </div>
 
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="payment_method" id="other" value="other">
-                    <label class="form-check-label" for="other">Other</label>
+                    <label class="form-check-label" for="other">{{__('manager.other')}}</label>
                   </div>
                 </div>
 
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-success">Confirm</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('manager.cancel')}}</button>
+                  <button type="submit" class="btn btn-success">{{__('manager.confirm')}}</button>
                 </div>
               </div>
             </form>
@@ -103,7 +108,7 @@
 
     </div>
   @else
-    <p class="text-muted">No order history.</p>
+    <p class="text-muted">{{__('manager.no_orders')}}</p>
   @endif
 </div>
 @endsection

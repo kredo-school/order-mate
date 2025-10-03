@@ -6,14 +6,14 @@
 <div class="container">
   <div class="">
     <a href="{{url()->previous()}}" class="">
-      <h3 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Custom</h3>
+      <h3 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.custom')}}</h3>
     </a>
   </div>
 
   <div class="mx-auto">
-    <div class="d-flex justify-content-end mx-5 form-underline">
+    {{-- <div class="d-flex justify-content-end mx-5 form-underline">
       <input type="search" name="search_custom" id="search_custom" class="form-control">
-    </div>
+    </div> --}}
 
     <div class="mt-3">
       <div class="row">
@@ -24,9 +24,9 @@
               @csrf
               {{-- custom title and add button --}}
               <div class="form-underline d-flex align-items-center">
-                <input type="text" name="title" id="title" class="form-control me-2" placeholder="add title" style="flex: 1;" autofocus>
+                <input type="text" name="title" id="title" class="form-control me-2" placeholder="{{__('manager.custom_name')}}" style="flex: 1;" autofocus required>
                 <button type="submit" class="btn btn-primary text-white" id="add_custom_btn">
-                  <i class="fa-solid fa-plus me-1"></i> Add
+                  <i class="fa-solid fa-plus me-1"></i> {{__('manager.add')}}
                 </button>
               </div>
   
@@ -34,8 +34,8 @@
               <div id="custom-fields-wrapper">
                 {{-- initial custom option and price input --}}
                 <div class="form-underline my-3 d-flex align-items-center">
-                  <input type="text" name="name[]" id="name" class="form-control me-2" placeholder="add option" style="flex: 1;">
-                  <input type="number" name="extra_price[]" id="extra_price" class="form-control me-2" placeholder="price" style="width: 150px;">
+                  <input type="text" name="name[]" id="name" class="form-control me-2" placeholder="{{__('manager.option_name')}}" style="flex: 1;" required>
+                  <input type="number" name="extra_price[]" id="extra_price" class="form-control me-2" placeholder="{{__('manager.price')}}" style="width: 150px;" required>
                 </div>
               </div>
   
@@ -52,8 +52,8 @@
                   newField.classList.add('form-underline', 'my-3', 'd-flex', 'align-items-center');
 
                   newField.innerHTML = `
-                    <input type="text" name="name[]" class="form-control me-2" placeholder="add option" style="flex: 1;">
-                    <input type="number" name="extra_price[]" class="form-control me-2" placeholder="price" style="width: 150px;">
+                    <input type="text" name="name[]" class="form-control me-2" placeholder="{{__('manager.option_name')}}" style="flex: 1;">
+                    <input type="number" name="extra_price[]" class="form-control me-2" placeholder="{{__('manager.price')}}" style="width: 150px;">
                   `;
 
                   wrapper.appendChild(newField);
@@ -79,27 +79,27 @@
                   {{-- edit modal --}}
                   <div class="modal fade" id="editGroupModal{{ $group->id }}" tabindex="-1" aria-labelledby="editGroupModalLabel{{ $group->id }}" aria-hidden="true">
                     <div class="modal-dialog">
-                      <div class="modal-content">
+                      <div class="modal-content bg-light-mode">
                         <form action="{{ route('manager.custom.update', $group->id) }}" method="POST">
                           @csrf
                           @method('PATCH')
                     
                           <div class="modal-header">
-                            <h5 class="modal-title" id="editGroupModalLabel{{ $group->id }}">Edit Custom Group</h5>
+                            <h5 class="modal-title" id="editGroupModalLabel{{ $group->id }}">{{__('manager.edit_custom')}}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                     
                           <div class="modal-body">
                             {{-- Group title --}}
-                            <div class="mb-3">
-                              <label for="title{{ $group->id }}" class="form-label">Group Title</label>
+                            <div class="mb-3 form-underline">
+                              <label for="title{{ $group->id }}" class="form-label">{{__('manager.custom_name')}}</label>
                               <input type="text" name="title" id="title{{ $group->id }}" class="form-control" value="{{ $group->title }}" required>
                             </div>
                     
                             {{-- Options --}}
                             <div id="edit-custom-fields-wrapper-{{ $group->id }}">
                               @foreach($group->customOptions as $option)
-                                <div class="d-flex mb-2 align-items-center price-option">
+                                <div class="d-flex mb-2 align-items-center price-option form-underline">
                                   <input type="hidden" name="option_ids[]" value="{{ $option->id }}">
                                   <input type="text" name="name[]" class="form-control me-2" value="{{ $option->name }}" required>
                                   <input type="number" name="extra_price[]" class="form-control me-2" value="{{ $option->extra_price }}">
@@ -111,9 +111,12 @@
                             </div>
                     
                             {{-- Add option button --}}
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOptionField({{ $group->id }})">
-                              <i class="fa-solid fa-plus"></i> Add Option
-                            </button>
+                            <div class="d-flex justify-content-between">
+                              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addOptionField({{ $group->id }})">
+                                <i class="fa-solid fa-plus"></i> {{__('manager.add_option')}}
+                              </button>
+                              <button type="submit" class="btn btn-primary btn-sm">{{__('manager.update')}}</button>
+                            </div>
                           </div>
                         </form>
                       </div>
@@ -147,7 +150,7 @@
                 @endforeach
               </ul>
             @else
-              <p class="text-muted mb-0">No options added</p>
+              <p class="text-muted mb-0">{{__('manager.no_options')}}</p>
             @endif
             </div>
           @endforeach
@@ -160,10 +163,10 @@
     function addOptionField(groupId) {
       const wrapper = document.getElementById('edit-custom-fields-wrapper-' + groupId);
       const div = document.createElement('div');
-      div.classList.add('d-flex', 'mb-2', 'align-items-center', 'price-option');
+      div.classList.add('d-flex', 'mb-2', 'align-items-center', 'price-option', 'form-underline');
       div.innerHTML = `
-        <input type="text" name="name[]" class="form-control me-2" placeholder="Option name" required>
-        <input type="number" name="extra_price[]" class="form-control me-2" placeholder="Price">
+        <input type="text" name="name[]" class="form-control me-2" placeholder="{{__('manager.option_name')}}" required>
+        <input type="number" name="extra_price[]" class="form-control me-2" placeholder="{{__('manager.price')}}">
         <button type="button" class="btn btn-danger btn-sm delete-row">
           <i class="fa-solid fa-xmark"></i>
         </button>

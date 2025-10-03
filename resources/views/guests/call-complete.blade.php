@@ -2,18 +2,18 @@
 @section('title', 'Call Complete')
 @section('content')
 <div class="container my-5 text-center">
-  <h2 class="text-brown mt-5">A server will come soon.</h2>
+  <h2 class="text-brown mt-5">{{__('guest.call_success')}}</h2>
 
   {{-- Priority 表示 --}}
   <div class="text-center text-brown mt-4">
-      <h4>Priority: <span id="priority-display" class="fs-3 fw-bold">
+      <h4>{{__('guest.priority')}}: <span id="priority-display" class="fs-3 fw-bold">
         {{ $priority ?? '---' }}
     </span></h4>
       
   </div>
 
   <div class="mt-5">
-    <a href="{{ route('guest.index', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="btn btn-primary btn-lg">Back to Top</a>
+    <a href="{{ route('guest.index', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}" class="btn btn-primary btn-lg">{{__('guest.back_to_menu')}}</a>
   </div>
 </div>
 @endsection
@@ -38,7 +38,7 @@
                   priorityElement.textContent = data.priority ?? '---';
               })
               .catch(() => {
-                  priorityElement.textContent = '取得エラー';
+                  priorityElement.textContent = '{{__('guest.acquisition_error')}}';
               });
       }
 

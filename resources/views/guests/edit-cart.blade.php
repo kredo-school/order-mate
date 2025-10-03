@@ -11,7 +11,7 @@
                         class="img-fluid rounded shadow"
                         style="width: 90%; max-width: 500px; height: 500px; object-fit: cover;">
                 @else
-                    <div class="text-muted">No Image</div>
+                    <div class="text-muted">{{__('guest.no_image')}}</div>
                 @endif
             </div>
 
@@ -39,7 +39,7 @@
 
                     {{-- 商品数量 --}}
                     <div class="mt-3 text-center">
-                        <h5 class="fw-semibold text-brown mt-5 mb-3">Quantity</h5>
+                        <h5 class="fw-semibold text-brown mt-5 mb-3">{{__('guest.quantity')}}</h5>
                         <div class="d-flex justify-content-center align-items-center">
                             <button type="button"
                                 class="btn btn-outline-secondary btn-m product-decrement text-brown">-</button>
@@ -89,8 +89,8 @@
                     {{-- ボタン --}}
                     <div class="mt-5 text-center">
                         <a href="{{ route('guest.cart.show', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
-                            class="btn btn-outline btn-lg me-1 px-5">Back</a>
-                        <button type="submit" class="btn btn-primary btn-lg px-5">Save</button>
+                            class="btn btn-outline btn-lg me-1 px-5">{{__('guest.back')}}</a>
+                        <button type="submit" class="btn btn-primary btn-lg px-5">{{__('guest.update')}}</button>
                     </div>
                 </form>
             </div>

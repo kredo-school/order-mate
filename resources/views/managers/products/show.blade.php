@@ -14,7 +14,7 @@
                             style="max-height:400px;">
                     @else
                         <div class="bg-light d-flex align-items-center justify-content-center" style="height:400px;">
-                            No Image
+                            {{__('manager.no_image')}}
                         </div>
                     @endif
 
@@ -47,14 +47,38 @@
                         {{ trim($product->description) !== '' ? $product->description : 'No Description' }}
                     </div>
 
-                    <!-- Allergies -->
+                    {{-- 変更点: Allergies 表示ブロックを menu->allergy (配列) に合わせて描画 --}}
                     <div class="mb-3 d-flex justify-content-center gap-2 flex-wrap">
-                        @if ($product->allergies && $product->allergies->count() > 0)
-                            @foreach ($product->allergies as $allergy)
-                                <i class="fa-solid fa-circle-exclamation text-danger fs-5" title="{{ $allergy->name }}"></i>
+                        @php
+                            // 互換のため: 単一カラム名が 'allergy' または 'allergies' の可能性がある場合に対応
+                            $allergenKeys = [];
+                            if (!empty($product->allergy) && is_array($product->allergy)) {
+                                $allergenKeys = $product->allergy;
+                            } elseif (!empty($product->allergies) && is_array($product->allergies)) {
+                                // 万一リレーションでCollectionが返る場合（将来の移行対応）
+                                $allergenKeys = $product->allergies->pluck('key')->filter()->all();
+                            } elseif (!empty($product->allergy) && is_string($product->allergy)) {
+                                // JSON文字列やカンマ区切りが残っている場合に備えて
+                                $decoded = json_decode($product->allergy, true);
+                                if (is_array($decoded)) {
+                                    $allergenKeys = $decoded;
+                                } else {
+                                    $allergenKeys = array_filter(array_map('trim', explode(',', $product->allergy)));
+                                }
+                            }
+                        @endphp
+
+                        @if (!empty($allergenKeys))
+                            @foreach ($allergenKeys as $key)
+                                <div class="d-flex align-items-center">
+                                    {{-- アイコン partial があれば表示（ファイルが無ければ無視） --}}
+                                    @includeIf("icons.allergens.{$key}")
+                                    {{-- 翻訳ラベルがあれば使う。resources/lang/{lang}/guest.php に allergen_labels を用意しても良い --}}
+                                    <span class="ms-2 text-brown">{{ __('guest.allergen_labels.' . $key) !== 'guest.allergen_labels.' . $key ? __('guest.allergen_labels.' . $key) : ucfirst($key) }}</span>
+                                </div>
                             @endforeach
                         @else
-                            <span class="text-brown">No Allergies</span>
+                            <span class="text-brown">{{ __('manager.no_allergens') }}</span>
                         @endif
                     </div>
 
@@ -62,14 +86,14 @@
                     <div class="d-flex justify-content-center gap-2">
                         <a href="{{ route('manager.products.edit', $product->id) }}"
                             class="btn btn-light border text-brown d-flex align-items-center gap-1">
-                            <i class="fa-solid fa-pen"></i> Edit
+                            <i class="fa-solid fa-pen"></i> {{__('manager.edit')}}
                         </a>
                         <form action="{{ route('manager.products.destroy', $product->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-light border text-brown d-flex align-items-center gap-1"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                <i class="fa-solid fa-trash"></i> Delete
+                                <i class="fa-solid fa-trash"></i> {{__('manager.delete')}}
                             </button>
                         </form>
                     </div>
@@ -91,13 +115,13 @@
                     <div class="mb-3">
                         <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
                     </div>
-                    <h5 class="mb-3">Are you sure you want to delete "{{ $product->name ?? '' }}"?</h5>
+                    <h5 class="mb-3">{!!__('manager.delete_product', ['product'=>$product->name])!!}</h5>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__('manager.cancel')}}</button>
                         <form action="{{ route('manager.products.destroy', $product->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">{{__('manager.delete')}}</button>
                         </form>
                     </div>
                 </div>

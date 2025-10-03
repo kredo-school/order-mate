@@ -6,7 +6,7 @@
     <main class="bg-light-mode">
         <div class="d-flex justify-content-between mt-4 mx-3">
             <a href="{{ route('manager.products.index') }}">
-                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> Menu List</h5>
+                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.menu_list')}}</h5>
             </a>
         </div>
 
@@ -20,14 +20,14 @@
                     <!-- Image upload -->
                     <div class="form-section mb-4 row align-items-center">
                         <div class="col-4">
-                            <label for="image" class="form-label text-brown">Image</label>
+                            <label for="image" class="form-label text-brown">{{__('manager.image')}}</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
                             <input type="file" id="image" name="image" class="d-none"
                                 onchange="previewMenuImage(event)">
                             <button type="button" onclick="document.getElementById('image').click()"
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
-                                <i class="fas fa-upload me-2"></i>Upload menu image
+                                <i class="fas fa-upload me-2"></i>{{__('manager.upload_menu_image')}}
                             </button>
                             <div id="menu-image-preview" class="ms-3">
                                 @if ($product->image)
@@ -41,7 +41,7 @@
                     <!-- Name -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">{{__('manager.menu_name')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}"
@@ -52,7 +52,7 @@
                     <!-- Price -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="price" class="form-label">Price</label>
+                            <label for="price" class="form-label">{{__('manager.price')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="price" name="price" value="{{ old('price', $product->price) }}"
@@ -63,7 +63,7 @@
                     <!-- Description -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">{{__('manager.description')}}</label>
                         </div>
                         <div class="col-8">
                             <input type="text" id="description" name="description"
@@ -74,7 +74,7 @@
                     <!-- Category -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="menu_category_id" class="form-label text-brown">Category</label>
+                            <label for="menu_category_id" class="form-label text-brown">{{__('manager.category')}}</label>
                         </div>
                         <div class="col-8">
                             <select id="menu_category_id" class="form-select me-2" name="menu_category_id">
@@ -91,14 +91,14 @@
                     <!-- Tag -->
                     <div class="form-section mb-4 row">
                         <div class="col-4">
-                            <label for="tag" class="form-label text-brown">Tag</label>
+                            <label for="tag" class="form-label text-brown">{{__('manager.tag')}}</label>
                         </div>
                         <div class="d-flex align-items-center col-8">
                             <input type="file" id="tag" name="tag" class="d-none"
                                 onchange="previewTagImage(event)">
                             <button type="button" onclick="document.getElementById('tag').click()"
                                 class="btn btn-outline-secondary rounded-pill px-4 py-2 text-brown">
-                                <i class="fas fa-upload me-2"></i>Upload Tag
+                                <i class="fas fa-upload me-2"></i>{{__('manager.upload_tag_image')}}
                             </button>
                             <div id="tag-preview" class="ms-3">
                                 @if ($product->tag)
@@ -109,9 +109,9 @@
                         </div>
                     </div>
 
-                    {{-- Allergens --}}
+                    {{-- 置き換え対象：Allergens ブロック --}}
                     <div class="form-section mb-4 row">
-                        <div class="col-4"><label class="form-label text-brown">Allergens</label></div>
+                        <div class="col-4"><label class="form-label text-brown">{{__('manager.allergens')}}</label></div>
                         <div class="col-8 d-flex flex-wrap gap-3">
                             @php
                                 $allergens = [
@@ -125,20 +125,39 @@
                                     'cashew' => 'Cashew',
                                     'walnut' => 'Walnut',
                                 ];
-                                $selectedAllergens = old('allergens', $product->allergens ?? []);
-                                // 文字列なら配列に変換
-                                if (is_string($selectedAllergens)) {
-                                    $selectedAllergens = explode(',', $selectedAllergens);
+
+                                $selectedAllergens = old('allergens');
+
+                                if (is_null($selectedAllergens)) {
+                                    if (!empty($product->allergy)) {
+                                        if (is_array($product->allergy)) {
+                                            $selectedAllergens = $product->allergy;
+                                        } elseif (is_string($product->allergy)) {
+                                            $decoded = json_decode($product->allergy, true);
+                                            $selectedAllergens = is_array($decoded) ? $decoded : array_filter(array_map('trim', explode(',', $product->allergy)));
+                                        } else {
+                                            $selectedAllergens = [];
+                                        }
+                                    } elseif (!empty($product->allergies) && method_exists($product->allergies, 'pluck')) {
+                                        $selectedAllergens = $product->allergies->pluck('key')->filter()->map(fn($v) => (string)$v)->all();
+                                    } else {
+                                        $selectedAllergens = [];
+                                    }
                                 }
+
+                                $selectedAllergens = array_map('strval', (array)$selectedAllergens);
                             @endphp
+
                             @foreach ($allergens as $key => $label)
+                                @php $isChecked = in_array($key, $selectedAllergens); @endphp
                                 <div class="form-check text-center">
                                     <input type="checkbox" name="allergens[]" value="{{ $key }}"
                                         id="allergen-{{ $key }}" class="form-check-input d-none"
-                                        {{ in_array($key, $selectedAllergens) ? 'checked' : '' }}>
-                                    <label for="allergen-{{ $key }}"
-                                        class="allergen-label">@include("icons.allergens.$key")<span
-                                            class="tooltip-text">{{ $label }}</span></label>
+                                        {{ $isChecked ? 'checked' : '' }}>
+                                    <label for="allergen-{{ $key }}" class="allergen-label {{ $isChecked ? 'selected' : '' }}">
+                                        @include("icons.allergens.$key")
+                                        <span class="tooltip-text">{{ $label }}</span>
+                                    </label>
                                 </div>
                             @endforeach
                         </div>
@@ -147,7 +166,7 @@
                     <!-- Custom Groups -->
                     <div class="form-section mb-4 row form-underline">
                         <div class="col-4">
-                            <label for="custom_groups" class="form-label">Custom</label>
+                            <label for="custom_groups" class="form-label">{{__('manager.custom_name')}}</label>
                         </div>
                         <div class="d-grid gap-2 col-8">
                             <div id="custom-groups-wrapper">
@@ -156,7 +175,7 @@
                                         <select name="custom_groups[{{ $index }}][id]"
                                             class="form-select me-2 custom-group-select"
                                             data-index="{{ $index }}">
-                                            <option value="">Select Custom Group</option>
+                                            <option value="">{{__('manager.select_custom')}}</option>
                                             @foreach ($customGroups as $g)
                                                 <option value="{{ $g->id }}"
                                                     {{ $group->id == $g->id ? 'selected' : '' }}>{{ $g->title }}
@@ -168,7 +187,7 @@
                                             <input type="checkbox" name="custom_groups[{{ $index }}][is_required]"
                                                 value="1" class="form-check-input"
                                                 {{ $group->pivot->is_required ? 'checked' : '' }}>
-                                            <label class="form-check-label">Required</label>
+                                            <label class="form-check-label">{{__('manager.required')}}</label>
                                         </div>
 
                                         <button type="button"
@@ -180,16 +199,15 @@
                             <div class="d-flex justify-content-between text-brown">
                                 <button type="button" id="add-custom-group"
                                     class="btn btn-link p-0 text-brown custom-link" style="text-decoration: none;">+
-                                    Add</button>
-                                <a href="{{ route('manager.custom.index') }}" class="text-brown custom-link">see all
-                                    custom</a>
+                                    {{__('manager.add_option')}}</button>
+                                <a href="{{ route('manager.custom.index') }}" class="text-brown custom-link">{{__('manager.see_all_customs')}}</a>
                             </div>
                         </div>
                     </div>
 
 
                     <!-- Submit -->
-                    <button type="submit" class="btn btn-primary btn-block btn-md">Update</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-md">{{__('manager.update')}}</button>
                 </form>
             </div>
         </div>
@@ -246,7 +264,7 @@
                 .filter(v => v);
             const availableGroups = customGroups.filter(g => !selectedIds.includes(String(g.id)));
             if (!availableGroups.length) {
-                alert('All custom groups are already added.');
+                alert('{{__('manager.added_alert')}}');
                 return;
             }
             const index = wrapper.querySelectorAll('.custom-group-row').length;
@@ -254,12 +272,12 @@
             row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
             row.innerHTML = `
       <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
-          <option value="">Select Custom Group</option>
+          <option value="">{{__('manager.select_custom')}}</option>
           ${availableGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
       </select>
       <div class="form-check me-2">
           <input type="checkbox" name="custom_groups[${index}][is_required]" value="1" class="form-check-input">
-          <label class="form-check-label">Required</label>
+          <label class="form-check-label">{{__('manager.required')}}</label>
       </div>
       <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
     `;

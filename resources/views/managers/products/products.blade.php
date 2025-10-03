@@ -103,15 +103,18 @@
                         searchTab.remove();
                     }
 
+                    // 🔹URLの ?search=◯◯ を削除して履歴更新
+                    const newUrl = window.location.pathname;  
+                    window.history.pushState({}, '', newUrl);
+
                     // active クラス切り替え
-                    document.querySelectorAll('.category-tab').forEach(el => el.classList.remove(
-                        'active'));
+                    document.querySelectorAll('.category-tab').forEach(el => el.classList.remove('active'));
                     this.querySelector('.category-tab').classList.add('active');
 
-                    // Ajax URL（検索条件はもうつけない）
-                    const url = isGuestPage ?
-                        `/guest/${storeName}/${tableUuid}/products/${categoryId}` :
-                        `/manager/products/by-category/${categoryId}`;
+                    // Ajax URL
+                    const url = isGuestPage
+                        ? `/guest/${storeName}/${tableUuid}/products/${categoryId}`
+                        : `/manager/products/by-category/${categoryId}`;
 
                     fetch(url)
                         .then(res => res.text())

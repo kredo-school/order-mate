@@ -1,0 +1,523 @@
+/*
+ * Ordermate LP Styles - 既存のCSSと競合しないように .ordermate-lp プレフィックスを使用
+ */
+
+/* ======================================= */
+/* 🚀 必須リセット: 白い枠を消すための最重要コード */
+/* ======================================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  /* bodyのデフォルトの背景色をLPと同じ色に設定しておくと確実です */
+  background-color: #FDF6EB; 
+  /* 縦スクロール時に隙間ができないよう、最低の高さを確保 */
+  min-height: 100vh;
+}
+/* すべての要素のサイズ計算を border-box に統一 */
+.ordermate-lp * {
+    box-sizing: border-box;
+}
+
+.ordermate-lp .step_title {
+    color: #E67E22;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 2.5px;
+}
+/* LPのルート要素に対するスタイル */
+.ordermate-lp {
+    /* LP全体のフォントをLPのデザインに合わせる（既存CSSのbodyへの設定を上書き） */
+    font-family: 'Roboto', sans-serif;
+    color: #6B4C3B;
+    /* line-height: 1.6; */
+    margin: 0;
+    padding: 0;
+    background-color: #FDF6EB; /* 既存のLPデザインの背景色 */
+}
+
+/* 共通スタイル - .ordermate-lp のスコープ内でのみ適用 */
+.ordermate-lp a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* LP固有のボタン（既存の .btn を上書きしないよう別クラス名を使用） */
+.ordermate-lp .lp-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.text-orange {
+    color: #E67E22; /* オレンジ色 */
+}
+
+/* LP内のREGISTERボタン（ヘッダー） */
+.ordermate-lp .btn-register {
+    background-color: #72341c; /* REGISTERボタンの色（赤系） */
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    /* 既存の .btn クラスを避け、LP固有のスタイルを適用 */
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* LP内のメインCTAボタン（オレンジ系） */
+.ordermate-lp .btn-register-large {
+    background-color: #E67E22;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    margin-top: 20px;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* LP内の最終CTAボタン */
+.ordermate-lp .btn-register-cta {
+    background-color: #E67E22;
+    color: #fff;
+    padding: 18px 40px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+
+.ordermate-lp .logo-large, 
+.ordermate-lp .logo-small, 
+.ordermate-lp .logo-small-cta {
+    font-family: serif; /* ロゴのフォントは画像から判断して仮設定 */
+    color: #E67E22;
+    font-weight: 900;
+}
+
+.ordermate-lp .logo {
+    max-width: 500px;
+    padding: 0;
+}
+
+.ordermate-lp .logo-sm {
+    max-width: 250px;
+    padding: 0;
+}
+
+.ordermate-lp .logo-mm {
+    max-width: 50px;
+    padding: 0;
+}
+
+.ordermate-lp .question-section .logo-sm-m {
+    width: auto;
+    max-width: 150px;
+    height: 80px;
+    object-fit: cover; 
+    /* object-position: center 70%; */
+        object-position: center; 
+    vertical-align: middle; 
+    margin-bottom: 0; 
+    padding: 0;
+    margin: 0;
+}
+
+
+.ordermate-lp .logo { font-size: 1.5em; }
+.ordermate-lp .logo-large { font-size: 3em; margin-bottom: 10px; }
+.ordermate-lp .logo-small { font-size: 1.2em; margin-top: 10px;}
+.ordermate-lp .highlight { font-weight: bold; color: #E67E22; }
+
+/* ------------------------------------------- */
+/* ヘッダー */
+/* ------------------------------------------- */
+.ordermate-lp .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background-color: #FDF6EB;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #FDF6EB;
+}
+
+.ordermate-lp .main-header nav a {
+    margin-left: 20px;
+}
+
+/* ------------------------------------------- */
+/* ヒーローセクション (Bootstrap Grid対応) */
+/* ------------------------------------------- */
+.ordermate-lp .hero-section {
+    /* ❌ 削除: display: flex; */ 
+    /* ❌ 削除: align-items: center; */
+    /* ❌ 削除: padding: 0 5%; */
+    
+    /* 背景設定は維持 */
+    background-image: url('/images/re-restaurant.png'); 
+    background-size: cover;
+    background-position: center 20%;
+    height: 90vh; 
+    position: relative;
+    overflow: hidden; 
+}
+
+
+/* ------------------------------------------- */
+/* 問いかけセクション */
+/* ------------------------------------------- */
+.ordermate-lp .question-section {
+    padding: 50px 5%;
+    text-align: center;
+}
+
+.ordermate-lp .question-section h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
+}
+
+.ordermate-lp .question-section .flex-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.ordermate-lp .question-section .text-content {
+    text-align: left;
+    max-width: 450px;
+}
+
+.ordermate-lp .question-section .text-content p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.ordermate-lp .image-placeholder {
+    background-color: #f0f0f0;
+    min-height: 250px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+}
+.ordermate-lp .restaurant-image-2 {
+    max-width: 500px;
+    height: 290px;
+    background-image: url('/images/2-before.png'); 
+}
+
+/* ------------------------------------------- */
+/* 3つの特徴セクション */
+/* ------------------------------------------- */
+.ordermate-lp .features-section {
+    padding: 50px 5%;
+    text-align: center;
+    display: flex;
+    flex-direction: column; 
+    gap: 40px;
+}
+
+.ordermate-lp .feature-item {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.ordermate-lp .feature-number {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: #ccc; 
+    margin-bottom: 10px;
+}
+
+.ordermate-lp .feature-item h3 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+}
+
+.ordermate-lp .feature-image-1 {
+    height: 200px;
+    margin-bottom: 15px;
+     background-image: url('/images/4-cellphone.png'); 
+}
+
+.ordermate-lp .feature-image-2 {
+    height: 200px;
+    margin-bottom: 15px;
+    background-image: url('/images/5-manager.png');
+}
+
+.ordermate-lp .feature-image-3 {
+    height: 200px;
+    margin-bottom: 15px;
+    background-image: url('/images/6-managers.png');
+}
+
+/* ------------------------------------------- */
+/* メリットセクション */
+/* ------------------------------------------- */
+.ordermate-lp .benefits-section {
+    padding: 60px 5%;
+    text-align: center;
+}
+
+.ordermate-lp .benefits-section h2 {
+    font-size: 2em;
+    margin-bottom: 40px;
+}
+
+.ordermate-lp .benefits-container {
+    display: flex;
+    flex-direction: column; 
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+.ordermate-lp .benefits-column {
+    padding: 20px;
+    border-radius: 8px;
+    /* 【修正】このカラム内のインライン要素（タグ）を中央揃えにする */
+    text-align: center; 
+}
+
+/* 【追加】リストの項目自体は左揃えに戻す */
+.ordermate-lp .benefits-column ul {
+    list-style: none;
+    /* リストのテキストを左揃えに戻す */
+    text-align: left; 
+}
+
+.ordermate-lp .benefits-column li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+}
+
+.ordermate-lp .benefits-column li::before {
+    content: '★'; 
+    position: absolute;
+    left: 0;
+    color: #E67E22;
+    font-weight: bold;
+}
+
+.ordermate-lp .tag-restaurant {
+    background-color: #E67E22; 
+    color: #fff;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.ordermate-lp .tag-customer {
+    background-color: #72341c; 
+    color: #fff;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+.ordermate-lp .visuals-wrapper {
+    display: flex; /* これで子要素が横並びになります */
+    justify-content: center; /* 子要素を中央に配置します */
+    align-items: center;
+    gap: 20px; /* 画像と画像の間隔 */
+    max-width: 800px;
+    margin: 30px auto 0; /* 上の要素との間隔と中央配置 */
+}
+.ordermate-lp .benefit-visual {
+    height: 300px;
+    max-width: 500px;
+    margin: 0 auto;
+    background-image: url('/images/7-chef.png'); 
+}
+.ordermate-lp .benefit-visual-2 {
+    height: 300px;
+    max-width: 500px;
+    margin: 0 auto;
+    background-image: url('/images/8-customers.png'); 
+}
+
+/* ------------------------------------------- */
+/* 導入ステップセクション */
+/* ------------------------------------------- */
+.ordermate-lp .steps-section {
+    background-color: #72341c; 
+    color: #fff;
+    padding: 60px 5%;
+    text-align: center;
+}
+
+.ordermate-lp .steps-section h2 {
+    font-size: 2em;
+    margin-bottom: 40px;
+}
+
+.ordermate-lp .steps-container {
+    display: flex;
+    flex-direction: column; 
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.ordermate-lp .step-item {
+    background-color: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.ordermate-lp .step-number {
+    font-size: 3em;
+    font-weight: 900;
+    color: #E67E22; 
+}
+
+/* ------------------------------------------- */
+/* CTAセクション */
+/* ------------------------------------------- */
+.ordermate-lp .cta-section {
+    padding: 50px 5%;
+    text-align: center;
+}
+
+.ordermate-lp .cta-section p {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.ordermate-lp .cta-section .with-text {
+    font-size: 1em;
+    color: #888;
+    margin: 20px 0 5px;
+}
+/* ------------------------------------------- */
+/* フォームの横並びレイアウトとおしゃれCSS */
+/* ------------------------------------------- */
+.ordermate-lp .contact-form {
+    max-width: 600px; /* フォームの最大幅を制限して見やすく */
+    margin: 0 auto;
+}
+
+/* フォームグループをFlexコンテナにし、ラベルと入力欄を横並びに */
+.ordermate-lp .contact-form .form-group {
+    display: flex;
+    align-items: flex-start; /* 上揃え */
+    margin-bottom: 25px !important;
+}
+
+/* ラベルのスタイルと幅を固定 */
+.ordermate-lp .contact-form label {
+    width: 35%; /* ラベルが占める幅 */
+    min-width: 120px; /* 最小幅 */
+    padding-top: 5px; /* 入力欄と高さを揃えるための微調整 */
+    font-weight: bold;
+    color: var(--text-brown, #6B4C3B); /* 既存の茶色を使う */
+}
+
+/* 入力欄のコンテナと幅 */
+.ordermate-lp .contact-form .form-control-wrapper {
+    flex: 1; /* 残りの幅をすべて占める */
+}
+
+/* 必須マーク (*) のスタイル */
+.ordermate-lp .required-star {
+    color: #C0392B; /* 赤色 */
+    margin-left: 5px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* ------------------------------------------- */
+/* 下線のみの入力欄デザイン */
+/* ------------------------------------------- */
+.ordermate-lp .form-underline {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #D9D3C8; /* 薄い下線 */
+    border-radius: 0;
+    background: transparent;
+    padding: 8px 0;
+    box-shadow: none;
+    transition: border-bottom-color 0.2s;
+    font-size: 16px;
+}
+
+.ordermate-lp .form-underline:focus {
+    border-bottom: 2px solid var(--primary-orange, #E67E22); /* フォーカス時にオレンジ色の線 */
+    outline: none;
+    box-shadow: none;
+}
+
+/* ------------------------------------------- */
+/* --- デスクトップ用メディアクエリ --- */
+/* ------------------------------------------- */
+@media (min-width: 768px) {
+    
+    .ordermate-lp .question-section .flex-container {
+        flex-direction: row; 
+        text-align: left;
+        align-items: flex-start;
+    }
+    .ordermate-lp .question-section .image-placeholder, 
+    .ordermate-lp .question-section .text-content {
+        flex: 1;
+    }
+    .ordermate-lp .question-section .text-content {
+        padding-left: 30px;
+    }
+
+    .ordermate-lp .features-section {
+        flex-direction: row;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .ordermate-lp .benefits-container {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .ordermate-lp .benefits-column {
+        flex: 1;
+        max-width: 45%;
+    }
+
+    .ordermate-lp .steps-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .ordermate-lp .step-item {
+        max-width: 23%;
+    }
+}
+
+.ordermate-lp .contact-section {
+    padding: 50px 5%;
+    text-align: center;
+}

@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   margin: 0;
   background-color: var(--bg-light);
+  font-size: 16px;
 }
 
 nav, footer {
@@ -428,4 +429,12 @@ footer button.text-brown:hover {
   pointer-events: none;
   z-index: 9999;
   transition: transform 1s cubic-bezier(0.55, -0.55, 0.35, 1.55), opacity 1s;
+}
+
+/* スマホ用 */
+@media (max-width: 768px) {
+  #orderTable th, #orderTable td {
+    font-size: 12px;
+    padding: 4px;
+  }
 }

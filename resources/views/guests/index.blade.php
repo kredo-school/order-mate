@@ -16,7 +16,7 @@
 
 
         {{-- category --}}
-        <div class="position-relative mt-5">
+        <div class="position-relative mt-3">
             <div class="d-flex align-items-center">
                 <div class="category-scroll d-flex">
                     @foreach ($all_categories as $category)

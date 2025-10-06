@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Call Complete')
 @section('content')
-<div class="container my-5 text-center">
+<div class="container my-5 text-center page-center">
   <h2 class="text-brown mt-5">{{__('guest.call_success')}}</h2>
 
   {{-- Priority 表示 --}}

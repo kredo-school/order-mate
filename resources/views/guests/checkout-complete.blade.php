@@ -1,7 +1,7 @@
 @extends('layouts.noheader')
 
 @section('content')
-    <div class="container text-center py-5">
+    <div class="container text-center py-5 page-center">
         @php
             $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php
             $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';

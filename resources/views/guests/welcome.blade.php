@@ -1,7 +1,7 @@
 @extends('layouts.noheader')
 
 @section('content')
-<div class="container text-center py-5">
+<div class="container text-center page-center">
     <h2 class="fw-bold">{{__('guest.welcome', ['store'=>$store->store_name])}}</h2>
     <p class="mt-3">{{__('guest.thank_you_visiting')}}</p>
 

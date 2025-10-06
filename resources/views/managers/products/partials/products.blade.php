@@ -9,7 +9,7 @@
 @else
 <div class="row">
     @foreach ($list as $product)
-        <div class="col-6 col-md-3 col-lg-3 mb-4">
+        <div class="col-6 col-md-3 col-lg-2">
             <a href="{{ $isGuestPage
                 ? route('guest.show', [
                     'storeName' => $store->store_name,
@@ -19,7 +19,7 @@
                 : route('manager.products.show', $product->id) }}"
                 class="text-decoration-none text-brown d-block">
 
-                <div class="card border-0 shadow-none position-relative h-100">
+                <div class="card border-0 shadow-none position-relative h-100 p-1">
                     @if ($product->tag)
                         <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
                             style="top:5px; left:5px; width:50px; height:50px; object-fit:cover; z-index:10;">

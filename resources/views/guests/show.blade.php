@@ -2,7 +2,7 @@
 @section('title', 'Menu Info')
 
 @section('content')
-    <div class="container mt-4">
+    <div class="container">
         {{-- 戻るボタン --}}
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
@@ -13,7 +13,7 @@
         </div>
         <div class="row gx-0">
             {{-- 左側（商品画像） --}}
-            <div class="col-md-5 d-flex justify-content-center align-items-start position-relative">
+            <div class="col-md-5 d-flex justify-content-center align-items-start position-relative mt-2">
                 @if ($product->image)
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
                         class="img-fluid rounded shadow" style="max-width: 250px; height: auto;">
@@ -35,7 +35,7 @@
 
             {{-- 右側（商品情報） --}}
             <div class="col-md-7">
-                <h2 class="fw-bold text-center text-brown fs-1 mt-5 mb-1">{{ $product->name }}</h2>
+                <h2 class="fw-bold text-center text-brown fs-1 mt-3 mb-1">{{ $product->name }}</h2>
                 <p class="fs-5 text-center text-brown">{{ explode(' - ', $currencyLabel)[0] }}
                     {{ number_format($product->price) }}</p>
 
@@ -99,9 +99,9 @@
                     <div class="mt-3 text-center">
                         <h5 class="fw-semibold text-brown">{{__('guest.quantity')}}</h5>
                         <div class="d-flex justify-content-center align-items-center">
-                            <button type="button" class="btn btn-outline-secondary btn-m product-decrement">-</button>
+                            <button type="button" class="btn btn-outline-secondary btn-m product-decrement text-brown">-</button>
                             <span id="product-quantity" class="mx-2 text-brown fs-3">0</span>
-                            <button type="button" class="btn btn-outline-secondary btn-m product-increment">+</button>
+                            <button type="button" class="btn btn-outline-secondary btn-m product-increment text-brown">+</button>
                         </div>
                     </div>
                     <input type="hidden" name="quantity" value="0" id="product-quantity-input">
@@ -273,7 +273,7 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('{{__('guest.failed_add_alert')}}');
+                            alert("{{__('guest.failed_add_alert')}}");
                         });
                 });
             });

@@ -56,7 +56,7 @@
 }
 </style>
 
-<div class="container py-4">
+<div class="container p-0">
    {{-- 戻るボタン --}}
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
@@ -69,14 +69,14 @@
 
   @if ($history->count() > 0)
     <div class="p-2 rounded table-wrapper">
-      <table class="table border-0 mb-0">
+      <table class="table border-0 mb-0 text-center">
         <thead>
           <tr>
-            <th class="text-brown border-0">{{__('guest.menu')}}</th>
-            <th class="text-brown border-0">{{__('guest.option')}}</th>
-            <th class="text-brown border-0">{{__('guest.price')}}</th>
-            <th class="text-brown border-0">{{__('guest.qty')}}</th>
-            <th class="text-brown border-0">{{__('guest.status')}}</th>
+            <th class="px-0">{{__('guest.menu')}}</th>
+            <th class="px-0">{{__('guest.option')}}</th>
+            <th class="px-0">{{__('guest.price')}}</th>
+            <th class="px-0">{{__('guest.qty')}}</th>
+            <th class="px-0">{{__('guest.status')}}</th>
           </tr>
         </thead>
             @php
@@ -85,13 +85,13 @@
             @endphp
         <tbody>
           @foreach ($history as $row)
-            <tr class="border-0">
-              <td class="border-0">{{ $row['menu_name'] }}</td>
-              <td class="border-0">{{ $row['options'] }}</td>
-              <td class="border-0">{{ explode(' - ', $currencyLabel)[0] }}
+            <tr>
+              <td class="px-0">{{ $row['menu_name'] }}</td>
+              <td class="px-0">{{ $row['options'] }}</td>
+              <td class="px-0">{{ explode(' - ', $currencyLabel)[0] }}
                                   {{ number_format($row['price'], 2) }}</td>
-              <td class="border-0">x{{ $row['quantity'] }}</td>
-              <td class="border-0">{{ ucfirst($row['status']) }}</td>
+              <td class="px-0">x{{ $row['quantity'] }}</td>
+              <td class="px-0">{{ ucfirst($row['status']) }}</td>
             </tr>
           @endforeach
         </tbody>

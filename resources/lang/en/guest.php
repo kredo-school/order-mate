@@ -20,7 +20,7 @@ return [
     'welcome'        => 'Welcome to :store!',
     'thank_you_visiting'    => 'Thank you for visiting us. Please choose your language and enter the number of guests.',
     'apply'          => 'Apply',
-    'number_of_guests' => 'ex) 4',
+    'number_of_guests' => 'Enter number of guests here',
     'start_order'   => 'Start Order',
     'failed_change_language' => 'Failed to change language. Please try again.',
     'network_error' => 'Network error. Please try again.',
@@ -48,6 +48,10 @@ return [
         'cashew' => 'Cashew',
         'walnut' => 'Walnut',
     ],
+    'no_allergens' => 'No Allergens',
+
+    //edit-cart
+    'edit_cart' => 'Edit Cart',
 
     // add-complete
     'add_success' => 'Menu Added successfully!',

@@ -52,7 +52,7 @@
         {{-- SNSアイコン --}}
         <div class="social-row">
             {{-- LPロゴ --}}
-            <a href="#">
+            <a href="{{ url('/') }}" class="social-icon">
                 <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="LP">
             </a>
 

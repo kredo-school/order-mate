@@ -21,8 +21,8 @@
             <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo-mm">
             <nav>
                 <a href="#our-product">OUR PRODUCT</a>
-                <a href="">CONTACT</a>
-                <a href="#" class="btn btn-register">REGISTER</a>
+                <a href="#contact-section">CONTACT</a>
+                <a href="{{ route('register') }}" class="btn btn-register">REGISTER</a>
             </nav>
         </header>
 
@@ -159,12 +159,12 @@
 
             {{-- お問い合わせ --}}
             <section class="contact-section" id="contact-section">
-                <h2>Contact Us</h2>
+                <h2 class="mb-3">Contact Us</h2>
 
                 <form action="{{ route('lp.contact.send') }}" method="POST" class="contact-form">
                     @csrf
 
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3 mt-5">
                         <label for="name">First Name <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="text" name="name" id="name" class="form-control form-underline"
@@ -223,11 +223,11 @@
                 <p class="with-text">with</p>
                 <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-sm">
             </div>
-            <a href="#" class="btn btn-register-cta">REGISTER HERE</a>
+            <a href="{{ route('register') }}" class="btn btn-register-cta">REGISTER HERE</a>
 
             <br>
             <br>
-            <p class="disclaimer">© All Rights are reserved by ordermate</p>
+            <p class="disclaimer fs-6 mt-5">© All Rights are reserved by ordermate</p>
         </section>
 
     </div>

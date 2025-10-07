@@ -37,11 +37,12 @@
 
             {{-- Password --}}
             <div class="mb-3">
-                <label for="password">Password
-                </label>
-                <small class="form-text text-muted" style="line-height:1;">
+                <label for="password">Password</label>
+                {{-- ここからヒントメッセージ --}}
+                <span class="text-danger d-block"
+                    style="font-size:0.75rem; line-height:1.2; margin-top:-0.4rem; margin-bottom:0.2rem;">
                     * Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.
-                </small>
+                </span>
                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                     name="password" required autocomplete="new-password">
                 @error('password')
@@ -63,16 +64,9 @@
             <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">Log in</a>
         </form>
 
-        {{-- 下部リンク --}}
-        <div class="link-row justify-content-end">
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}">Forgot password?</a>
-            @endif
-        </div>
-
         {{-- SNSアイコン --}}
         <div class="social-row">
-            <a href="#">
+            <a href="{{ url('/') }}" class="social-icon">
                 <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="LP">
             </a>
             <a href="#" class="social-icon">

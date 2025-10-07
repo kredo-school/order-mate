@@ -1,11 +1,11 @@
-{{-- resources/views/emails/welcome.blade.php --}}
+{{-- resources/views/emails/verify.blade.php --}}
 <!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Welcome to OrderMate</title>
+    <title>Email Verification Required</title>
 </head>
 
 <body
@@ -15,13 +15,14 @@
             <td class="align-center" style="padding:32px 16px;">
                 <table role="presentation" width="680" cellpadding="0" cellspacing="0"
                     style="max-width:680px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+                    
                     {{-- Header --}}
                     <tr>
                         <td
                             style="padding:24px 28px 0;text-align:center;background:linear-gradient(180deg,#fff6ea,#fff);">
                             <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="OrderMate"
                                 style="display:block; margin:0 auto 12px;">
-                            <h1 style="margin:0;font-size:22px;color:#5C3D2E;">Welcome to OrderMate!</h1>
+                            <h1 style="margin:0;font-size:22px;color:#5C3D2E;">Email Verification Required</h1>
                         </td>
                     </tr>
 
@@ -32,26 +33,20 @@
                                 Hi {{ $user->name ?? 'there' }},<br>
                             </p>
 
-                            <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#4b4b4b;">
-                                Thanks for registering. We're excited to have you on board 🎉
-                            </p>
-
                             <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#4b4b4b;">
-                                With OrderMate, you can spend less time on manual orders and payments, and more time on
-                                what matters — serving great food and delighting customers.
+                                Thank you for registering with OrderMate. Before you can log in, please confirm your email address by clicking the button below. This ensures the security of your account.
                             </p>
 
-                            {{-- CTA --}}
+                            {{-- ⭐ CTA: 認証リンクを使用し、デザインカラーを適用 ⭐ --}}
                             <div style="text-align:center;margin:18px 0;">
-                                <a href="{{ $loginUrl ?? route('login') }}"
+                                <a href="{{ $verificationUrl }}"
                                     style="display:inline-block;padding:12px 22px;border-radius:8px;background:#FF7A18;color:#fff;text-decoration:none;font-weight:600;">
-                                    Log in to your dashboard
+                                    Verify Email Address
                                 </a>
                             </div>
 
                             <p style="margin:10px 0 0;font-size:13px;color:#888;line-height:1.5;">
-                                If you did not create an account with this email, please ignore this message or contact
-                                support.
+                                If you did not create an account, no further action is required.
                             </p>
                         </td>
                     </tr>
@@ -78,5 +73,4 @@
         </tr>
     </table>
 </body>
-
 </html>

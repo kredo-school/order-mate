@@ -5,9 +5,10 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>{{__('manager.order_list')}}</h3>
-        <button id="toggleCompletedBtn" class="btn btn-outline-secondary">
-            🔁 {{__('manager.show_completed')}}
+        <h3 class="text-brown fw-bold">{{__('manager.order_list')}}</h3>
+        
+        <button id="toggleCompletedBtn" class="btn btn-outline-primary text-brown">
+             <i class="fa-solid fa-arrows-rotate">  </i>  {{__('manager.show_completed')}}
         </button>
     </div>
 
@@ -24,28 +25,28 @@
     @endif
 
     {{-- 注文一覧テーブル --}}
-    <div class="table-responsive-sm">
-        <table id="orderTable" class="table table-striped table-hover text-center align-middle">
-          <thead class="table-light">
+    <div class="table-responsive-sm table-wrapper"> 
+        <table id="orderTable" class="table text-center align-middle border-0 mb-0">
+          <thead class="border-0">
             <tr>
-              <th>{{__('manager.table_no')}}</th> {{-- ← 表示は table.number --}}
-              <th>{{__('manager.time')}}</th>
+              <th class="text-brown">{{__('manager.table_no')}}</th> {{-- ← 表示は table.number --}}
+              <th class="text-brown">{{__('manager.time')}}</th>
               <th class="filterable" data-column="item">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.item')}}</a>
+                  <a href="#" class="dropdown-toggle text-brown text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.item')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="item"></ul>
               </th>
-              <th>{{__('manager.option')}}</th>
-              <th>{{__('manager.quantity')}}</th>
+              <th class="text-brown">{{__('manager.option')}}</th>
+              <th class="text-brown">{{__('manager.quantity')}}</th>
               <th class="filterable" data-column="order_type">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.order_type')}}</a>
+                  <a href="#" class="dropdown-toggle text-brown text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.order_type')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="order_type"></ul>
               </th>
               <th class="filterable" data-column="category">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.category')}}</a>
+                  <a href="#" class="dropdown-toggle text-brown text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.category')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="category"></ul>
               </th>
               <th class="filterable" data-column="progress">
-                  <a href="#" class="dropdown-toggle text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.progress')}}</a>
+                  <a href="#" class="dropdown-toggle text-brown text-decoration-none ms-1" data-bs-toggle="dropdown">{{__('manager.progress')}}</a>
                   <ul class="dropdown-menu p-3 filter-menu" data-column="progress"></ul>
               </th>
             </tr>
@@ -91,7 +92,6 @@
         </table>
     </div>
 </div>
-
 {{-- 右下の白背景の正方形5つ --}}
 <div id="staffCalls" class="floating-squares">
 {{-- JSで埋め込み --}}

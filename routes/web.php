@@ -23,12 +23,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // 認証ルート
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 // LP
-
 Route::get('/', function () {
-    return view('landing/landing'); // 'landing'は landing.blade.php を指します
+    return view('landing.landing'); // 'landing'は landing.blade.php を指します
 })->name('lp.index');
 
 
@@ -38,8 +37,9 @@ Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.se
 
 
 // 認証が必要なルート
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
 
+    
     // manager top page
     Route::get('/manager', [HomeController::class, 'index'])->name('manager.home')->middleware('managerLocale');
 

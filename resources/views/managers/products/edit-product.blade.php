@@ -3,10 +3,10 @@
 @section('title', 'Edit Product')
 
 @section('content')
-    <main class="bg-light-mode">
+    <div class="bg-light-mode">
         <div class="d-flex justify-content-between mt-4 mx-3">
-            <a href="{{ route('manager.products.index') }}">
-                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.menu_list')}}</h5>
+            <a href="{{ route('manager.products.show', $product->id) }}">
+                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.edit_product')}}</h5>
             </a>
         </div>
 
@@ -211,7 +211,7 @@
                 </form>
             </div>
         </div>
-    </main>
+    </div>
 @endsection
 
 @push('scripts')

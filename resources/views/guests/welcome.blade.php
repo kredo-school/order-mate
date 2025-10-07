@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container text-center py-5">
-    <h2 class="fw-bold text-brown">{{__('guest.welcome', ['store'=>$store->store_name])}}</h2>
-    <p class="mt-3 text-brown">{{__('guest.thank_you_visiting')}}</p>
+    <h2 class="fw-bold">{{__('guest.welcome', ['store'=>$store->store_name])}}</h2>
+    <p class="mt-3">{{__('guest.thank_you_visiting')}}</p>
 
     {{-- 言語選択 --}}
     <div class="mb-3">

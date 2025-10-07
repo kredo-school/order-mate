@@ -5,18 +5,120 @@ html, body {
   font-size: 16px;
 }
 
-nav, footer {
-  background-color: var(--bg-light);
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+  background-color: var(--bg-light);
+  height: 60px; /* ← navbarの高さ */
+}
+
+:root {
+  --nav-height: 60px;
+  --footer-height: 107px; /* デフォルト */
+}
+
+@media (max-width: 768px) {
+  :root {
+    --footer-height: 120px; /* スマホ時 */
+  }
+
+  #orderTable th, #orderTable td {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .login-width {
+    width: 80% !important;
+    margin: auto;
+  }
+
+  a.navbar-brand{
+    height: 40% !important;
+    width: 40% !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  a.navbar-brand {
+    height: 20%;
+    width: 20%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .login-width {
+      width: 30%;
+      margin: auto;
+  }
+
+  a.navbar-brand{
+    height: 12%;
+    width: 12%;
+  }
+}
+
+/* Bootstrap デフォルトより確実に前面に出す */ .modal-backdrop { z-index: 1990 !important; }
+
+.modal { z-index: 2000 !important; pointer-events: auto; /* 念のため */ }
+
+/* main を nav と footer の間に固定し、内容が短ければ縦中央、はみ出したら main 内でスクロール */
+main {
+  position: fixed;
+  top: var(--nav-height);               /* ナビの下端に合わせる */
+  bottom: var(--footer-height);         /* フッタの上端に合わせる */
+  left: 0;
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  /* main 内がはみ出したら main 内でスクロールさせる */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* iOS 滑らかスクロール */
+
+  box-sizing: border-box;
+  padding: 1rem; /* 必要に応じて調整 */
+}
+
+/* main の中にある .container を縦方向に中央寄せにする（要素が小さい時） */
+main > .container {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 2000px; /* 必要であれば幅制限 */
+  padding: 0 1rem;   /* 横の余白 */
+}
+
+/* 特殊ケース: main 内のコンテンツがフル幅で上詰めしたい場合は個別調整 */
+main > .page-center {
+  margin: auto 0 !important; /* 既にある場合はそのまま利用可能 */
+}
+
+/* 既存の main の min-height ルールや他の conflicting ルールがあれば削除してください */
+/* 例: main { min-height: calc(100vh - var(--nav-height) - var(--footer-height)); } を削除 */
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--bg-light);
+  z-index: 1030;
+}
+
 
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* 画面の高さに合わせる */
-}
-
-main {
-  flex: 1; /* 余白を埋める */
 }
 
 .card {
@@ -25,11 +127,11 @@ main {
   padding: 2rem;
 }
 
-.page-center {
+/* .page-center {
   width: 25%;
   margin: 8vh auto 6vh;
   padding: 0 20px;
-}
+} */
 
 /* Link a tag */
 a {
@@ -133,11 +235,6 @@ a {
 .bg-orange { background-color: var(--primary-orange) !important; }
 .bg-light-mode { background-color: var(--bg-light); }
 
-a.navbar-brand{
-  height: 15%;
-  width: 15%;
-}
-
 img.logo-main {
   height: 150px;
   width: auto;
@@ -152,6 +249,11 @@ img.logo-main {
   /* 既存の img.logo があればどちらでもOK */
   height: 64px;
   width: auto;
+}
+
+img.logo{
+  height: 50%;
+  width: 50%;
 }
 
 /* 入力欄を“下線のみ”にするバリアント（背景は透明） */
@@ -201,11 +303,6 @@ img.logo-main {
   width: 24px;
   height: 24px;
   display: block;
-}
-
-img.logo{
-  height: 50%;
-  width: 50%;
 }
 
 
@@ -373,19 +470,6 @@ form.product-search input.input-underline[type="search"]:focus {
 
 /* guest order history */
 
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1030; /* navbar より上に来るように */
-}
-
-main {
-  flex: 1; /* 画面いっぱいに広がる */
-  padding-bottom: 80px; /* フッターの高さ分 + 少し余裕 */
-}
-
 /* テーブルの全体背景 */
 .table-wrapper {
   background-color: #F9EAD3;
@@ -527,4 +611,5 @@ footer button.text-brown:hover {
 .category-actions {
     display: flex;
     align-items: center;
+
 }

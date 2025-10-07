@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="page-center">
+    <div class="login-width">
         {{-- ロゴ --}}
         <div class="logo-area">
             <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-main">

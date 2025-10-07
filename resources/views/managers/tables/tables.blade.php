@@ -17,7 +17,19 @@
                 <div class="col-6 col-md-3 mb-3">
                     <a href="{{ route('manager.tables.show', $table) }}" 
                         class="btn {{ $table->open_count > 0 ? 'btn-primary' : 'btn-outline' }} w-100">
-                        {{ $table->number }}
+                        @if ($table->number == 0)
+                            @if ($table->open_count > 0)
+                                {{__('manager.takeout')}}/{{__('manager.in_use')}}
+                            @else
+                                {{__('manager.takeout')}}/{{__('manager.available')}}
+                            @endif
+                        @else
+                            @if ($table->open_count > 0)
+                                {{$table->number}}/{{__('manager.in_use')}}
+                            @else
+                                {{$table->number}}/{{__('manager.available')}}
+                            @endif
+                        @endif
                     </a>
                 </div>
             @endforeach

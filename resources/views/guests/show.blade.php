@@ -2,7 +2,7 @@
 @section('title', 'Menu Info')
 
 @section('content')
-    <div class="container mt-4">
+    <div class="container">
         {{-- 戻るボタン --}}
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}">
@@ -12,21 +12,22 @@
             </a>
         </div>
         <div class="row gx-0">
-            {{-- 左側（商品画像） --}}
-            <div class="col-md-5 d-flex justify-content-center align-items-start position-relative">
-                @if ($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                        class="img-fluid rounded shadow" style="max-width: 250px; height: auto;">
-
-                    {{-- タグ画像 --}}
+                <!-- 商品画像 + tag -->
+                <div class="col-md-4 position-relative text-center">
                     @if ($product->tag)
-                        <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
-                            style="top: -5%; left: 15%; max-width: 60px; transform: translate(0, 0); border-radius:5px;">
+                        <img src="{{ asset('storage/' . $product->tag) }}" class="position-absolute"
+                            style="top:-15px; left:1.5rem; max-width:80px; border-radius:5px; object-fit:cover; z-index:10;">
                     @endif
-                @else
-                    <div class="text-muted" style="width:250px; height:auto;">{{__('guest.no_image')}}</div>
-                @endif
-            </div>
+
+                    @if ($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded mb-3" style="width: 70%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 70%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
+                            {{__('manager.no_image')}}
+                        </div>
+                    @endif
+
+                </div>
 
             @php
                 $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php
@@ -35,7 +36,7 @@
 
             {{-- 右側（商品情報） --}}
             <div class="col-md-7">
-                <h2 class="fw-bold text-center text-brown fs-1 mt-5 mb-1">{{ $product->name }}</h2>
+                <h2 class="fw-bold text-center text-brown fs-1 mt-3 mb-1">{{ $product->name }}</h2>
                 <p class="fs-5 text-center text-brown">{{ explode(' - ', $currencyLabel)[0] }}
                     {{ number_format($product->price) }}</p>
 
@@ -99,9 +100,9 @@
                     <div class="mt-3 text-center">
                         <h5 class="fw-semibold text-brown">{{__('guest.quantity')}}</h5>
                         <div class="d-flex justify-content-center align-items-center">
-                            <button type="button" class="btn btn-outline-secondary btn-m product-decrement">-</button>
+                            <button type="button" class="btn btn-outline-secondary btn-m product-decrement text-brown">-</button>
                             <span id="product-quantity" class="mx-2 text-brown fs-3">0</span>
-                            <button type="button" class="btn btn-outline-secondary btn-m product-increment">+</button>
+                            <button type="button" class="btn btn-outline-secondary btn-m product-increment text-brown">+</button>
                         </div>
                     </div>
                     <input type="hidden" name="quantity" value="0" id="product-quantity-input">
@@ -273,7 +274,7 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('{{__('guest.failed_add_alert')}}');
+                            alert("{{__('guest.failed_add_alert')}}");
                         });
                 });
             });

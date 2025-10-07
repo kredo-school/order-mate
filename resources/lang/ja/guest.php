@@ -21,7 +21,7 @@ return [
     'welcome'        => ':storeへようこそ!',
     'thank_you_visiting'    => 'ご来店ありがとうございます。言語を選択し、ご来店人数を入力してください。',
     'apply'          => '適用',
-    'number_of_guests' => '例) 4',
+    'number_of_guests' => 'ここにご来店人数を入力してください',
     'start_order'   => '注文を始める',
     'failed_change_language' => '言語の変更に失敗しました。もう一度お試しください。',
     'network_error' => 'ネットワークエラー。もう一度お試しください。',
@@ -49,6 +49,10 @@ return [
         'cashew' => 'カシューナッツ',
         'walnut' => 'クルミ',
     ],
+    'no_allergens' => 'アレルゲンなし',
+
+    //edit-cart
+    'edit_cart' => 'カートを編集',
 
     // add-complete
     'add_success' => 'メニューが正常に追加されました！',

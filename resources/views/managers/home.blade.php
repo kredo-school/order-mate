@@ -1,32 +1,88 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="container d-flex align-items-center justify-content-center" >
-    <div class="row w-100 justify-content-center">
-        <div class="col-md-4 d-flex flex-column align-items-center">
-            <a href="{{ route('manager.tables') }}" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
-                <div class="card-body align-items-center justify-content-center d-flex poppin" style="height: 100%">
-                    {{ __('manager.tables') }}
-                </div>
+<div class="container page-center d-flex justify-content-center align-items-center">
+    <div class="row justify-content-center g-3 w-100" style="max-width: 600px;">
+        {{-- 商品管理 --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.products.index') }}" class="menu-card">
+                {{ __('manager.admin_menu') }}
             </a>
-            <a href="{{ route('manager.order-list') }}" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
-                <div class="card-body align-items-center justify-content-center d-flex poppin" style="height: 100%">
-                    {{ __('manager.order_list') }}
-                </div>
+        </div>
+
+        {{-- テーブル --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.tables') }}" class="menu-card">
+                {{ __('manager.tables') }}
             </a>
-            <a href="{{route('manager.products.index')}}" class="card mb-4 bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
-                <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
-                    {{ __('manager.admin_menu') }}
-                </div>
+        </div>
+        
+        {{-- custom --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.custom.index') }}" class="menu-card">
+                {{__('manager.custom')}}
             </a>
-            <a href="{{route('manager.stores.index')}}" class="card bg-orange border-0 shadow-sm text-white text-decoration-none w-100" style="height: 100px">
-                <div class="card-body align-items-center justify-content-center d-flex" style="height: 100%">
-                    {{ __('manager.store_info') }}
-                    @if($store && $store->unread_messages_count > 0)
-                        <span class="badge bg-danger">{{ $store->unread_messages_count }}</span>
-                    @endif
-                </div>
+        </div>
+
+        {{-- category --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.categories.index') }}" class="menu-card">
+                {{__('manager.category')}}
+            </a>
+        </div>
+
+        {{-- analytics --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.analytics') }}" class="menu-card">
+                {{__('manager.analytics')}}
+            </a>
+        </div>
+
+        {{-- オーダーリスト --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.order-list') }}" class="menu-card">
+                {{ __('manager.order_list') }}
+            </a>
+        </div>
+
+        {{-- 店舗情報 --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.stores.index') }}" class="menu-card d-flex justify-content-center align-items-center">
+                {{ __('manager.store_info') }}
+                @if($store && $store->unread_messages_count > 0)
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                        {{ $store->unread_messages_count }}
+                    </span>
+                @endif
             </a>
         </div>
     </div>
 </div>
+
+{{-- スタイル --}}
+<style>
+    .menu-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100px;
+        background-color: var(--primary-orange);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .menu-card {
+            width: 100%;
+        }
+    }
+</style>
 @endsection

@@ -40,7 +40,23 @@
             width: 25% !important;
         }
 
-        /* スマホは全幅 */
+        .footer-icon{
+            font-size: 1.8rem;
+        }
+
+        #cart-count{
+            top: -8px;
+            right: 40px;
+            width: 22px;
+            height: 22px;
+            font-size: 1rem;
+        }
+
+        i.fa-cart-shopping{
+            font-size: 3rem;
+        }
+
+        /* スマホ */
         @media (max-width: 768px) {
             body .offcanvas.offcanvas-end {
                 --bs-offcanvas-width: 100% !important;
@@ -48,6 +64,18 @@
             }
             .store-info{
                 text-align: center;
+            }
+
+            #cart-count{
+                top: 3px;
+                right: 44px;
+                width: 18px;
+                height: 18px;
+                font-size: 0.7rem;
+            }
+
+            i.fa-cart-shopping{
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -60,8 +88,8 @@
         @if (trim($__env->yieldContent('header')) != '')
             @yield('header')
         @else
-            <nav class="navbar navbar-expand navbar-light shadow-sm mb-4">
-                <div class="container m-0">
+            <nav class="navbar navbar-expand navbar-light shadow-sm">
+                <div class="container m-0 d-flex justify-content-between">
                     <a class="navbar-brand"
                         @if (Route::is('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
                         @else
@@ -69,12 +97,12 @@
                         <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                     </a>
 
-                    <p class="d-flex align-items-center justify-content-center m-0 w-100" style="height: 100%">
+                    <p class="d-flex align-items-center m-0 w-100" style="height: 100%">
                         {{ $userStore->store_name ?? '' }}
                     </p>
 
                     <!-- 右側メニュー -->
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav">
                         @if (request()->routeIs('guest.*'))
                             <li class="nav-item">
                                 <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
@@ -131,17 +159,13 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="{{ route('manager.stores.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
-                        </a>
                         <a href="{{ route('manager.products.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-utensils me-2"></i> {{__('manager.menu')}}
                         </a>
-                        <a href="{{ route('manager.order-list') }}"
+                        <a href="{{ route('manager.tables') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
+                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
                         </a>
                         <a href="{{ route('manager.custom.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
@@ -151,13 +175,17 @@
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-layer-group me-2"></i> {{__('manager.category')}}
                         </a>
-                        <a href="{{ route('manager.tables') }}"
+                        <a href="{{ route('manager.order-list') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
+                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
                         </a>
                         <a href="{{ route('manager.analytics') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-chart-simple me-2"></i> {{__('manager.analytics')}}
+                        </a>
+                        <a href="{{ route('manager.stores.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
@@ -191,10 +219,10 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price） --}}
                         <div>
-                            <span class="fw-bold text-brown fs-4 ms-4">{{__('guest.total')}}   {{ explode(' - ', $currencyLabel)[0] }}
+                            <span class="fw-bold text-brown fs-4 ms-3">{{__('guest.total')}}
                             </span>
-                            <span class="h3 fw-bold text-brown"
-                                id="total-price">{{ number_format($totalPrice ?? 0, 2) }}</span>
+                            <span class="h3 fw-bold text-brown ms-3"
+                                id="total-price">{{ explode(' - ', $currencyLabel)[0] }}{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if ($isPaid)
                                 <span class="text-muted ms-2 fw-bolder">({{__('guest.paid')}})</span>
                             @endif
@@ -205,19 +233,19 @@
                             $storeName = request()->route('storeName');
                             $tableUuid = request()->route('tableUuid');
                         @endphp
-                        <div class="d-flex gap-3">
+                        <div class="d-flex gap-3 align-items-center">
                             {{-- Order History --}}
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.order_history')}}</a>
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 text-brown d-inline d-md-none">
+                                class="nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                 <i class="fa-solid fa-list"></i>
                             </a>
                             {{-- Call Staff --}}
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.call_staff')}}</a>
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 text-brown d-inline d-md-none">
+                                class="nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                 <i class="fa-solid fa-bell"></i>
                             </a>
                             {{-- 未決済なら Payment を表示 --}}
@@ -228,7 +256,7 @@
                                     <button type="submit"
                                     class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.payment')}}</button>
                                     <button type="submit"
-                                        class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
+                                        class="btn btn-link nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                         <i class="fa-solid fa-credit-card"></i>
                                     </button>
                                 </form>
@@ -241,16 +269,16 @@
                                 <button type="submit"
                                 class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.checkout')}}</button>
                                 <button type="submit"
-                                    class="btn btn-link nav-link p-0 text-brown d-inline d-md-none">
+                                    class="btn btn-link nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
                             </form>
                             <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown"><i
-                                    class="fa-solid fa-cart-shopping fa-3x me-5 ms-2"></i>
+                                    class="fa-solid fa-cart-shopping me-5 ms-2"></i>
                                 <span id="cart-count"
                                     class="position-absolute badge rounded-pill bg-orange d-flex justify-content-center align-items-center"
-                                    style="top: -8px; right: 40px; font-size: 1rem; width: 22px; height: 22px; {{ ($cartCount ?? 0) == 0 ? 'display:none;' : '' }}">
+                                    style="{{ ($cartCount ?? 0) == 0 ? 'display:none;' : '' }}">
                                     {{ $cartCount ?? 0 }}
                                 </span>
                             </a>
@@ -301,6 +329,6 @@
         @stack('guest-scripts')
     @endif
     @stack('scripts')
+    @vite(['resources/js/app.js'])
 </body>
-
 </html>

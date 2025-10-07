@@ -4,7 +4,7 @@
 
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
-      <a href="{{ url()->previous() }}" class="">
+      <a href="{{ route('admin.index') }}" class="">
         <h5 class="d-inline text-brown">
           <i class="fa-solid fa-angle-left text-orange"></i> Store Info
         </h5>
@@ -26,10 +26,30 @@
         </div>
       
         <h4 class="card-title">{{ $store->store_name }}</h4>
-        <p class="card-text"><i class="fa-solid fa-phone text-muted"></i> {{ $store->phone ?? '-' }}</p>
-        <p class="card-text"><i class="fa-solid fa-envelope text-muted"></i> {{ $store->user->email ?? Auth::user()->email }}</p>
-        <p class="card-text"><i class="fa-solid fa-location-dot text-muted"></i> {{ $store->address ?? '-' }}</p>
-        <p class="card-text"><i class="fa-solid fa-user-tie text-muted"></i> {{ $store->manager_name ?? '-' }}</p>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-brown">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fa-solid fa-location-dot fa-2x me-2"></i>
+                    <span>{{ $store->address ?? '-' }}</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fa-solid fa-phone fa-2x me-2"></i>
+                    <span>{{ $store->phone ?? '-' }}</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fa-solid fa-user-tie fa-2x me-2"></i>
+                    <span>{{ $store->manager_name ?? '-' }}</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fa-solid fa-clock fa-2x me-2"></i>
+                    <span>{{ $store->open_hours ?? '-' }}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-envelope fa-2x me-2"></i>
+                    <span>{{ $store->user->email ?? Auth::user()->email }}</span>
+                </div>
+            </div>
+        </div>
       </div>
       
       {{-- Chat Column --}}

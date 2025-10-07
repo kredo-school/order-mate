@@ -1,5 +1,5 @@
 import './bootstrap';
-import 'bootstrap';
+import './modal-relocate';
 
 // Enable Bootstrap tooltips
 import * as bootstrap from 'bootstrap';

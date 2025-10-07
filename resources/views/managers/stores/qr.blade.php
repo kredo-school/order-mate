@@ -58,27 +58,133 @@
 
         {{-- QRコード表示 --}}
         @isset($tables)
-        <div class="row mt-5 justify-content-center">
+        <div class="row mt-5 justify-content-center" id="print-area">
             @foreach ($tables as $table)
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 text-center mb-4">
-                <h5>Table {{ $table->number }}</h5>
-                {!! QrCode::size(120)->generate(
-                    route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]),
-                ) !!}
-                {{-- 本番ではなくしていい --}}
-                <p class="small mt-2 mx-auto" style="width: 60%">
-                    {{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}
-                </p>
+                @if($table->number == 0)
+                    <h5>{{__('manager.takeout')}}</h5>
+                    {!! QrCode::size(120)->generate(
+                        route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]),
+                    ) !!}
+                    {{-- 本番ではなくしていい --}}
+                    {{-- <p class="small mt-2 mx-auto" style="width: 60%">
+                        {{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}
+                    </p> --}}
+                @else
+                    <h5>Table {{ $table->number }}</h5>
+                    {!! QrCode::size(120)->generate(
+                        route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]),
+                    ) !!}
+                    {{-- 本番ではなくしていい --}}
+                    <p class="small mt-2 mx-auto" style="width: 60%">
+                        {{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}
+                    </p>
+                @endif
             </div>
             @endforeach
         </div>
 
-        {{-- 印刷ボタン --}}
-        <div class="text-center mt-4">
-            <button onclick="window.print()" class="btn btn-primary">{{__('manager.print')}}</button>
-        </div>
+{{-- 印刷ボタン --}}
+<div class="text-center mt-4">
+    <button onclick="printArea('print-area')" class="btn btn-primary">
+        {{__('manager.print')}}
+    </button>
+</div>
+
         @endisset
 
     </div>
 </div>
 @endsection
+
+{{-- ↓ CSSとJSを追加 --}}
+@push('styles')
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-area, #print-area * {
+        visibility: visible;
+    }
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+function printArea(areaId) {
+    const printContent = document.getElementById(areaId).innerHTML;
+    const printWindow = window.open('', '', 'width=1000,height=800');
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>QR Print</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+                <style>
+                    body {
+                        font-family: sans-serif;
+                        text-align: center;
+                        margin: 0;
+                        padding: 20px;
+                        background: white;
+                    }
+                    h5 {
+                        margin-bottom: 8px;
+                    }
+                    img {
+                        margin-bottom: 10px;
+                    }
+                    .col-12, .col-sm-6, .col-md-4, .col-lg-3 {
+                        padding: 10px;
+                    }
+
+                    /* ✅ ここがポイント！印刷時にもグリッドを維持 */
+                    @media print {
+                        body {
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        .row {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                        }
+                        .col-12.col-sm-6.col-md-4.col-lg-3 {
+                            flex: 0 0 25%;
+                            max-width: 25%;
+                            box-sizing: border-box;
+                        }
+                        @page {
+                            size: A4;
+                            margin: 10mm;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        ${printContent}
+                    </div>
+                </div>
+            </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+
+</script>
+@endpush
+

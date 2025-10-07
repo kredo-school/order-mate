@@ -6,7 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmail;
+use App\Notifications\ResetPasswordNotificationCustom;
 /**
  * @property int $role
  * @method bool isAdmin()
@@ -14,7 +16,8 @@ use Illuminate\Notifications\Notifiable;
  */
 
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements MustVerifyEmail
 {
 
     const ROLE_MANAGER = 1;
@@ -90,5 +93,12 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new \App\Notifications\ResetPasswordNotificationCustom($token));
+    }
+
+
+    // メール認証通知（Verify Email）
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail); // ← カスタム VerifyEmail を送信
     }
 }

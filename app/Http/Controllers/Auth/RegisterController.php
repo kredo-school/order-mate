@@ -88,7 +88,7 @@ class RegisterController extends Controller
         ]);
 
         // 👇 ユーザー登録完了メールを送信
-        Mail::to($user->email)->send(new WelcomeMail());
+        // Mail::to($user->email)->send(new WelcomeMail());
 
 
         return $user;

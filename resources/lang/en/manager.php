@@ -29,6 +29,7 @@ return [
     'create_qr_code'    => 'Create QR Code',
     'not_store_info yet' => 'Store information has not been registered yet.',
     'create_store_info' => 'Create Store Info',
+    'takeout'   => 'Takeout',
 
     // chats.chat
     'chat'            => 'Chat',
@@ -91,6 +92,8 @@ return [
     // tables.tables
     'table_list'   => 'Table List',
     'no_tables'   => 'No tables found.',
+    'in_use'      => 'In Use',
+    'available'   => 'Available',
 
     // tables.show
     'back_to_tables' => 'Back to Tables',
@@ -128,6 +131,10 @@ return [
     'payment_method'  => 'Payment Method',
     'top_5_products'   => 'Top 5 Products',
     'term_alert'     => 'Please select both start and end dates.',
+    'no_data_daily' => 'No order data for today.',
+    'no_data_weekly' => 'No order data for this week.',
+    'no_data_monthly' => 'No order data for this month.',
+    'no_data_term' => 'No order data for the selected term.',
 
     // partials.analytics_order_details
     'date_time'    => 'Date & Time',
@@ -158,7 +165,9 @@ return [
     // products.show
     'no_allergens' => 'No allergens',
     'delete_product' => 'Are you sure you want to delete <strong>":product"</strong>?',
+    'product_detail'    => 'Product Detail',
 
     // products.edit
     'added_alert' => 'All custom groups are already added.',
+    'edit_product'    =>    'Edit Product',
 ];

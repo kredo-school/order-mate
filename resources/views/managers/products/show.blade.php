@@ -3,25 +3,30 @@
 @section('title', 'Show Product')
 
 @section('content')
-    <main class="bg-light-mode">
-        <div class="container page-center w-75">
+    <div class="bg-light-mode">
+        <div class="d-flex justify-content-between mt-2 mb-4 mx-3">
+            <a href="{{ route('manager.products.index') }}">
+                <h5 class="d-inline text-brown"><i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.product_detail')}}</h5>
+            </a>
+        </div>
+        <div class="container w-75">
             <div class="row align-items-center">
 
                 <!-- 商品画像 + tag -->
                 <div class="col-md-4 position-relative text-center">
+                    @if ($product->tag)
+                        <img src="{{ asset('storage/' . $product->tag) }}" class="position-absolute"
+                            style="top:-15px; left:-5px; max-width:80px; border-radius:5px; object-fit:cover; z-index:10;">
+                    @endif
+
                     @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded mb-3"
-                            style="max-height:400px;">
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded mb-3" style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center" style="height:400px;">
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
                             {{__('manager.no_image')}}
                         </div>
                     @endif
 
-                    @if ($product->tag)
-                        <img src="{{ asset('storage/' . $product->tag) }}" class="position-absolute"
-                            style="top:10px; left:10px; max-width:80px; border-radius:5px;">
-                    @endif
                 </div>
 
                 <!-- 商品情報 -->
@@ -127,5 +132,5 @@
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 @endsection

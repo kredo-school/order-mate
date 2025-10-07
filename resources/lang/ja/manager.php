@@ -29,6 +29,7 @@ return [
     'create_qr_code'    => 'QRコード作成',
     'not_store_info yet' => '店舗情報がまだ登録されていません。',
     'create_store_info' => '店舗情報を登録',
+    'takeout'   => 'テイクアウト',
 
     // chats.chat
     'chat'            => 'チャット',
@@ -91,6 +92,8 @@ return [
     // tables.tables
     'table_list'   => 'テーブル一覧',
     'no_tables'   => 'テーブルが見つかりません。',
+    'in_use'      => '使用中',
+    'Available'   => '利用可能',
 
     // tables.show
     'back_to_tables' => 'テーブル一覧に戻る',
@@ -128,6 +131,10 @@ return [
     'payment_method'  => '支払い方法',
     'top_5_products'   => '売上上位5商品',
     'term_alert'    =>      '開始日と終了日の両方を選択してください。',
+    'no_data_daily' => '本日の注文データはありません。',
+    'no_data_weekly' => '今週の注文データはありません。',
+    'no_data_monthly' => '今月の注文データはありません。',
+    'no_data_term' => '選択した期間の注文データはありません。',
 
     // partials.analytics_order_details
     'date_time'    => '日付/時間',
@@ -158,7 +165,9 @@ return [
     // products.show
     'no_allergens' => 'アレルゲンなし',
     'delete_product' => '本当に<strong>":product"</strong>を削除しますか？',
+    'product_detail'    =>  '商品情報',
 
     // products.edit
     'added_alert' => 'すべてのカスタムはすでに追加されています。',
+    'edit_product'  => '商品編集',
 ];

@@ -19,18 +19,17 @@
                 : route('manager.products.show', $product->id) }}"
                 class="text-decoration-none text-brown d-block">
 
-                <div class="card border-0 shadow-none position-relative h-100 p-1">
+                <div class="card border-0 shadow-none position-relative h-100 p-3">
                     @if ($product->tag)
                         <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
-                            style="top:5px; left:5px; width:50px; height:50px; object-fit:cover; z-index:10;">
+                            style="top:0px; left:0px; width:50px; height:50px; object-fit:cover; z-index:10;">
                     @endif
 
                     @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
-                            alt="{{ $product->name }}" style="width: 100%; height: auto; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $product->image) }}" class=""
+                            alt="{{ $product->name }}" style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center"
-                            style="padding-top: 56.25%;"> {{-- 16:9 比例のスペース --}}
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;"> {{-- 16:9 比例のスペース --}}
                             <span class="text-muted">{{__('manager.no_image')}}</span>
                         </div>
                     @endif

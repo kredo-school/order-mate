@@ -14,7 +14,11 @@ $currencyLabel = config('currencies')[$currencyCode] ?? '₱ - PHP';
             <i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.back_to_tables')}}
         </h5>
     </a>
-    <h3 class="fw-bold">{{__('manager.table')}} {{ $table->number ?? '不明' }}</h3>
+    @if ($table->number == 0)
+        <h3 class="fw-bold text-brown">{{__('manager.takeout')}}</h3>
+    @else
+      <h3 class="fw-bold text-brown">{{__('manager.table')}} {{ $table->number }}</h3>
+    @endif
   </div>
 
   @if ($history->count() > 0)

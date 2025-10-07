@@ -3,10 +3,38 @@
 @section('content')
 <div class="container page-center d-flex justify-content-center align-items-center">
     <div class="row justify-content-center g-3 w-100" style="max-width: 600px;">
+        {{-- 商品管理 --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.products.index') }}" class="menu-card">
+                {{ __('manager.admin_menu') }}
+            </a>
+        </div>
+
         {{-- テーブル --}}
         <div class="col-12 col-md-6">
             <a href="{{ route('manager.tables') }}" class="menu-card">
                 {{ __('manager.tables') }}
+            </a>
+        </div>
+        
+        {{-- custom --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.custom.index') }}" class="menu-card">
+                {{__('manager.custom')}}
+            </a>
+        </div>
+
+        {{-- category --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.categories.index') }}" class="menu-card">
+                {{__('manager.category')}}
+            </a>
+        </div>
+
+        {{-- analytics --}}
+        <div class="col-12 col-md-6">
+            <a href="{{ route('manager.analytics') }}" class="menu-card">
+                {{__('manager.analytics')}}
             </a>
         </div>
 
@@ -17,15 +45,8 @@
             </a>
         </div>
 
-        {{-- 商品管理 --}}
-        <div class="col-12 col-md-6">
-            <a href="{{ route('manager.products.index') }}" class="menu-card">
-                {{ __('manager.admin_menu') }}
-            </a>
-        </div>
-
         {{-- 店舗情報 --}}
-        <div class="col-12 col-md-6 position-relative">
+        <div class="col-12 col-md-6">
             <a href="{{ route('manager.stores.index') }}" class="menu-card d-flex justify-content-center align-items-center">
                 {{ __('manager.store_info') }}
                 @if($store && $store->unread_messages_count > 0)
@@ -45,7 +66,7 @@
         align-items: center;
         justify-content: center;
         height: 100px;
-        background-color: #ff7a00;
+        background-color: var(--primary-orange);
         color: #fff;
         text-decoration: none;
         border-radius: 8px;

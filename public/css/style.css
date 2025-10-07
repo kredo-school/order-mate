@@ -47,6 +47,13 @@ nav {
   }
 }
 
+@media (min-width: 769px) and (max-width: 1199px) {
+  a.navbar-brand {
+    height: 20%;
+    width: 20%;
+  }
+}
+
 @media (min-width: 1200px) {
   .login-width {
       width: 30%;
@@ -86,7 +93,7 @@ main {
 main > .container {
   width: 100%;
   box-sizing: border-box;
-  max-width: 1200px; /* 必要であれば幅制限 */
+  max-width: 2000px; /* 必要であれば幅制限 */
   padding: 0 1rem;   /* 横の余白 */
 }
 

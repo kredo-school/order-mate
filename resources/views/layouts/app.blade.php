@@ -159,17 +159,13 @@
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="{{ route('manager.stores.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
-                        </a>
                         <a href="{{ route('manager.products.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-utensils me-2"></i> {{__('manager.menu')}}
                         </a>
-                        <a href="{{ route('manager.order-list') }}"
+                        <a href="{{ route('manager.tables') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
+                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
                         </a>
                         <a href="{{ route('manager.custom.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
@@ -179,13 +175,17 @@
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-layer-group me-2"></i> {{__('manager.category')}}
                         </a>
-                        <a href="{{ route('manager.tables') }}"
+                        <a href="{{ route('manager.order-list') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
+                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
                         </a>
                         <a href="{{ route('manager.analytics') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-chart-simple me-2"></i> {{__('manager.analytics')}}
+                        </a>
+                        <a href="{{ route('manager.stores.index') }}"
+                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"

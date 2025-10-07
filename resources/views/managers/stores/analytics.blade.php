@@ -8,6 +8,10 @@
               <i class="fa-solid fa-angle-left text-orange"></i> {{__('manager.store_analytics')}}
           </h5>
       </a>
+      {{-- 印刷ボタン --}}
+        <button onclick="printArea('analyticsTabContent')" class="btn btn-primary">
+            {{__('manager.print')}}
+        </button>
   </div>
 
   {{-- タブ --}}
@@ -82,8 +86,10 @@
                           <button class="btn btn-sm btn-primary" id="products-apply">{{__('manager.apply')}}</button>
                       </div>
                   </div>
-                  <div style="height:350px;">
+                  <div class="chart-wrapper d-flex justify-content-center align-items-center" style="min-height:350px;">
+                    <div style="width: 40%; position:relative;">
                       <canvas id="productsChart"></canvas>
+                    </div>
                   </div>
               </div>
           </div>
@@ -94,6 +100,8 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     /** ----------------
@@ -201,50 +209,150 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch(url)
             .then(res => res.json())
             .then(data => {
-              if (!productsChart) {
-                const ctx = document.getElementById('productsChart').getContext('2d');
-                productsChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            label: 'Top Products',
-                            data: data.quantities, // 円グラフのサイズは「数量」で描画
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.7)',
-                                'rgba(54, 162, 235, 0.7)',
-                                'rgba(255, 206, 86, 0.7)',
-                                'rgba(75, 192, 192, 0.7)',
-                                'rgba(153, 102, 255, 0.7)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
+                console.log("Fetched data:", data);
+
+                // ★ここを追加★（空データのときメッセージを表示）
+                const container = document.getElementById('productsChart').parentElement;
+                // 既存のメッセージ削除（再描画時対策）
+                const oldMsg = document.getElementById('noDataMessage');
+                if (oldMsg) oldMsg.remove();
+
+                if (data.labels.length === 0) {
+                    if (productsChart) {
+                        productsChart.destroy();
+                        productsChart = null;
+                    }
+
+                    const message = document.createElement('div');
+                    message.id = 'noDataMessage';
+                    message.classList.add(
+                        'text-center',
+                        'text-muted',
+                        'position-absolute',
+                        'top-50',
+                        'start-50',
+                        'translate-middle'
+                    );
+                    message.style.zIndex = 10;
+                    message.style.background = 'rgba(255,255,255,0.9)';
+                    message.style.padding = '10px 20px';
+                    message.style.borderRadius = '6px';
+
+                    if (range === 'daily') {
+                        message.textContent = '{{__('manager.no_data_daily')}}';
+                    } else if (range === 'weekly') {
+                        message.textContent = '{{__('manager.no_data_weekly')}}';
+                    } else if (range === 'monthly') {
+                        message.textContent = '{{__('manager.no_data_monthly')}}';
+                    } else {
+                        message.textContent = '{{__('manager.no_data_term')}}';
+                    }
+
+                    container.appendChild(message);
+                    return;
+                }
+
+                // ★ここから下は、既存のグラフ描画処理そのまま★
+                if (!productsChart) {
+                    const ctx = document.getElementById('productsChart').getContext('2d');
+                    productsChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Top Products',
+                                data: data.quantities,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.7)',
+                                    'rgba(54, 162, 235, 0.7)',
+                                    'rgba(255, 206, 86, 0.7)',
+                                    'rgba(75, 192, 192, 0.7)',
+                                    'rgba(153, 102, 255, 0.7)'
+                                ],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1,
+                            layout: {
+                                padding: {
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: window.innerWidth < 768 ? 'top' : 'right', // 👈 スマホは上、PCは右
+                                    labels: {
+                                        boxWidth: 18,
+                                        padding: 12
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: false
+                                },
+                                datalabels: {
+                                    color: '#333',
+                                    font: {
+                                        size: 10,
+                                        weight: 'bold'
+                                    },
+                                    formatter: function(value, context) {
                                         const index = context.dataIndex;
+                                        const label = data.labels[index];
                                         const qty = data.quantities[index];
                                         const sales = data.sales[index];
-                                        return [
-                                            `Quantity: ${qty}`,
-                                            `Sales: ${parseFloat(sales).toFixed(2)}`
-                                        ];
+                                        return `${label}\nQty: ${qty}\n₱${parseFloat(sales).toFixed(2)}`;
+                                    },
+
+                                    // 👇 円のセクションごとにラベル位置を切り替える
+                                    anchor: function(context) {
+                                        const dataset = context.dataset.data;
+                                        const total = dataset.reduce((a, b) => a + b, 0);
+                                        const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
+                                        return percentage < 10 ? 'end' : 'center'; // 小さい→外側、大きい→内側
+                                    },
+                                    align: function(context) {
+                                        const dataset = context.dataset.data;
+                                        const total = dataset.reduce((a, b) => a + b, 0);
+                                        const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
+                                        return percentage < 7 ? 'end' : 'center';
+                                    },
+                                    offset: function(context) {
+                                        const dataset = context.dataset.data;
+                                        const total = dataset.reduce((a, b) => a + b, 0);
+                                        const percentage = (context.dataset.data[context.dataIndex] / total) * 100;
+                                        return percentage < 10 ? 10 : 0; // 小さいセクションは外側に少し離す
+                                    },
+                                    clamp: true,
+                                    borderColor: '#666',
+                                    borderWidth: 1,
+                                    borderRadius: 4,
+                                    backgroundColor: 'rgba(255,255,255,0.8)',
+                                    padding: 4,
+                                    connector: {
+                                        display: true,
+                                        color: '#888',
+                                        width: 1.2,
+                                        length: 20,   // ← 外側ラベルの線を適度に
+                                        endOffset: 8
                                     }
                                 }
+                            },
+                            layout: {
+                                padding: 20
                             }
-                        }
-                    }
-                });
-            } else {
-                productsChart.data.labels = data.labels;
-                productsChart.data.datasets[0].data = data.quantities;
-                productsChart.update();
-            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+                } else {
+                    productsChart.data.labels = data.labels;
+                    productsChart.data.datasets[0].data = data.quantities;
+                    productsChart.update();
+                }
             });
     }
 
@@ -331,6 +439,107 @@ document.addEventListener("DOMContentLoaded", function() {
             tr.classList.remove("table-primary");
         }
     });
+// ----------------
+// 印刷機能
+// ----------------
+window.printArea = async function(areaId) {
+    const area = document.getElementById(areaId);
+    if (!area) return alert('印刷対象エリアが見つかりません');
+
+    // ① cloneを作成（オリジナルを壊さない）
+    const areaClone = area.cloneNode(true);
+    const originalCanvases = area.querySelectorAll("canvas");
+    const clonedCanvases = areaClone.querySelectorAll("canvas");
+
+    // ② canvas → 画像に変換（描画完了を待って安全に）
+    for (let i = 0; i < originalCanvases.length; i++) {
+        const chart = originalCanvases[i];
+
+        // 描画が終わっていないと白くなるため小さな待機
+        await new Promise(r => setTimeout(r, 200));
+
+        try {
+            const imgData = chart.toDataURL("image/png");
+            const img = document.createElement("img");
+            img.src = imgData;
+            img.style.maxWidth = "100%";
+            img.style.height = "auto";
+            img.style.margin = "10px 0";
+            clonedCanvases[i].replaceWith(img);
+        } catch (e) {
+            console.error("Canvas変換エラー:", e);
+        }
+    }
+
+    // ③ 印刷ウィンドウ生成
+    const printWindow = window.open('', '', 'width=1000,height=800');
+
+    const html = `
+        <html>
+            <head>
+                <title>Analytics Print</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    body {
+                        font-family: sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        background: white;
+                    }
+                    h5 {
+                        margin-bottom: 10px;
+                        color: #5a3e1b;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ccc;
+                        padding: 6px;
+                        font-size: 12px;
+                    }
+                    th {
+                        background-color: #f8f9fa;
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                    @page {
+                        size: A4;
+                        margin: 10mm;
+                    }
+                    @media print {
+                        body {
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                ${areaClone.innerHTML}
+            </body>
+        </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+
+    // ④ 描画が反映されるのを待ってから印刷
+    printWindow.onload = () => {
+        setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    };
+};
+
+
 });
 </script>
 @endpush

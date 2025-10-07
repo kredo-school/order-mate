@@ -26,35 +26,34 @@
 
                     <h2 class="fw-bold mb-5 text-center text-brown">{{ $store->store_name ?? 'No Name' }}</h2>
 
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-2x fa-location-dot me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->address ?? '-' }}</p>
+                    <div class="d-flex justify-content-center">
+                        <div class="text-brown">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-location-dot fa-2x me-2"></i>
+                                <span>{{ $store->address ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-phone fa-2x me-2"></i>
+                                <span>{{ $store->phone ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-user-tie fa-2x me-2"></i>
+                                <span>{{ $store->manager_name ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-clock fa-2x me-2"></i>
+                                <span>{{ $store->open_hours ?? '-' }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-envelope fa-2x me-2"></i>
+                                <span>{{ $store->user->email ?? Auth::user()->email }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-coins fa-2x me-2"></i>
+                                <span>{{ config('currencies')[$store->currency] ?? '' }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-phone fa-2x me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->phone ?? '-' }}</p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-user-tie fa-2x me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->manager_name ?? '-' }}</p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-clock fa-2x me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">{{ $store->open_hours ?? '-' }}</p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-envelope fa-2x me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">
-                            {{ $store->user->email ?? Auth::user()->email }}</p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-3">
-                        <i class="fa-solid fa-coins fa-2x me-2 text-brown"></i>
-                        <p class="mb-0 text-brown" style="font-size: 1.05rem;">
-                            {{-- 選択された通貨コードをラベルに変換して表示 --}}
-                            {{ config('currencies')[$store->currency] ?? '' }}
-                        </p>
-                    </div>
-
                 </div>
 
                 {{-- Chat Column --}}

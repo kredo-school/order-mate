@@ -68,7 +68,7 @@
   <h3 class="fw-bold mb-4 text-brown">{{__('guest.order_history')}}</h3>
 
   @if ($history->count() > 0)
-    <div class="p-2 rounded table-wrapper">
+    <div class="p-1 rounded table-wrapper">
       <table class="table border-0 mb-0 text-center">
         <thead>
           <tr>

@@ -12,21 +12,22 @@
             </a>
         </div>
         <div class="row gx-0">
-            {{-- 左側（商品画像） --}}
-            <div class="col-md-5 d-flex justify-content-center align-items-start position-relative mt-2">
-                @if ($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                        class="img-fluid rounded shadow" style="max-width: 250px; height: auto;">
-
-                    {{-- タグ画像 --}}
+                <!-- 商品画像 + tag -->
+                <div class="col-md-4 position-relative text-center">
                     @if ($product->tag)
-                        <img src="{{ asset('storage/' . $product->tag) }}" alt="tag" class="position-absolute"
-                            style="top: -5%; left: 15%; max-width: 60px; transform: translate(0, 0); border-radius:5px;">
+                        <img src="{{ asset('storage/' . $product->tag) }}" class="position-absolute"
+                            style="top:-15px; left:1.5rem; max-width:80px; border-radius:5px; object-fit:cover; z-index:10;">
                     @endif
-                @else
-                    <div class="text-muted" style="width:250px; height:auto;">{{__('guest.no_image')}}</div>
-                @endif
-            </div>
+
+                    @if ($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid rounded mb-3" style="width: 70%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 70%; height: auto; object-fit: cover; aspect-ratio: 4 / 3;">
+                            {{__('manager.no_image')}}
+                        </div>
+                    @endif
+
+                </div>
 
             @php
                 $currencyCode = $store->currency ?? 'php'; // DB にあるコード、なければ php

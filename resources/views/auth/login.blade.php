@@ -13,7 +13,7 @@
 
             {{-- Email --}}
             <div class="mb-3">
-                <label for="email">E-mail</label>
+                <label for="email">{{__('manager.email')}}</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" required autofocus>
                 @error('email')
@@ -25,7 +25,7 @@
 
             {{-- Password --}}
             <div class="mb-3">
-                <label for="password">Password</label>
+                <label for="password">{{__('manager.password')}}</label>
                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                     name="password" required autocomplete="current-password">
                 @error('password')
@@ -36,8 +36,8 @@
             </div>
 
             {{-- 送信ボタン（既存の .btn .btn-primary を活用） --}}
-            <button type="submit" class="btn btn-primary btn-l w-100">LOG IN</button>
-            <a href="{{ route('register') }}" class="btn btn-outline btn-l w-100 mt-2">Register</a>
+            <button type="submit" class="btn btn-primary btn-l w-100">{{__('manager.login')}}</button>
+            <a href="{{ route('register') }}" class="btn btn-outline btn-l w-100 mt-2">{{__('manager.register')}}</a>
 
 
         </form>
@@ -45,7 +45,7 @@
         {{-- 下部リンク --}}
         <div class="link-row justify-content-end">
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}">Forgot password?</a>
+                <a href="{{ route('password.request') }}">{{__('manager.forgot_password')}}</a>
             @endif
         </div>
 

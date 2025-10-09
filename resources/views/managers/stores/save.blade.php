@@ -38,8 +38,8 @@
                     <div class="mt-3">
                         <label for="language" class="form-label">{{__('manager.language')}}</label>
                         <select class="form-select" id="language" name="language">
-                            <option value="en" {{ old('language', $store->language ?? 'en') === 'en' ? 'selected' : '' }}>{{__('manager.english')}}</option>
-                            <option value="ja" {{ old('language', $store->language ?? 'en') === 'ja' ? 'selected' : '' }}>{{__('manager.japanese')}}</option>
+                            <option value="en" {{ old('language', $store->language ?? 'en') === 'en' ? 'selected' : '' }}>English</option>
+                            <option value="ja" {{ old('language', $store->language ?? 'en') === 'ja' ? 'selected' : '' }}>日本語</option>
                         </select>
                     </div>
                 </div>

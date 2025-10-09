@@ -40,7 +40,11 @@
                     @endphp
 
                     <div class="card-body text-center p-2">
-                        <h5 class="card-title mb-1 text-brown fw-bold mt-1">{{ $product->name }}</h5>
+                        <h5 class="card-title mb-1 text-brown fw-bold mt-1">{{ $product->name }}
+                            @if (!$product->is_available)
+                            <i class="fa-solid fa-eye-slash"></i>
+                            @endif
+                        </h5>
                         @if (isset($product->price))
                             <p class="mb-0 text-brown">{{ explode(' - ', $currencyLabel)[0] }} {{ number_format($product->price, 2) }}</p>
                         @endif

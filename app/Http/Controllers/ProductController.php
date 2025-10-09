@@ -71,6 +71,15 @@ class ProductController extends Controller
                ->with('isGuestPage', false);
     }
 
+    public function toggleAvailability($id)
+    {
+        $product = Menu::findOrFail($id);
+        $product->is_available = !$product->is_available;
+        $product->save();
+
+        return redirect()->back();
+    }
+
     // store
     public function store(Request $request)
     {

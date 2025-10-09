@@ -8,6 +8,22 @@ return [
     'cancel'        => 'Cancel',
     'update'        => 'Update',
     'add'             => 'Add',
+    'name'  => 'Name',
+
+    // login. register
+    'password'     => 'Password',
+    'password_message'  =>  '* Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.',
+    'login'        => 'Login',
+    'forgot_password' => 'Forgot Your Password?',
+    'send_password_reset'   =>  'Send Password Reset Link',
+    'back_to_login'     =>      'Back to Login',
+
+    // verify email
+    'verify_email' => 'Verify Your Email Address',
+    'fresh_link'   => 'A fresh verification link has been sent to your email address.',
+    'check_email'  => 'Before proceeding, please check your email for a verification link.',
+    'not_receive'  => 'If you did not receive the email',
+    'request_another' => 'click here to request another',
 
     // layouts.app
         // offcanvas menu
@@ -71,6 +87,8 @@ return [
     'no_results'   => 'No products found.',
     'no_products' => 'No products yet. Please add some products.',
     'no_image'     => 'No Image',
+    'show'        => 'Show',
+    'hide'      => 'Hide',
 
     // order-lists.order-lists
     'show_completed' => 'Show Completed',
@@ -170,4 +188,90 @@ return [
     // products.edit
     'added_alert' => 'All custom groups are already added.',
     'edit_product'    =>    'Edit Product',
+
+    // LP
+    // ==== Header ====
+    'top'         => 'Top',
+    'our_product' => 'Our Product',
+    'benefit'     => 'Benefits',
+    'contact'     => 'Contact',
+    'register'    => 'Register',
+
+    // ==== Question ====
+    'question_title' => 'Are you keeping your customers waiting?',
+    'question_p1'    => 'Waiting times for ordering and payment can dramatically reduce customer satisfaction. And during peak hours, staff often can’t serve to provide the best service.',
+    'question_p2'    => 'With Ordermate, you can say goodbye to those worries.',
+    'register_here' => 'REGISTER HERE',
+
+    // ==== Features ====
+    'our_product_title' => 'About Our Product',
+    'feature_1_title'   => 'Quick and Easy Ordering',
+    'feature_1_text'    => 'Effortless ordering via smartphone.',
+    'feature_2_title'   => 'Operational Efficiency',
+    'feature_2_text'    => 'Automated ordering, staff coordination, and real-time kitchen coordination.',
+    'feature_3_title'   => 'Sales Management',
+    'feature_3_text'    => 'Track daily and monthly sales in real time.',
+    'feature_4_title'   => 'Multi-language Support',
+    'feature_4_text'    => 'Customers can choose their preferred language.',
+    'feature_5_title'   => 'Online Payment',
+    'feature_5_text'    => 'Support for online payments such as credit cards or e-wallets.',
+
+    // ==== Screenshots ====
+    'screenshots_title' => 'See Ordermate in Action',
+    'screenshots_desc'  => 'Check how Ordermate looks on desktop and mobile devices.',
+    'desktop_interface' => 'Desktop Interface',
+    'mobile_interface'  => 'Mobile Interface',
+
+    // ==== Benefits ====
+    'benefits_title'      => 'Benefits of Implementation',
+    'benefit_for_shop'    => 'For the Restaurant',
+    'benefit_for_guest'   => 'For Customers',
+    'benefit_shop_1'      => 'Reduced labor costs',
+    'benefit_shop_2'      => 'Eliminate order-taking errors',
+    'benefit_shop_3'      => 'Serve more tables, reduce queue,',
+    'benefit_shop_4'      => 'and more repeat customers.',
+    'benefit_guest_1'     => 'No waiting',
+    'benefit_guest_2'     => 'Order at their own pace',
+    'benefit_guest_3'     => 'Stress-free dining experience',
+
+    // ==== Pricing ====
+    'pricing_title' => 'Pricing Plans',
+    'pricing_desc'  => 'Enjoy your first 2 months free. Choose the plan that fits your restaurant best.',
+    'basic_plan'    => 'Basic Plan',
+    'premium_plan'  => 'Premium Plan',
+    'month'         => '/month',
+    'basic_detail_1' => 'Access to all essential features',
+    'basic_detail_2' => 'Includes ads',
+    'premium_detail_1' => 'No ads',
+    'premium_detail_2' => 'Full access to all Analytics features',
+    'note'          => '* All features are free for the first 2 months after registration.',
+    'start_basic'   => 'START BASIC',
+    'start_premium' => 'START PREMIUM',
+
+    // ==== Steps ====
+    'steps_title'  => 'Implementation Steps',
+    'step_1_title' => 'Download',
+    'step_1_text'  => 'Download the app and instantly start your journey to smarter management.',
+    'step_2_title' => 'Register',
+    'step_2_text'  => 'Create your manager account in minutes to secure your store\'s digital presence.',
+    'step_3_title' => 'Setup Store, Menu & Table Info',
+    'step_3_text'  => 'Effortlessly upload your menu and define table QR codes. Get ready for seamless guest ordering.',
+    'step_4_title' => 'Go Live!',
+    'step_4_text'  => 'Launch your digital system and watch labor costs drop while customer satisfaction soars.',
+
+    // ==== Contact ====
+    'contact_title'      => 'Contact Us',
+    'contact_first_name' => 'First Name',
+    'contact_last_name'  => 'Last Name',
+    'contact_email'      => 'Email Address',
+    'contact_phone'      => 'Phone Number',
+    'contact_store'      => 'Restaurant Name',
+    'contact_message'    => 'Your Message / Inquiry',
+    'send_inquiry'       => 'Send Inquiry',
+
+    // ==== CTA ====
+    'cta_message' => 'Take your restaurant to the next level, today.',
+    'with'        => 'with',
+    'register_cta' => 'REGISTER HERE',
+    'rights'      => '© All Rights are reserved by ordermate',
 ];

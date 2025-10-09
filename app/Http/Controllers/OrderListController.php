@@ -105,6 +105,7 @@ class OrderListController extends Controller
     // 最新の未completedな注文アイテムを取得
     $orders = OrderItem::with(['order.table', 'menu.category'])
         ->where('id', '>', $lastId)
+        ->whereIn('status', ['preparing', 'ready']) // ←ここ追加
         ->whereHas('order', function ($q) {
             $q->where('status', '!=', 'closed');
         })

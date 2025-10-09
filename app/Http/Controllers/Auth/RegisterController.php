@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\WelcomeMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\App;
@@ -61,7 +63,7 @@ class RegisterController extends Controller
             'language'   => $lang,
         ]);
 
-        // Mail::to($user->email)->send(new WelcomeMail());
+        Mail::to($user->email)->send(new WelcomeMail());
 
         return $user;
     }

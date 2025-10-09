@@ -22,12 +22,16 @@
             <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo-mm">
         
             <nav class="nav-links">
-                <a href="#our-product">OUR PRODUCT</a>
-                <a href="#contact-section">CONTACT</a>
+                <a href="#top">{{__('manager.top')}}</a>
+                <a href="#our-product">{{__('manager.our_product')}}</a>
+                <a href="#benefits-section">{{__('manager.benefit')}}</a>
+                <a href="#pricing-section">{{__('manager.price')}}</a>
+                <a href="#contact-section">{{__('manager.contact')}}</a>
+                <a href="#language">{{__('manager.language')}}</a>
             </nav>
         
             <div class="header-buttons">
-                <a href="{{ route('register') }}" class="btn btn-register">REGISTER</a>
+                <a href="{{ route('register') }}" class="btn btn-register">{{__('manager.register')}}</a>
                 <button class="hamburger" id="hamburger-btn">
                     <span></span><span></span><span></span>
                 </button>
@@ -36,11 +40,15 @@
         
         <!-- スマホ用メニュー -->
         <div class="mobile-menu" id="mobile-menu">
-            <a href="#our-product">OUR PRODUCT</a>
-            <a href="#contact-section">CONTACT</a>
+            <a href="#top">{{__('manager.top')}}</a>
+            <a href="#our-product">{{__('manager.our_product')}}</a>
+            <a href="#benefits-section">{{__('manager.benefit')}}</a>
+            <a href="#pricing-section">{{__('manager.price')}}</a>
+            <a href="#contact-section">{{__('manager.contact')}}</a>
+            <a href="#language">{{__('manager.language')}}</a>
         </div>
 
-        <section class="hero-section">
+        <section class="hero-section" id="top">
             <div class="container-fluid">
                 <img src="{{asset('images/re-restaurant.png')}}" alt="Ordermate Restaurant">
             </div>
@@ -75,91 +83,90 @@
         @endif
 
         <section class="question-section">
-            <h2>Are you keeping your customers waiting?</h2>
+            <h2>{{ __('manager.question_title') }}</h2>
             <div class="flex-container">
                 <div class="image-placeholder restaurant-image-2">
-                    <img src="{{asset('/images/2-before.png')}}" alt="Oedermate Restaurant 2">
+                    <img src="{{ asset('/images/2-before.png') }}" alt="Ordermate Restaurant 2">
                 </div>
                 <div class="text-content p-0">
-                    <p>Waiting times for ordering and payment can dramatically reduce customer satisfaction. And during
-                        peak hours, staff often can’t serve to provide the best service.</p>
-                    <p class="highlight my-0">With
-                        <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-sm-m">,
-                        <br>
-                        you can say goodbye to those worries.
-                    </p>
-                    <a href="{{ route('register') }}" class="btn btn-register-large">REGISTER HERE</a>
+                    <p>{{ __('manager.question_p1') }}</p>
+                    <p class="highlight my-0">{{ __('manager.question_p2') }}</p>
+                    <a href="{{ route('register') }}" class="btn btn-register-large">{{ __('manager.register_here') }}</a>
                 </div>
             </div>
         </section>
 
         <section class="features-section" id="our-product">
-            <div class="feature-item">
-                <div class="feature-number">1</div>
-                <h3>Quick and Easy Ordering</h3>
-                <div class="image-placeholder feature-image-1">
-                    <img src="{{asset('images/4-cellphone.png')}}" alt="Ordermate Cellphone">
-                </div>
-                <p>Effortless ordering via smartphone.</p>
-            </div>
+            <h2>{{ __('manager.our_product_title') }}</h2>
         
-            <div class="feature-item">
-                <div class="feature-number">2</div>
-                <h3>Operational Efficiency</h3>
-                <div class="image-placeholder feature-image-2">
-                    <img src="{{asset('images/5-manager.png')}}" alt="Ordermate Cellphone">
+            <div class="features-container">
+                <div class="feature-item">
+                    <div class="feature-number">1</div>
+                    <h3>{{ __('manager.feature_1_title') }}</h3>
+                    <div class="image-placeholder feature-image-1">
+                        <img src="{{asset('images/4-cellphone.png')}}" alt="Ordermate Cellphone">
+                    </div>
+                    <p>{{ __('manager.feature_1_text') }}</p>
                 </div>
-                <p>Automated ordering, staff coordination, and real-time kitchen coordination.</p>
-            </div>
         
-            <div class="feature-item">
-                <div class="feature-number">3</div>
-                <h3>Sales Management</h3>
-                <div class="image-placeholder feature-image-3">
-                    <img src="{{asset('images/6-managers.png')}}" alt="Ordermate Cellphone">
+                <div class="feature-item">
+                    <div class="feature-number">2</div>
+                    <h3>{{ __('manager.feature_2_title') }}</h3>
+                    <div class="image-placeholder feature-image-2">
+                        <img src="{{asset('images/5-manager.png')}}" alt="Ordermate Cellphone">
+                    </div>
+                    <p>{{ __('manager.feature_2_text') }}</p>
                 </div>
-                <p>Track daily and monthly sales in real time. Visualize performance and optimize operations with ease.</p>
-            </div>
         
-            <!-- 🔽 ここから新規追加部分 🔽 -->
-            <div class="feature-item">
-                <div class="feature-number">4</div>
-                <h3>Multi-language Support</h3>
-                <div class="image-placeholder feature-image-4">
-                    <img src="{{asset('images/4-cellphone.png')}}" alt="Ordermate Cellphone">
+                <div class="feature-item">
+                    <div class="feature-number">3</div>
+                    <h3>{{ __('manager.feature_3_title') }}</h3>
+                    <div class="image-placeholder feature-image-3">
+                        <img src="{{asset('images/6-managers.png')}}" alt="Ordermate Cellphone">
+                    </div>
+                    <p>{{ __('manager.feature_3_text') }}</p>
                 </div>
-                <p>Customers can choose their preferred language. Currently supports Japanese and English — more to come soon!</p>
-            </div>
         
-            <div class="feature-item">
-                <div class="feature-number">5</div>
-                <h3>Online Payment</h3>
-                <div class="image-placeholder feature-image-5">
-                    <img src="{{asset('images/4-cellphone.png')}}" alt="Ordermate Cellphone">
+                <div class="feature-item">
+                    <div class="feature-number">4</div>
+                    <h3>{{ __('manager.feature_4_title') }}</h3>
+                    <div class="image-placeholder feature-image-4">
+                        <img src="{{asset('images/10-language.png')}}" alt="Ordermate Cellphone">
+                    </div>
+                    <p>{{ __('manager.feature_4_text') }}</p>
                 </div>
-                <p>Support for online payments such as credit cards or e-wallets. Each restaurant can decide whether to enable it.</p>
+        
+                <div class="feature-item">
+                    <div class="feature-number">5</div>
+                    <h3>{{ __('manager.feature_5_title') }}</h3>
+                    <div class="image-placeholder feature-image-5">
+                        <img src="{{asset('images/9-payment.png')}}" alt="Ordermate Cellphone">
+                    </div>
+                    <p>{{ __('manager.feature_5_text') }}</p>
+                </div>
             </div>
         </section>
+        
 
         <section class="screenshots-section">
-            <h2>See Ordermate in Action</h2>
-            <p class="text-center mb-5">Check how Ordermate looks on desktop and mobile devices.</p>
+            <h2>{{__('manager.screenshots_title')}}</h2>
+            <p class="text-center mb-5">{{__('manager.screenshots_desc')}}</p>
 
-            <div class="container screenshots-wrapper">
-                <div class="row justify-content-center align-items-start">
+            <div class="screenshots-wrapper">
+                <div class="row justify-content-center align-items-center">
                     <!-- 💻 PCフレーム -->
                     <div class="col-lg-6 col-md-12 mb-5">
                         <div class="device-frame pc-frame">
                             <div id="pcCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="PC Screenshot 1">
+                                        <img src="{{ asset('images/manager-screenshot1.png') }}" class="d-block w-100" alt="PC Screenshot 1">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="PC Screenshot 2">
+                                        <img src="{{ asset('images/manager-screenshot2.png') }}" class="d-block w-100" alt="PC Screenshot 2">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="PC Screenshot 3">
+                                        <img src="{{ asset('images/manager-screenshot3.png') }}" class="d-block w-100" alt="PC Screenshot 3">
                                     </div>
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#pcCarousel" data-bs-slide="prev">
@@ -170,7 +177,7 @@
                                 </button>
                             </div>
                         </div>
-                        <p class="caption text-center mt-2">Desktop Interface</p>
+                        <p class="caption text-center mt-2">{{__('manager.desktop_interface')}}</p>
                     </div>
 
                     <!-- 📱 スマホフレーム -->
@@ -179,13 +186,13 @@
                         <div id="phoneCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="Phone Screenshot 1">
+                                <img src="{{ asset('images/guest-screenshot1.png') }}" class="d-block w-100" alt="Phone Screenshot 1">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="Phone Screenshot 2">
+                                <img src="{{ asset('images/guest-screenshot2.png') }}" class="d-block w-100" alt="Phone Screenshot 2">
                             </div>
                             <div class="carousel-item">
-                                <img src="{{ asset('images/1-restaurant.png') }}" class="d-block w-100" alt="Phone Screenshot 3">
+                                <img src="{{ asset('images/guest-screenshot3.png') }}" class="d-block w-100" alt="Phone Screenshot 3">
                             </div>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#phoneCarousel" data-bs-slide="prev">
@@ -196,30 +203,30 @@
                             </button>
                         </div>
                         </div>
-                        <p class="caption text-center mt-2">Mobile Interface</p>
+                        <p class="caption text-center mt-2">{{__('manager.mobile_interface')}}</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="benefits-section">
-            <h2>Benefits of Implementation</h2>
+        <section class="benefits-section" id="benefits-section">
+            <h2>{{ __('manager.benefits_title') }}</h2>
             <div class="benefits-container">
                 <div class="benefits-column restaurant">
-                    <div class="tag-restaurant h3">For the Restaurant</div>
+                    <div class="tag-restaurant h3">{{ __('manager.benefit_for_shop') }}</div>
                     <ul>
-                        <li>Reduced labor costs</li>
-                        <li>Eliminate order-taking errors</li>
-                        <li>Serve more tables, reduce queue,</li>
-                        <li>and more repeat customers.</li>
+                        <li>{{ __('manager.benefit_shop_1') }}</li>
+                        <li>{{ __('manager.benefit_shop_2') }}</li>
+                        <li>{{ __('manager.benefit_shop_3') }}</li>
+                        <li>{{ __('manager.benefit_shop_4') }}</li>
                     </ul>
                 </div>
                 <div class="benefits-column customer">
-                    <div class="tag-customer h3">For Customers</div>
+                    <div class="tag-customer h3">{{ __('manager.benefit_for_guest') }}</div>
                     <ul>
-                        <li>No waiting</li>
-                        <li>Order at their own pace</li>
-                        <li>Stress-free dining experience</li>
+                        <li>{{ __('manager.benefit_guest_1') }}</li>
+                        <li>{{ __('manager.benefit_guest_2') }}</li>
+                        <li>{{ __('manager.benefit_guest_3') }}</li>
                     </ul>
                 </div>
             </div>
@@ -233,29 +240,50 @@
             </div>
         </section>
 
+        <section class="pricing-section" id="pricing-section">
+            <h2>{{ __('manager.pricing_title') }}</h2>
+            {{-- <p class="text-center mb-5">{{ __('manager.pricing_desc') }}</p> --}}
+
+            <div class="pricing-container">
+                <div class="pricing-card basic">
+                    <h3>{{ __('manager.basic_plan') }}</h3>
+                    <p class="price">¥5,000<span>{{__('manager.month')}}</span></p>
+                    <ul>
+                        <li>{{ __('manager.basic_detail_2') }}</li>
+                        <li>{{ __('manager.basic_detail_1') }}</li>
+                    </ul>
+                    <a href="#" class="btn btn-register-large">{{ __('manager.start_basic') }}</a>
+                </div>
+                <div class="pricing-card premium">
+                    <h3>{{ __('manager.premium_plan') }}</h3>
+                    <p class="price">¥10,000<span>{{__('manager.month')}}</span></p>
+                    <ul>
+                        <li>{{ __('manager.premium_detail_1') }}</li>
+                        <li>{{ __('manager.premium_detail_2') }}</li>
+                    </ul>
+                    <a href="#" class="btn btn-register-large">{{ __('manager.start_premium') }}</a>
+                </div>
+            </div>
+            <p class="note text-center">{{ __('manager.note') }}</p>
+        </section>
+
         <section class="steps-section">
-            <h2>Implementation Steps</h2>
+            <h2>{{__('manager.steps_title')}}</h2>
             <div class="steps-container">
                 <div class="step-item">
                     <div class="step-number">1</div>
-                    <div class="step_title">Download</div>
-                    <p>Download the app and instantly start your journey to smarter management.</p>
+                    <div class="step_title">{{__('manager.step_2_title')}}</div>
+                    <p>{{__('manager.step_2_text')}}</p>
                 </div>
                 <div class="step-item">
                     <div class="step-number">2</div>
-                    <div class="step_title">Register</div>
-                    <p>Create your manager account in minutes to secure your store's digital presence.</p>
+                    <div class="step_title">{{__('manager.step_3_title')}}</div>
+                    <p>{{__('manager.step_3_text')}}</p>
                 </div>
                 <div class="step-item">
                     <div class="step-number">3</div>
-                    <div class="step_title">Setup Store, Menu & Table Info</div>
-                    <p>Effortlessly upload your menu and define table QR codes. Get ready for seamless guest
-                        ordering.</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <div class="step_title">Go Live!</div>
-                    <p>Launch your digital system and watch labor costs drop while customer satisfaction soars.</p>
+                    <div class="step_title">{{__('manager.step_4_title')}}</div>
+                    <p>{{__('manager.step_4_text')}}</p>
                 </div>
             </div>
 
@@ -263,13 +291,13 @@
 
             {{-- お問い合わせ --}}
             <section class="contact-section" id="contact-section">
-                <h2 class="mb-3">Contact Us</h2>
+                <h2 class="mb-3">{{ __('manager.contact_title') }}</h2>
 
                 <form action="{{ route('lp.contact.send') }}" method="POST" class="contact-form">
                     @csrf
 
                     <div class="form-group mb-3 mt-5">
-                        <label for="name">First Name <span class="required-star">*</span></label>
+                        <label for="name">{{ __('manager.contact_first_name') }} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="text" name="name" id="name" class="form-control form-underline"
                                 required>
@@ -277,7 +305,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="last_name">Last Name <span class="required-star">*</span></label>
+                        <label for="last_name">{{__('manager.contact_last_name')}} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="text" name="last_name" id="last_name"
                                 class="form-control form-underline" required>
@@ -285,7 +313,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="email">Email Address <span class="required-star">*</span></label>
+                        <label for="email">{{__('manager.contact_email')}} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="email" name="email" id="email" class="form-control form-underline"
                                 required>
@@ -293,7 +321,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="phone">Phone Number (Direct Line) <span class="required-star">*</span></label>
+                        <label for="phone">{{__('manager.contact_phone')}} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="tel" name="phone" id="phone" class="form-control form-underline"
                                 required>
@@ -301,7 +329,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="store_name">Restaurant Name <span class="required-star">*</span></label>
+                        <label for="store_name">{{__('manager.contact_store')}} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <input type="text" name="store_name" id="store_name"
                                 class="form-control form-underline" required>
@@ -309,54 +337,76 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="message">Your Message / Inquiry <span class="required-star">*</span></label>
+                        <label for="message">{{__('manager.contact_message')}} <span class="required-star">*</span></label>
                         <div class="form-control-wrapper">
                             <textarea name="message" id="message" rows="5" class="form-control form-underline" required></textarea>
                         </div>
                     </div>
 
                     <div style="text-align: center; margin-top: 30px;">
-                        <button type="submit" class="btn btn-register-cta">Send Inquiry</button>
+                        <button type="submit" class="btn btn-register-cta">{{__('manager.send_inquiry')}}</button>
                     </div>
                 </form>
             </section>
 
-        <section class="cta-section">
-            <p>Take your restaurant to the next level, today.</p>
-            <div>
-                <p class="with-text">with</p>
-                <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-sm">
-            </div>
-            <a href="{{ route('register') }}" class="btn btn-register-cta">REGISTER HERE</a>
-
-            <br>
-            <br>
-            <p class="disclaimer fs-6 mt-5">© All Rights are reserved by ordermate</p>
-        </section>
+            <section class="cta-section ordermate-lp">
+                <p>{{__('manager.cta_message')}}</p>
+            
+                <div>
+                    <p class="with-text">with</p>
+                    <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-sm">
+                </div>
+            
+                <a href="{{ route('register') }}" class="btn btn-register-cta">{{__('manager.register_cta')}}</a>
+            
+                <div class="language-selector" id="language">
+                    <label for="language" class="language-label">{{ __('manager.language') }}</label>
+                    <select class="language-select" id="language" name="language"
+                            onchange="changeLanguage(this.value)">
+                        <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>English</option>
+                        <option value="ja" {{ app()->getLocale() === 'ja' ? 'selected' : '' }}>日本語</option>
+                    </select>
+                </div>
+            
+                <p class="disclaimer fs-6 mt-5">© All Rights are reserved by ordermate</p>
+            </section>
+            
 
     </div>
 
     <script>
-        // ⭐ 修正: 成功またはエラーメッセージがある場合にToastを表示するJS ⭐
         document.addEventListener('DOMContentLoaded', function() {
-            // Success Toastの処理
+            // ✅ Toast（成功・エラー）の処理
             const successToastEl = document.querySelector('.toast.text-bg-success');
-            if (successToastEl) {
-                const toast = new bootstrap.Toast(successToastEl);
-                toast.show();
-            }
-
-            // Error Toastの処理
+            if (successToastEl) new bootstrap.Toast(successToastEl).show();
+        
             const errorToastEl = document.querySelector('.toast.text-bg-danger');
-            if (errorToastEl) {
-                const toast = new bootstrap.Toast(errorToastEl);
-                toast.show();
+            if (errorToastEl) new bootstrap.Toast(errorToastEl).show();
+        
+            // ✅ ハンバーガーメニュー開閉処理
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+        
+            if (hamburgerBtn && mobileMenu) {
+                // 開閉トグル
+                hamburgerBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+        
+                // ✅ メニュー内のリンクをクリックしたら自動で閉じる
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('active');
+                    });
+                });
             }
         });
-
-        document.getElementById('hamburger-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('active');
-        });
+        function changeLanguage(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
+        }
     </script>
+        
 </body>
 </html>

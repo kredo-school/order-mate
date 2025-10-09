@@ -13,7 +13,7 @@
 
             {{-- Name --}}
             <div class="mb-3">
-                <label for="name">Name</label>
+                <label for="name">{{__('manager.name')}}</label>
                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name"
                     value="{{ old('name') }}" required autofocus>
                 @error('name')
@@ -25,7 +25,7 @@
 
             {{-- Email --}}
             <div class="mb-3">
-                <label for="email">Email Address</label>
+                <label for="email">{{__('manager.email')}}</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" required>
                 @error('email')
@@ -37,11 +37,11 @@
 
             {{-- Password --}}
             <div class="mb-3">
-                <label for="password">Password</label>
+                <label for="password">{{__('manager.password')}}</label>
                 {{-- ここからヒントメッセージ --}}
                 <span class="text-danger d-block"
                     style="font-size:0.75rem; line-height:1.2; margin-top:-0.4rem; margin-bottom:0.2rem;">
-                    * Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.
+                    {{__('manager.password_message')}}
                 </span>
                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                     name="password" required autocomplete="new-password">
@@ -54,14 +54,15 @@
 
             {{-- Confirm Password --}}
             <div class="mb-3">
-                <label for="password-confirm">Confirm Password</label>
+                <label for="password-confirm">{{__('manager.confirm_password')}}</label>
                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required
                     autocomplete="new-password">
             </div>
 
             {{-- 送信ボタン --}}
-            <button type="submit" class="btn btn-l btn-primary w-100">REGISTER</button>
-            <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">Log in</a>
+            <button type="submit" class="btn btn-l btn-primary w-100">{{__('manager.register')}}</button>
+            <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">
+                {{__('manager.login')}}</a>
         </form>
 
         {{-- SNSアイコン --}}

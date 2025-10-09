@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'managerLocale'=> \App\Http\Middleware\ManagerLocale::class,
             'guestLocale'  => \App\Http\Middleware\GuestLocale::class,
+            'LPLocale' =>
+            \App\Http\Middleware\LPLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

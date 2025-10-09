@@ -27,6 +27,21 @@
                         </div>
                     @endif
 
+                    <!-- Visible / Hidden 切り替えボタン -->
+                    <form action="{{ route('manager.products.toggleAvailability', $product->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        @if ($product->is_available)
+                            <button type="submit" class="btn btn-light border text-brown d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-eye-slash"></i> {{ __('manager.hide') }}
+                            </button>
+                        @else
+                            <button type="submit" class="btn btn-light border text-brown d-flex align-items-center gap-1">
+                                <i class="fa-solid fa-eye"></i> {{ __('manager.show') }}
+                            </button>
+                        @endif
+                    </form>
+
                 </div>
 
                 <!-- 商品情報 -->

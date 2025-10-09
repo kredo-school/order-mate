@@ -5,63 +5,51 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = '/manager';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
+        // LPやログイン画面でもLPLocaleを適用
+        $this->middleware('LPLocale')->only(['showLoginForm']);
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
 
     protected function authenticated($request, $user)
     {
-        // ✅ Manager
+        // ✅ Managerログイン時にストア言語へ切り替え
         if ($user->role == User::ROLE_MANAGER) {
             if ($user->store) {
-                session(['manager_locale' => $user->store->language]);
-                app()->setLocale($user->store->language);
+                $lang = $user->store->language ?? config('app.locale');
+                Session::put('manager_locale', $lang);
+                App::setLocale($lang);
             }
-    
+
             return redirect()->route('manager.home');
         }
-    
+
         // ✅ Admin
         if ($user->role == User::ROLE_ADMIN) {
             return redirect()->route('admin.index');
         }
-    
-        // デフォルト
-        return redirect('/manager');
+
+        // その他はデフォルト
+        return redirect($this->redirectTo);
     }
-    
+
     protected function loggedOut($request)
     {
-        return redirect('/login'); // ログアウト後に飛ばしたいURL
+        // ✅ ログアウト後はLP言語に戻す
+        $lang = Session::get('lp_locale', config('app.locale'));
+        App::setLocale($lang);
+
+        return redirect('/login');
     }
 }

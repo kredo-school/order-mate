@@ -19,7 +19,7 @@
 
             {{-- Email --}}
             <div class="mb-3">
-                <label for="email">Email Address</label>
+                <label for="email">{{__('manager.email')}}</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                 @error('email')
@@ -31,11 +31,11 @@
 
             {{-- 送信ボタン --}}
             <button type="submit" class="btn btn-l btn-primary w-100">
-                Send Password Reset Link
+                {{__('manager.send_password_reset')}}
             </button>
 
             {{-- 戻るボタン --}}
-            <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">Back to Login</a>
+            <a href="{{ route('login') }}" class="btn btn-l btn-outline w-100 mt-2">{{__('manager.back_to_login')}}</a>
         </form>
 
         {{-- SNSアイコン --}}

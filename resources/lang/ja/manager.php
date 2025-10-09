@@ -8,6 +8,21 @@ return [
     'cancel'        => 'キャンセル',
     'update'        => '更新',
     'add'            => '追加',
+    'name'  => '名前',
+
+    // login, register
+    'login'          => 'ログイン',
+    'password'     => 'パスワード',
+    'password_message'  =>  'パスワードは8文字以上で、英大文字・小文字・数字・記号を含む必要があります。',
+    'forgot_password' => 'パスワードをお忘れですか？',
+    'send_password_reset'   => 'パスワードリセットリンクを送信',
+    'back_to_login'     =>      'ログイン画面に戻る',
+
+    // verify email
+    'verify_email' => 'メールアドレスの確認',
+    'check_email'  => '続行する前に、メールで送信された確認リンクを確認してください。',
+    'not_receive' => 'メールが届かない場合',
+    'request_another' => '別のリクエストをクリックしてください。',
 
     // layouts.app
         // offcanvas menu
@@ -71,6 +86,8 @@ return [
     'no_results'   => '結果が見つかりません',
     'no_products' => 'まだ商品が追加されていません。',
     'no_image'     => '画像なし',
+    'show'      => '表示する',
+    'hide'      => '非表示にする',
 
     // order-lists.order-lists
     'show_completed' => '完了済みを表示',
@@ -98,7 +115,7 @@ return [
     // tables.show
     'back_to_tables' => 'テーブル一覧に戻る',
     'options'       => 'オプション',
-    'price'         => '値段',
+    'price'         => '価格',
     'qty'           => '数量',
     'status'        => 'ステータス',
     'total'         => '合計',
@@ -170,4 +187,89 @@ return [
     // products.edit
     'added_alert' => 'すべてのカスタムはすでに追加されています。',
     'edit_product'  => '商品編集',
+
+    // LP
+    // ==== Header ====
+    'top'         => 'トップ',
+    'our_product' => '私たちの製品',
+    'benefit'     => '利点',
+    'contact'     => 'お問い合わせ',
+    'register'    => '登録',
+
+    // ==== Question ====
+    'question_title' => 'お客様を待たせていませんか？',
+    'question_p1'    => '注文や会計の待ち時間は、顧客満足度を大きく下げる原因になります。ピーク時にはスタッフも十分に対応できないことがあります。',
+    'question_p2'    => 'Ordermateを使えば、そんな心配はもう必要ありません。',
+    'register_here' => '今すぐ登録',
+
+    // ==== Features ====
+    'our_product_title' => '製品について',
+    'feature_1_title'   => '簡単スピーディーな注文',
+    'feature_1_text'    => 'スマホで手軽に注文が可能。',
+    'feature_2_title'   => '業務効率化',
+    'feature_2_text'    => '注文・スタッフ・キッチンの連携を自動化。',
+    'feature_3_title'   => '売上管理',
+    'feature_3_text'    => '日次・月次売上をリアルタイムで確認。',
+    'feature_4_title'   => '多言語対応',
+    'feature_4_text'    => 'お客様が好きな言語を選択できます。',
+    'feature_5_title'   => 'オンライン決済',
+    'feature_5_text'    => 'クレジットカードや電子マネーに対応。',
+
+    // ==== Screenshots ====
+    'screenshots_title' => 'Ordermateの実際の画面',
+    'screenshots_desc'  => 'デスクトップとモバイルでの操作画面をご覧ください。',
+    'desktop_interface' => 'デスクトップ画面',
+    'mobile_interface'  => 'モバイル画面',
+
+    // ==== Benefits ====
+    'benefits_title'      => '導入のメリット',
+    'benefit_for_shop'    => '店舗側のメリット',
+    'benefit_for_guest'   => 'お客様側のメリット',
+    'benefit_shop_1'      => '人件費の削減',
+    'benefit_shop_2'      => '注文ミスの防止',
+    'benefit_shop_3'      => '回転率の向上、待ち時間の削減',
+    'benefit_shop_4'      => 'リピート客の増加',
+    'benefit_guest_1'     => '待ち時間なし',
+    'benefit_guest_2'     => '自分のペースで注文可能',
+    'benefit_guest_3'     => 'ストレスのない食事体験',
+
+    // ==== Pricing ====
+    'pricing_title' => '料金プラン',
+    'pricing_desc'  => '初回2ヶ月間は無料で全機能をお試しいただけます。店舗に合ったプランをお選びください。',
+    'basic_plan'    => 'ベーシックプラン',
+    'premium_plan'  => 'プレミアムプラン',
+    'month'         => '/月',
+    'basic_detail_1' => '基本機能にアクセス可能',
+    'basic_detail_2' => '広告付き',
+    'premium_detail_1' => '広告なし',
+    'premium_detail_2' => 'すべての分析機能にアクセス',
+    'note'          => '* 登録後2ヶ月間は全機能を無料でご利用いただけます。',
+    'start_basic'   => 'ベーシックを開始',
+    'start_premium' => 'プレミアムを開始',
+
+    // ==== Steps ====
+    'steps_title'  => '導入までのステップ',
+    'step_1_title' => 'ダウンロード',
+    'step_1_text'  => 'アプリをダウンロードして、スマートな店舗運営を始めましょう。',
+    'step_2_title' => '登録',
+    'step_2_text'  => '数分でマネージャーアカウントを作成し、店舗をデジタル化。',
+    'step_3_title' => '店舗・メニュー設定',
+    'step_3_text'  => 'メニュー登録やテーブルQRの設定も簡単。',
+    'step_4_title' => '運用開始！',
+    'step_4_text'  => 'システムを導入し、人件費削減と顧客満足度向上を実現。',
+
+    // ==== Contact ====
+    'contact_title'      => 'お問い合わせ',
+    'contact_first_name' => '名',
+    'contact_last_name'  => '姓',
+    'contact_email'      => 'メールアドレス',
+    'contact_phone'      => '電話番号',
+    'contact_store'      => '店舗名',
+    'contact_message'    => 'お問い合わせ内容',
+    'send_inquiry'       => '送信',
+
+    // ==== CTA ====
+    'cta_message' => '今すぐあなたの店舗を次のレベルへ。',
+    'with'        => 'with',
+    'register_cta' => '今すぐ登録',
 ];

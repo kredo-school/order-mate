@@ -613,3 +613,17 @@ footer button.text-brown:hover {
     align-items: center;
 
 }
+
+
+#notificationBadge {
+    top: 0;           /* 上端に合わせる */
+    right: 0;         /* 右端に合わせる */
+    transform: translate(50%, -50%); /* 角にぴったり重ねる */
+    font-size: 0.7rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}

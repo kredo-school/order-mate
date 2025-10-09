@@ -22,7 +22,7 @@ class GuestController extends Controller
             ->where('uuid', $tableUuid)
             ->firstOrFail();
     
-        // --- latest order / welcome 判定（元のロジックを維持） ---
+        // --- latest order / welcome 判定 ---
         $latestOrder = $table->orders()->latest()->first();
         if (!$latestOrder || $latestOrder->status === 'closed') {
             return view('guests.welcome', compact('store', 'table'))
@@ -33,6 +33,7 @@ class GuestController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $products = Menu::where('user_id', $store->user_id)
+                ->where('is_available', true)
                 ->with('customGroups.customOptions')
                 ->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
@@ -43,18 +44,24 @@ class GuestController extends Controller
             $categoryId = $request->input('category');
             $products = Menu::where('user_id', $store->user_id)
                 ->where('menu_category_id', $categoryId)
+                ->where('is_available', true)
                 ->with('customGroups.customOptions')
                 ->get();
         } else {
             $products = $initialCategory
                 ? Menu::where('menu_category_id', $initialCategory->id)
                       ->where('user_id', $store->user_id)
+                      ->where('is_available', true)
                       ->with('customGroups.customOptions')
                       ->get()
                 : collect();
         }
     
-        $menus = Menu::where('user_id', $store->user_id)->with('category')->get();
+        // ここも全件表示用なので、is_available=true をつける
+        $menus = Menu::where('user_id', $store->user_id)
+            ->where('is_available', true)
+            ->with('category')
+            ->get();
     
         $cart = session()->get("cart_{$table->uuid}", []);
         $cartCount = array_sum(array_column($cart, 'quantity'));
@@ -62,7 +69,6 @@ class GuestController extends Controller
         return view('guests.index', compact('store', 'table', 'menus', 'all_categories', 'products', 'cartCount'))
             ->with('isGuestPage', true);
     }
-    
     
     public function welcome($storeName, $tableUuid)
     {

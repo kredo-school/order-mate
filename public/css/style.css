@@ -18,17 +18,46 @@ nav {
   width: 100%;
   z-index: 1030;
   background-color: var(--bg-light);
-  height: 60px; /* ← navbarの高さ */
+  height: 60px;
 }
 
 :root {
   --nav-height: 60px;
-  --footer-height: 107px; /* デフォルト */
+  --footer-height: 107px;
 }
 
+/* 店舗名を中央に配置 */
+.navbar .navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+/* 右のメニューを右端に固定 */
+.navbar .navbar-right {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  list-style: none;
+  margin: 0;
+}
+
+/* 左のロゴ */
+.navbar .navbar-brand {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* レスポンシブ対応 */
 @media (max-width: 768px) {
   :root {
-    --footer-height: 120px; /* スマホ時 */
+    --footer-height: 120px;
   }
 
   #orderTable th, #orderTable td {
@@ -41,30 +70,35 @@ nav {
     margin: auto;
   }
 
-  a.navbar-brand{
-    height: 40% !important;
-    width: 40% !important;
+  .navbar-brand img {
+    height: 17% !important;
+    width: 17% !important;
+  }
+
+  .navbar .navbar-center {
+    font-size: 0.95rem;
   }
 }
 
 @media (min-width: 769px) and (max-width: 1199px) {
-  a.navbar-brand {
-    height: 20%;
-    width: 20%;
+  .navbar-brand img {
+    height: 10%;
+    width: 10%;
   }
 }
 
 @media (min-width: 1200px) {
   .login-width {
-      width: 30%;
-      margin: auto;
+    width: 30%;
+    margin: auto;
   }
 
-  a.navbar-brand{
-    height: 12%;
-    width: 12%;
+  .navbar-brand img {
+    height: 10%;
+    width: 10%;
   }
 }
+
 
 /* Bootstrap デフォルトより確実に前面に出す */ .modal-backdrop { z-index: 1990 !important; }
 
@@ -249,11 +283,6 @@ img.logo-main {
   /* 既存の img.logo があればどちらでもOK */
   height: 64px;
   width: auto;
-}
-
-img.logo{
-  height: 50%;
-  width: 50%;
 }
 
 /* 入力欄を“下線のみ”にするバリアント（背景は透明） */

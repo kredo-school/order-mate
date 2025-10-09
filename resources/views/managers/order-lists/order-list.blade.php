@@ -70,7 +70,13 @@
                         data-progress="{{ $progress }}"
                         data-status="{{ $row['status'] }}"
                         style="cursor: pointer;">
-                        <td>{{ $row['table'] }}</td>
+                        <td>
+                            @if ($row['table'] == 0)
+                                {{ __('manager.takeout') }}
+                            @else
+                                {{ $row['table'] }}
+                            @endif
+                        </td>
                         <td>
                             <span class="elapsed-time" data-created-at="{{ $row['updatedAt'] }}">
                                 00:00

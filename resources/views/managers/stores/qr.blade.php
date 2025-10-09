@@ -67,9 +67,9 @@
                         route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]),
                     ) !!}
                     {{-- 本番ではなくしていい --}}
-                    {{-- <p class="small mt-2 mx-auto" style="width: 60%">
+                    <p class="small mt-2 mx-auto" style="width: 60%">
                         {{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}
-                    </p> --}}
+                    </p>
                 @else
                     <h5>Table {{ $table->number }}</h5>
                     {!! QrCode::size(120)->generate(

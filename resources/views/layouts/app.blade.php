@@ -88,39 +88,44 @@
         @if (trim($__env->yieldContent('header')) != '')
             @yield('header')
         @else
-            <nav class="navbar navbar-expand navbar-light shadow-sm">
-                <div class="container m-0 d-flex justify-content-between">
-                    <a class="navbar-brand"
-                        @if (Route::is('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
-                        @else
-                            href="{{ url('/manager') }}" @endif>
-                        <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
-                    </a>
-
-                    <p class="d-flex align-items-center m-0 w-100" style="height: 100%">
-                        {{ $userStore->store_name ?? '' }}
-                    </p>
-
-                    <!-- 右側メニュー -->
-                    <ul class="navbar-nav">
-                        @if (request()->routeIs('guest.*'))
-                            <li class="nav-item">
-                                <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
-                                    data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
-                                    <i class="fa-solid fa-language fa-2x text-orange"></i>
-                                </a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a id="navbarDropdown" class="nav-link" href="#" role="button"
-                                    data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                    <i class="fa-solid fa-bars fa-2x text-orange"></i>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-            </nav>
+        <nav class="navbar navbar-expand navbar-light shadow-sm">
+            <div class="container position-relative">
+                <!-- 左：ロゴ -->
+                <a class="navbar-brand"
+                    @if (Route::is('guest.*') && isset($store, $table))
+                        href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                    @else
+                        href="{{ url('/manager') }}"
+                    @endif>
+                    <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
+                </a>
+        
+                <!-- 中央：店舗名 -->
+                <p class="navbar-center m-0 text-brown">
+                    {{ $userStore->store_name ?? '' }}
+                </p>
+        
+                <!-- 右：メニュー -->
+                <ul class="navbar-nav navbar-right">
+                    @if (request()->routeIs('guest.*'))
+                        <li class="nav-item">
+                            <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
+                                <i class="fa-solid fa-language fa-2x text-orange"></i>
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a id="navbarDropdown" class="nav-link" href="#" role="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
+                                <i class="fa-solid fa-bars fa-2x text-orange"></i>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </div>
+        </nav>
+        
         @endif
         {{-- =============== /ヘッダー =============== --}}
 

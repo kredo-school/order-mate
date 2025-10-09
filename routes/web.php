@@ -22,18 +22,19 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// 認証ルート
-Auth::routes(['verify' => true]);
+// 🌐 LP + ログイン画面系 (独立したLPLocaleミドルウェアを使用)
+Route::middleware(['LPLocale'])->group(function () {
+    // LP
+    Route::get('/', function () {
+        return view('landing.landing'); // landing.blade.php
+    })->name('lp.index');
 
-// LP
-Route::get('/', function () {
-    return view('landing.landing'); // 'landing'は landing.blade.php を指します
-})->name('lp.index');
+    // お問い合わせフォーム
+    Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
 
-
-// ⭐ 2. お問い合わせフォーム送信用のルートを追加 ⭐
-// POSTメソッドで /contact にアクセスがあった場合、ContactControllerのsendメソッドを実行する
-Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
+    // Auth系もここで言語共通にする
+    Auth::routes(['verify' => true]);
+});
 
 
 // 認証が必要なルート
@@ -55,6 +56,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::patch('/products/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+        Route::patch('/products/{id}/toggle-availability', [ProductController::class, 'toggleAvailability'])->name('products.toggleAvailability');
+
 
         // Category routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

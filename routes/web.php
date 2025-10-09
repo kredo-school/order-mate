@@ -33,7 +33,10 @@ Route::middleware(['LPLocale'])->group(function () {
     Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
 
     // Auth系もここで言語共通にする
-    Auth::routes(['verify' => true]);
+    Auth::routes([
+        'verify' => true,
+        'register' => true, // ← 追加
+    ]);
 });
 
 

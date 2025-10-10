@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $user = Auth::user();
+@endphp
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +14,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Ordermate') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -27,7 +33,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     {{-- favicon --}}
-<link rel="icon" href="{{ asset('images/ordermate_logo_nav.png?v=1') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/ordermate_logo_nav.png?v=1') }}" type="image/png">
 
 
     {{-- CSS --}}
@@ -40,11 +46,11 @@
             width: 25% !important;
         }
 
-        .footer-icon{
+        .footer-icon {
             font-size: 1.8rem;
         }
 
-        #cart-count{
+        #cart-count {
             top: -8px;
             right: 40px;
             width: 22px;
@@ -52,7 +58,7 @@
             font-size: 1rem;
         }
 
-        i.fa-cart-shopping{
+        i.fa-cart-shopping {
             font-size: 3rem;
         }
 
@@ -62,11 +68,12 @@
                 --bs-offcanvas-width: 100% !important;
                 width: 100% !important;
             }
-            .store-info{
+
+            .store-info {
                 text-align: center;
             }
 
-            #cart-count{
+            #cart-count {
                 top: 3px;
                 right: 44px;
                 width: 18px;
@@ -74,7 +81,7 @@
                 font-size: 0.7rem;
             }
 
-            i.fa-cart-shopping{
+            i.fa-cart-shopping {
                 font-size: 1.8rem;
             }
         }
@@ -88,44 +95,84 @@
         @if (trim($__env->yieldContent('header')) != '')
             @yield('header')
         @else
-        <nav class="navbar navbar-expand navbar-light shadow-sm">
-            <div class="container position-relative">
-                <!-- 左：ロゴ -->
-                <a class="navbar-brand"
-                    @if (Route::is('guest.*') && isset($store, $table))
-                        href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
-                    @else
-                        href="{{ url('/manager') }}"
-                    @endif>
-                    <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
-                </a>
-        
-                <!-- 中央：店舗名 -->
-                <p class="navbar-center m-0 text-brown">
-                    {{ $userStore->store_name ?? '' }}
-                </p>
-        
-                <!-- 右：メニュー -->
-                <ul class="navbar-nav navbar-right">
-                    @if (request()->routeIs('guest.*'))
-                        <li class="nav-item">
-                            <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
-                                <i class="fa-solid fa-language fa-2x text-orange"></i>
-                            </a>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a id="navbarDropdown" class="nav-link" href="#" role="button"
-                                data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                <i class="fa-solid fa-bars fa-2x text-orange"></i>
-                            </a>
-                        </li>
+            <nav class="navbar navbar-expand navbar-light shadow-sm">
+                <div class="container-fluid m-0 d-flex justify-content-between">
+
+                    <a class="navbar-brand"
+                        @if (request()->routeIs('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                        @elseif($user && $user->role == 1)
+                            href="{{ url('/manager') }}"
+                        @else
+                            href="{{ route('admin.index') }}" {{-- Admin の場合は admin.index に --}} @endif>
+                        <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
+                    </a>
+
+                    {{-- 中央：店舗名（センター固定） --}}
+                    @if ($user && $user->role == 1 && $userStore)
+                        <div class="position-absolute top-50 start-50 translate-middle text-center">
+                            <p class="m-0 fw-semibold text-brown" style="white-space: nowrap;">
+                                {{ $userStore->store_name }}
+                            </p>
+                        </div>
                     @endif
-                </ul>
-            </div>
-        </nav>
-        
+
+                    {{-- 右：通知＋メニュー --}}
+                    <ul class="navbar-nav ms-auto me-3 d-flex align-items-center gap-3">
+                        @auth
+                            @php
+                                $unreadCount = 0;
+                                if ($user->role == 1) {
+                                    $userStore = $user->store;
+                                    $unreadCount = optional($userStore)->unread_messages_count ?? 0;
+                                } elseif ($user->role == 2) {
+                                    $unreadCount = \App\Models\Store::sum('unread_messages_count');
+                                }
+                            @endphp
+
+                            {{-- @if (in_array($user->role, [1, 2]))
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link position-relative" href="#" id="notificationDropdown"
+                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-regular fa-bell fa-2x text-orange"></i>
+                                        @if ($store && $store->unread_messages_count > 0)
+                                            <span
+                                                class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                                                {{ $store->unread_messages_count }}
+                                            </span>
+                                        @endif
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
+                                        id="notificationList">
+                                        @if ($unreadCount > 0)
+                                            <li class="dropdown-item">
+                                                @if ($user->role == 1)
+                                                    <a href="{{ route('manager.stores.index') }}"
+                                                        class="text-decoration-none">
+                                                        📩 {{ $unreadCount }} new message(s)
+                                                    </a>
+                                                @elseif ($user->role == 2)
+                                                    <a href="{{ route('admin.index') }}" class="text-decoration-none">
+                                                        📩 {{ $unreadCount }} new message(s)
+                                                    </a>
+                                                @endif
+                                            </li>
+                                        @else
+                                            <li class="dropdown-item text-muted small">No notifications</li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif --}}
+
+                            <li class="nav-item">
+                                <a id="navbarDropdown" class="nav-link" href="#" role="button"
+                                    data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
+                                    <i class="fa-solid fa-bars fa-2x text-orange"></i>
+                                </a>
+                            </li>
+                        @endauth
+                    </ul>
+                </div>
+            </nav>
         @endif
         {{-- =============== /ヘッダー =============== --}}
 
@@ -134,16 +181,16 @@
             <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="langMenu"
                 aria-labelledby="langMenuLabel" style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="langMenuLabel">{{__('guest.language')}}</h5>
+                    <h5 class="offcanvas-title" id="langMenuLabel">{{ __('guest.language') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body p-0 d-flex flex-column">
                     <div class="nav flex-column flex-grow-1">
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"  onclick="changeLocale('ja')"><i
-                                class="fa-solid fa-flag me-2"></i> 日本語</a>
-                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"  onclick="changeLocale('en')"><i
-                                class="fa-solid fa-flag me-2"></i> English</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"
+                            onclick="changeLocale('ja')"><i class="fa-solid fa-flag me-2"></i> 日本語</a>
+                        <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"
+                            onclick="changeLocale('en')"><i class="fa-solid fa-flag me-2"></i> English</a>
                         {{-- <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
                                 class="fa-solid fa-flag me-2"></i> Chinese</a>
                         <a href="#" class="nav-link text-white px-3 py-2 d-flex align-items-center"><i
@@ -158,7 +205,7 @@
             <div class="offcanvas offcanvas-end bg-orange text-white border-0" tabindex="-1" id="sideMenu"
                 aria-labelledby="sideMenuLabel" style="background-color: var(--primary-orange) !important;">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sideMenuLabel">{{__('manager.menu')}}</h5>
+                    <h5 class="offcanvas-title" id="sideMenuLabel">{{ __('manager.menu') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
@@ -166,31 +213,31 @@
                     <div class="nav flex-column flex-grow-1">
                         <a href="{{ route('manager.products.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-utensils me-2"></i> {{__('manager.menu')}}
+                            <i class="fa-solid fa-utensils me-2"></i> {{ __('manager.menu') }}
                         </a>
                         <a href="{{ route('manager.tables') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table me-2"></i> {{__('manager.table')}}
+                            <i class="fa-solid fa-table me-2"></i> {{ __('manager.table') }}
                         </a>
                         <a href="{{ route('manager.custom.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-table-cells me-2"></i> {{__('manager.custom')}}
+                            <i class="fa-solid fa-table-cells me-2"></i> {{ __('manager.custom') }}
                         </a>
                         <a href="{{ route('manager.categories.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-layer-group me-2"></i> {{__('manager.category')}}
+                            <i class="fa-solid fa-layer-group me-2"></i> {{ __('manager.category') }}
                         </a>
                         <a href="{{ route('manager.order-list') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
+                            <i class="fa-solid fa-list-ul me-2"></i> {{ __('manager.order_list') }}
                         </a>
                         <a href="{{ route('manager.analytics') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-chart-simple me-2"></i> {{__('manager.analytics')}}
+                            <i class="fa-solid fa-chart-simple me-2"></i> {{ __('manager.analytics') }}
                         </a>
                         <a href="{{ route('manager.stores.index') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
+                            <i class="fa-solid fa-user me-2"></i> {{ __('manager.store_info') }}
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
@@ -224,12 +271,12 @@
                     <div class="container-fluid d-flex justify-content-between align-items-center py-2">
                         {{-- 左側（Total Price） --}}
                         <div>
-                            <span class="fw-bold text-brown fs-4 ms-3">{{__('guest.total')}}
+                            <span class="fw-bold text-brown fs-4 ms-3">{{ __('guest.total') }}
                             </span>
                             <span class="h3 fw-bold text-brown ms-3"
                                 id="total-price">{{ explode(' - ', $currencyLabel)[0] }}{{ number_format($totalPrice ?? 0, 2) }}</span>
                             @if ($isPaid)
-                                <span class="text-muted ms-2 fw-bolder">({{__('guest.paid')}})</span>
+                                <span class="text-muted ms-2 fw-bolder">({{ __('guest.paid') }})</span>
                             @endif
                         </div>
 
@@ -241,14 +288,14 @@
                         <div class="d-flex gap-3 align-items-center">
                             {{-- Order History --}}
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.order_history')}}</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{ __('guest.order_history') }}</a>
                             <a href="{{ route('guest.orderHistory', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                 <i class="fa-solid fa-list"></i>
                             </a>
                             {{-- Call Staff --}}
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{__('guest.call_staff')}}</a>
+                                class="nav-link p-0 fs-5 fw-bold text-brown d-none d-md-inline">{{ __('guest.call_staff') }}</a>
                             <a href="{{ route('guest.call', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
                                 class="nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                 <i class="fa-solid fa-bell"></i>
@@ -259,7 +306,7 @@
                                     method="POST" class="m-0">
                                     @csrf
                                     <button type="submit"
-                                    class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.payment')}}</button>
+                                        class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{ __('guest.payment') }}</button>
                                     <button type="submit"
                                         class="btn btn-link nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                         <i class="fa-solid fa-credit-card"></i>
@@ -272,15 +319,14 @@
                                 method="POST" class="m-0">
                                 @csrf
                                 <button type="submit"
-                                class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{__('guest.checkout')}}</button>
+                                    class="btn btn-link nav-link p-0 fs-5 text-brown d-none d-md-inline">{{ __('guest.checkout') }}</button>
                                 <button type="submit"
                                     class="btn btn-link nav-link p-0 text-brown d-inline d-md-none footer-icon">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
                             </form>
                             <a href="{{ route('guest.cart.show', ['storeName' => $storeName, 'tableUuid' => $tableUuid]) }}"
-                                class="nav-link p-0 text-brown"><i
-                                    class="fa-solid fa-cart-shopping me-5 ms-2"></i>
+                                class="nav-link p-0 text-brown"><i class="fa-solid fa-cart-shopping me-5 ms-2"></i>
                                 <span id="cart-count"
                                     class="position-absolute badge rounded-pill bg-orange d-flex justify-content-center align-items-center"
                                     style="{{ ($cartCount ?? 0) == 0 ? 'display:none;' : '' }}">
@@ -309,7 +355,7 @@
                     cartCountEl.style.display = 'flex';
                 }
             });
-            
+
             function changeLocale(locale) {
                 fetch("{{ route('guest.set_locale', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}", {
                     method: 'POST',
@@ -317,7 +363,9 @@
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: new URLSearchParams({locale: locale})
+                    body: new URLSearchParams({
+                        locale: locale
+                    })
                 }).then(res => {
                     if (res.ok) {
                         // オフキャンバスは閉じてからリロードしたい場合は以下を使う
@@ -326,9 +374,9 @@
                         // if (bs) bs.hide();
                         window.location.reload();
                     } else {
-                        alert('{{__('guest.failed_change_language')}}');
+                        alert('{{ __('guest.failed_change_language') }}');
                     }
-                }).catch(() => alert('{{__('guest.network_error')}}'));
+                }).catch(() => alert('{{ __('guest.network_error') }}'));
             }
         </script>
         @stack('guest-scripts')
@@ -336,4 +384,21 @@
     @stack('scripts')
     @vite(['resources/js/app.js'])
 </body>
+
 </html>
+
+{{-- 
+
+fa-regular fa-bell::after(
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+)
+
+--}}

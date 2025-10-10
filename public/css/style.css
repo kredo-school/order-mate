@@ -642,3 +642,66 @@ footer button.text-brown:hover {
     align-items: center;
 
 }
+
+
+#notificationBadge {
+    top: 0;           /* 上端に合わせる */
+    right: 0;         /* 右端に合わせる */
+    transform: translate(50%, -50%); /* 角にぴったり重ねる */
+    font-size: 0.7rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+/* ベル専用バッジ */
+.notification-bell-badge {
+    position: absolute;   /* 親を基準に配置 */
+    top: 10px !important;            /* 上端から少し上に */
+    right: 5px !important;          /* 右端から少し右に */
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    background-color: red; /* 見やすくする場合 */
+    color: white;
+    border-radius: 50%;    /* 丸くする */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transform: none;       /* Bootstrap の translate をリセット */
+}
+
+.store-photo {
+    width: 200px; /* 必要に応じてサイズ調整 */
+    height: 150px;
+    background-color: #f5ede1; /* 薄ベージュ */
+    border: 1px solid #e0d6c8; /* 少し濃いベージュで縁取り（任意） */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px; /* 丸み（任意） */
+}
+
+.store-photo i {
+    color: var(--text-brown);
+    opacity: 0.8; /* ちょっと透明でやわらかい印象に */
+}
+
+/* 店舗カードの未読バッジを常に表示（未読0のときだけJSで非表示） */
+.store-unread-badge {
+    display: inline-flex;
+    min-width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    position: relative;
+    top: -2px;
+    left: 4px;
+    z-index: 1;
+    padding: 0 6px;
+}

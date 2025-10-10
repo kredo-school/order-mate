@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $user = Auth::user();
+@endphp
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -90,17 +96,22 @@
             @yield('header')
         @else
             <nav class="navbar navbar-expand navbar-light shadow-sm">
-                <div class="container m-0 d-flex justify-content-between">
+                <div class="container-fluid m-0 d-flex justify-content-between">
+
                     <a class="navbar-brand"
-                        @if (Route::is('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                        @if (request()->routeIs('guest.*') && isset($store, $table)) href="{{ route('guest.index', ['storeName' => $store->store_name, 'tableUuid' => $table->uuid]) }}"
+                        @elseif($user && $user->role == 1)
+                            href="{{ url('/manager') }}"
                         @else
-                            href="{{ url('/manager') }}" @endif>
+                            href="{{ route('admin.index') }}" {{-- Admin の場合は admin.index に --}} @endif>
                         <img src="{{ asset('images/ordermate_logo_nav.png') }}" alt="Ordermate Logo" class="logo">
                     </a>
 
-                    <p class="d-flex align-items-center m-0 w-100" style="height: 100%">
-                        {{ $userStore->store_name ?? '' }}
-                    </p>
+                    @if ($user && $user->role == 1 && $userStore)
+                        <p class="d-flex align-items-center m-0 w-100" style="height: 100%">
+                            {{ $userStore->store_name }}
+                        </p>
+                    @endif
 
                     <!-- 右側メニュー -->
                     <ul class="navbar-nav">
@@ -112,27 +123,60 @@
                                 </a>
                             </li>
                         @else
-                            {{-- 通知アイコン（manager / admin のみ） --}}
+                            <!-- layouts/app.blade.php の nav 内 -->
                             @auth
-                                @if (in_array(auth()->user()->role, [1, 2]))
+                                @php
+                                    $unreadCount = 0;
+
+                                    if ($user->role == 1) {
+                                        // manager の場合、ログインユーザーの store から取得
+                                        $userStore = $user->store; // relation がある前提
+                                        $unreadCount = optional($userStore)->unread_messages_count ?? 0;
+                                    } elseif ($user->role == 2) {
+                                        // admin の場合は全 store の未読を合計
+                                        $unreadCount = \App\Models\Store::sum('unread_messages_count');
+                                    }
+                                @endphp
+
+                                @if (in_array($user->role, [1, 2]))
                                     <li class="nav-item dropdown me-3">
                                         <a class="nav-link position-relative" href="#" id="notificationDropdown"
                                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa-regular fa-bell fa-2x text-orange"></i>
-                                            @if ($store && $store->unread_messages_count > 0)
+
+                                            @if ($unreadCount > 0)
                                                 <span id="notificationBadge"
-                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                                    {{ $store->unread_messages_count }}
+                                                    class="notification-bell-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{ $unreadCount }}
                                                 </span>
                                             @endif
                                         </a>
+
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
                                             id="notificationList">
-                                            <li class="dropdown-item text-muted small">No notifications</li>
+                                            @if ($unreadCount > 0)
+                                                <li class="dropdown-item">
+                                                    @if ($user->role == 1)
+                                                        <a href="{{ route('manager.stores.index') }}"
+                                                            class="text-decoration-none">
+                                                            📩 {{ $unreadCount }} new message(s) — Go to chat
+                                                        </a>
+                                                    @elseif ($user->role == 2)
+                                                        <a href="{{ route('admin.index') }}" class="text-decoration-none">
+                                                            📩 {{ $unreadCount }} new message(s) — View all
+                                                        </a>
+                                                    @endif
+                                                </li>
+                                            @else
+                                                <li class="dropdown-item text-muted small">No notifications</li>
+                                            @endif
                                         </ul>
                                     </li>
                                 @endif
                             @endauth
+
+
+
 
                             <li class="nav-item">
                                 <a id="navbarDropdown" class="nav-link" href="#" role="button"

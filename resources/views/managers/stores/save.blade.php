@@ -27,7 +27,7 @@
                     </div>
 
                     {{-- Payment On/Off --}}
-                    <div class="form-check form-switch mt-3">
+                    <div class="form-check form-switch mt-3 text-start">
                         <label class="form-check-label" for="payment_enabled"> {{__('manager.enable_payment')}}</label>
                         <input class="form-check-input" type="checkbox" id="payment_enabled"
                             name="payment_enabled" value="1"
@@ -35,9 +35,9 @@
                     </div>
 
                     {{-- Language --}}
-                    <div class="mt-3">
+                    <div class="mt-3 d-flex">
                         <label for="language" class="form-label">{{__('manager.language')}}</label>
-                        <select class="form-select" id="language" name="language">
+                        <select class="form-select ms-2" id="language" name="language">
                             <option value="en" {{ old('language', $store->language ?? 'en') === 'en' ? 'selected' : '' }}>English</option>
                             <option value="ja" {{ old('language', $store->language ?? 'en') === 'ja' ? 'selected' : '' }}>日本語</option>
                         </select>

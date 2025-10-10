@@ -318,77 +318,72 @@
 
 
     const container = document.getElementById("staffCalls");
-let previousMaxId = 0; // ← 最新呼び出しIDを記録
-let initialized = false;
-let soundEnabled = false; // ブラウザの自動再生制限回避用
+    let previousMaxId = 0; // ← 最新呼び出しIDを記録
+    let initialized = false;
+    let soundEnabled = false; // ブラウザの自動再生制限回避用
 
-// 🔊 最初のクリックで音再生を許可
-document.addEventListener("click", () => {
-    soundEnabled = true;
-}, { once: true });
+    // 🔊 最初のクリックで音再生を許可
+    document.addEventListener("click", () => {
+        soundEnabled = true;
+    }, { once: true });
 
-// 🎵 音を鳴らす関数
-function playStaffCallSound() {
-    if (!soundEnabled) return;
-    const audio = new Audio("{{ asset('sounds/yobidashi-chime.mp3') }}");
-    audio.play().catch(err => console.warn("音声再生エラー:", err));
-}
-
-// 🧭 スタッフコール取得
-async function fetchCalls() {
-    try {
-        const res = await fetch("{{ route('manager.staffCalls.index') }}");
-        if (!res.ok) throw new Error("スタッフコール取得失敗");
-        const calls = await res.json();
-
-        // 最大IDを取得（呼び出しがない場合は0）
-        const currentMaxId = calls.length ? Math.max(...calls.map(call => call.id)) : 0;
-
-        const hasNewCall = currentMaxId > previousMaxId;
-
-        console.log("📋 現在の最大呼び出しID:", currentMaxId);
-        console.log("🕓 前回の最大呼び出しID:", previousMaxId);
-        console.log("✨ 新しい呼び出しがある？", hasNewCall);
-
-        if (initialized && hasNewCall) {
-            console.log("🔊 新しい呼び出し検出！音を鳴らします");
-            playStaffCallSound();
-        }
-
-        // 更新
-        previousMaxId = currentMaxId;
-        initialized = true;
-
-        // ✅ 右下ボックス再描画
-        container.innerHTML = "";
-        calls.forEach(call => {
-            const div = document.createElement("div");
-            div.className = "square d-flex align-items-center justify-content-center";
-            div.style.cursor = "pointer";
-            div.textContent = call.table_number ?? call.table_id;
-            div.dataset.id = call.id;
-
-            // ✅ クリックで既読に
-            div.addEventListener("click", async () => {
-                await fetch(`/manager/staff-calls/${call.id}/read`, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                    }
-                });
-                fetchCalls();
-            });
-
-            container.appendChild(div);
-        });
-    } catch (err) {
-        console.error("スタッフコール取得エラー:", err);
+    // 🎵 音を鳴らす関数
+    function playStaffCallSound() {
+        if (!soundEnabled) return;
+        const audio = new Audio("{{ asset('sounds/yobidashi-chime.mp3') }}");
+        audio.play().catch(err => console.warn("音声再生エラー:", err));
     }
-}
 
-// 5秒ごとにチェック
-setInterval(fetchCalls, 5000);
-fetchCalls();
+    // 🧭 スタッフコール取得
+    async function fetchCalls() {
+        try {
+            const res = await fetch("{{ route('manager.staffCalls.index') }}");
+            if (!res.ok) throw new Error("スタッフコール取得失敗");
+            const calls = await res.json();
+
+            // 最大IDを取得（呼び出しがない場合は0）
+            const currentMaxId = calls.length ? Math.max(...calls.map(call => call.id)) : 0;
+
+            const hasNewCall = currentMaxId > previousMaxId;
+
+            if (initialized && hasNewCall) {
+                playStaffCallSound();
+            }
+
+            // 更新
+            previousMaxId = currentMaxId;
+            initialized = true;
+
+            // ✅ 右下ボックス再描画
+            container.innerHTML = "";
+            calls.forEach(call => {
+                const div = document.createElement("div");
+                div.className = "square d-flex align-items-center justify-content-center";
+                div.style.cursor = "pointer";
+                div.textContent = call.table_number ?? call.table_id;
+                div.dataset.id = call.id;
+
+                // ✅ クリックで既読に
+                div.addEventListener("click", async () => {
+                    await fetch(`/manager/staff-calls/${call.id}/read`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
+                    fetchCalls();
+                });
+
+                container.appendChild(div);
+            });
+        } catch (err) {
+            console.error("スタッフコール取得エラー:", err);
+        }
+    }
+
+    // 5秒ごとにチェック
+    setInterval(fetchCalls, 5000);
+    fetchCalls();
 
 
     setInterval(fetchCalls, 5000); // 5秒ごとに更新

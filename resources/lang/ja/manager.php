@@ -23,6 +23,29 @@ return [
     'check_email'  => '続行する前に、メールで送信された確認リンクを確認してください。',
     'not_receive' => 'メールが届かない場合',
     'request_another' => '別のリクエストをクリックしてください。',
+    'email_verification_required'   => '続行するには、メールアドレスの確認が必要です。',
+    'hi'    => 'こんにちは',
+    'thank_you_for_registering' => 'Ordermateにご登録いただきありがとうございます。ログインする前に、以下のボタンをクリックしてメールアドレスの確認を行なってください。',
+    'no_further' => 'アカウントを作成していない場合、このメールは無視してください。',
+    'change_notification'   =>  '通知設定はアカウント設定画面より変更できます。',
+
+    // email.password_reset
+    'reset_password' => 'パスワードリセット',
+    'reset_password_message' => 'パスワードをリセットするには、以下のボタンをクリックしてください。このリンクは60分間有効です。',
+    'if_not_requested' => 'パスワードリセットをリクエストしていない場合、このメールは無視してください。',
+    'reset_your_password' => 'パスワードをリセットする',
+    'regards' => '敬具、',
+    'button_not_work' => '上記のボタンが機能しない場合、以下のURLをコピーしてブラウザに貼り付けてください：',
+
+    // email.autoreply
+    'inquiry_received' => 'お問い合わせを受け付けました',
+    'thank_you_for_inquiry' => 'お問い合わせいただきありがとうございます。お問い合わせ内容を無事に受け取りました。',
+    'we_will_contact_you' => '専任の担当者ができるだけ早くご連絡いたしますので、今しばらくお待ちください。',
+    'your_inquiry' => '以下はお客様のお問い合わせ内容のコピーです',
+    'your_name' => 'お名前',
+    'restaurant_name' => '店舗名',
+    'your_message' => 'お問い合わせ内容',
+    'this_is_auto_confirmation' => 'このメールは自動返信です。ご不明な点がございましたら、このメールにご返信ください。',
 
     // layouts.app
         // offcanvas menu

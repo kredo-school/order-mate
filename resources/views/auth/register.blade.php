@@ -6,10 +6,12 @@
         <div class="logo-area">
             <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="Ordermate Logo" class="logo-main">
         </div>
+        <p>Current locale: {{ app()->getLocale() }}</p>
 
         {{-- フォーム（下線スタイル適用） --}}
         <form method="POST" action="{{ route('register') }}" class="form-underline">
             @csrf
+            <input type="hidden" name="lang" value="{{ app()->getLocale() }}">
 
             {{-- Name --}}
             <div class="mb-3">

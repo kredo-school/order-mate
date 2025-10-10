@@ -14,6 +14,7 @@ class Store extends Model
         'store_url',
         'address',
         'phone',
+        'language',
         'store_photo',
         'open_hours',
         'manager_name',

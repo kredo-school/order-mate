@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Email Verification Required</title>
+    <title>{{__('manager.email_verification_required')}}</title>
 </head>
 
 <body
@@ -22,7 +22,7 @@
                             style="padding:24px 28px 0;text-align:center;background:linear-gradient(180deg,#fff6ea,#fff);">
                             <img src="{{ asset('images/ordermate_logo_main.png') }}" alt="OrderMate"
                                 style="display:block; margin:0 auto 12px;">
-                            <h1 style="margin:0;font-size:22px;color:#5C3D2E;">Email Verification Required</h1>
+                            <h1 style="margin:0;font-size:22px;color:#5C3D2E;">{{__('manager.email_verification_required')}}</h1>
                         </td>
                     </tr>
 
@@ -30,23 +30,23 @@
                     <tr>
                         <td style="padding:24px 28px 8px;">
                             <p style="margin:0 0 12px;font-size:16px;line-height:1.6;">
-                                Hi {{ $user->name ?? 'there' }},<br>
+                                {{__('manager.hi')}} {{ $user->name ?? 'there' }},<br>
                             </p>
 
                             <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#4b4b4b;">
-                                Thank you for registering with OrderMate. Before you can log in, please confirm your email address by clicking the button below. This ensures the security of your account.
+                                {{__('manager.thank_you_for_registering')}}
                             </p>
 
                             {{-- ⭐ CTA: 認証リンクを使用し、デザインカラーを適用 ⭐ --}}
                             <div style="text-align:center;margin:18px 0;">
                                 <a href="{{ $verificationUrl }}"
                                     style="display:inline-block;padding:12px 22px;border-radius:8px;background:#FF7A18;color:#fff;text-decoration:none;font-weight:600;">
-                                    Verify Email Address
+                                    {{__('manager.verify_email')}}
                                 </a>
                             </div>
 
                             <p style="margin:10px 0 0;font-size:13px;color:#888;line-height:1.5;">
-                                If you did not create an account, no further action is required.
+                                {{__('manager.no_further')}}
                             </p>
                         </td>
                     </tr>
@@ -67,7 +67,7 @@
 
                 {{-- small note under card --}}
                 <div style="max-width:680px;margin:12px auto 0;text-align:center;color:#9b9b9b;font-size:12px;">
-                    You can change notification preferences in your account settings.
+                    {{__('manager.change_notification')}}
                 </div>
             </td>
         </tr>

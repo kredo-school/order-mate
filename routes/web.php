@@ -22,6 +22,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// 🌐 LP + ログイン画面系 (独立したLPLocaleミドルウェアを使用)
+Route::middleware(['LPLocale'])->group(function () {
   // LP
     Route::get('/', function () {
         return view('landing.landing'); // landing.blade.php
@@ -30,19 +32,17 @@ use Illuminate\Support\Facades\Route;
     // お問い合わせフォーム
     Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
 
-    // Auth系もここで言語共通にする
-    Auth::routes(['verify' => true]);
-
-// 🌐 LP + ログイン画面系 (独立したLPLocaleミドルウェアを使用)
-Route::middleware(['LPLocale'])->group(function () {
   
+    Auth::routes([
+        'verify' => true,
+        'register' => true, // ← 追加
+    ]);
 });
 
 
 // 認証が必要なルート
 Route::group(['middleware' => ['auth', 'verified']], function () {
 
-    
     // manager top page
     Route::get('/manager', [HomeController::class, 'index'])->name('manager.home')->middleware('managerLocale');
 

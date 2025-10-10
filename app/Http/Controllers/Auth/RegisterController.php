@@ -8,9 +8,13 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\WelcomeMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+
 // use App\Mail\WelcomeMail;
 // use Illuminate\Support\Facades\Mail;
 
@@ -46,14 +50,15 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        Log::info('Register data:', $data);
         $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
 
-        // ✅ LPで選ばれていた言語をストア初期言語に設定
-        $lang = Session::get('lp_locale', config('app.locale'));
+        // ✅ RequestまたはSessionから取得（Request優先）
+        $lang = $data['lang'] ?? Session::get('lp_locale', config('app.locale'));
 
         Store::create([
             'user_id'    => $user->id,

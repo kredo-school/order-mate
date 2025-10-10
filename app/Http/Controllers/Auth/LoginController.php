@@ -28,6 +28,7 @@ class LoginController extends Controller
         if ($user->role == User::ROLE_MANAGER) {
             if ($user->store) {
                 $lang = $user->store->language ?? config('app.locale');
+                Session::put('lp_locale', $lang);
                 Session::put('manager_locale', $lang);
                 App::setLocale($lang);
             }

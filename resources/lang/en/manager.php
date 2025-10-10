@@ -24,6 +24,29 @@ return [
     'check_email'  => 'Before proceeding, please check your email for a verification link.',
     'not_receive'  => 'If you did not receive the email',
     'request_another' => 'click here to request another',
+    'email_verification_required'   =>  'Email Verification Required',
+    'hi'    =>  'Hi',
+    'thank_you_for_registering' => 'Thank you for registering with OrderMate. Before you can log in, please confirm your email address by clicking the button below. This ensures the security of your account.',
+    'no_further'    => 'If you did not create an account, no further action is required.',
+    'change_notification'   =>  'You can change notification preferences in your account settings.',
+
+    // email.password_reset
+    'reset_your_password' => 'Reset Your Password',
+    'reset_password_message' => 'We received a request to reset your password. Click the button below to choose a new password. This link will expire in 60 minutes.',
+    'reset_password'    => 'Reset Password',
+    'ignore_if_not_request' => 'If you did not request a password reset, you can safely ignore this email — no changes will be made to your account.',
+    'regards' => 'Regards,',
+    'button_not_work'   =>  'If the button does not work, copy and paste the following URL into your browser:',
+
+    // email.autoreply
+    'inquiry_received'  =>  'Inquiry Received',
+    'thank_you_for_inquiry' => 'Thank you for your inquiry. We have successfully received your inquiry and will review the details shortly.',
+    'we_will_contact_you' => 'A dedicated representative will reach out to you soon to address your questions and provide the necessary support.',
+    'your_inquiry' => 'Your Inquiry',
+    'your_name' =>  'Your Name',
+    'restaurant_name'   =>  'Restaurant Name',
+    'your_message'  =>  'Your Message',
+    'this_is_auto_confirmation' =>  'This is an automated confirmation email. Please reply to this email if you have any immediate follow-up questions.',
 
     // layouts.app
         // offcanvas menu

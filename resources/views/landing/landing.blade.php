@@ -27,11 +27,11 @@
                 <a href="#benefits-section">{{__('manager.benefit')}}</a>
                 <a href="#pricing-section">{{__('manager.price')}}</a>
                 <a href="#contact-section">{{__('manager.contact')}}</a>
-                <a href="#language">{{__('manager.language')}}</a>
+                <a href="#language-section">{{__('manager.language')}}</a>
             </nav>
         
             <div class="header-buttons">
-                <a href="{{ route('register') }}" class="btn btn-register">{{__('manager.register')}}</a>
+                <a href="{{ route('register') }}" class="btn btn-register">{{ __('manager.register') }}</a>
                 <button class="hamburger" id="hamburger-btn">
                     <span></span><span></span><span></span>
                 </button>
@@ -45,7 +45,7 @@
             <a href="#benefits-section">{{__('manager.benefit')}}</a>
             <a href="#pricing-section">{{__('manager.price')}}</a>
             <a href="#contact-section">{{__('manager.contact')}}</a>
-            <a href="#language">{{__('manager.language')}}</a>
+            <a href="#language-section">{{__('manager.language')}}</a>
         </div>
 
         <section class="hero-section" id="top">
@@ -359,7 +359,7 @@
             
                 <a href="{{ route('register') }}" class="btn btn-register-cta">{{__('manager.register_cta')}}</a>
             
-                <div class="language-selector" id="language">
+                <div class="language-selector" id="language-section">
                     <label for="language" class="language-label">{{ __('manager.language') }}</label>
                     <select class="language-select" id="language" name="language"
                             onchange="changeLanguage(this.value)">
@@ -403,6 +403,7 @@
         });
         function changeLanguage(lang) {
             const url = new URL(window.location.href);
+            url.hash = ""; // ✅ ハッシュを消す
             url.searchParams.set('lang', lang);
             window.location.href = url.toString();
         }

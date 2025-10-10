@@ -4,19 +4,20 @@
     <div class="d-flex align-items-center justify-content-between mx-5 mt-4 mb-3">
         <h1 class="mb-0 text-brown">Stores</h1>
 
-        {{-- 通知アイコン --}}
-        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="fa-regular fa-bell fa-2x text-orange"></i>
-            <span id="admin-nav-badge" class="badge bg-danger ms-2"></span>
-        </a>
+        <div class="d-flex align-items-center gap-3">
+            {{-- 通知アイコン --}}
+            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-regular fa-bell fa-2x text-orange"></i>
+                <span id="admin-nav-badge" class="badge bg-danger ms-2"></span>
+            </a>
 
-        {{-- ログアウト --}}
-
-        <a href="{{ route('logout') }}" class="nav-link d-flex align-items-center text-orange"
-            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="fa-solid fa-right-from-bracket fa-lg"></i>
-        </a>
+            {{-- ログアウト --}}
+            <a href="{{ route('logout') }}" class="nav-link d-flex align-items-center text-orange"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+            </a>
+        </div>
 
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf
@@ -154,14 +155,15 @@
                     .then(res => res.json())
                     .then(data => {
                         data.forEach(store => {
-                            const badge = document.querySelector(`#store-${store.id} .store-unread-badge`);
+                            const badge = document.querySelector(
+                                `#store-${store.id} .store-unread-badge`);
                             if (badge) {
                                 if (store.count > 0) {
                                     badge.style.display = 'inline-flex';
                                     badge.textContent = store.count;
                                 } else {
-                                    badge.style.display = 'none';
-                                    badge.textContent = '';
+                                    badge.style.display = 'inline-flex';
+                                    badge.textContent = store.count ?? 0;
                                 }
                             }
                         });
@@ -185,7 +187,7 @@
             });
 
             refreshNavBadge();
-            setInterval(refreshNavBadge, 30000);
+            setInterval(refreshNavBadge, 1000);
 
             // --- チェックボックス制御 ---
             const selectAll = document.getElementById('select-all');

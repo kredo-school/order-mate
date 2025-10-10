@@ -111,14 +111,17 @@ class ChatController extends Controller
 
     public function unreadPerStore()
     {
-        $stores = Store::with('chats')->get(['id']);
+        $stores = Store::with('chats')->get(['id', 'user_id']);
 
         $stores = $stores->map(function ($store) {
             $chatIds = $store->chats->pluck('id');
+
             $unreadCount = \App\Models\Message::whereIn('chat_id', $chatIds)
                 ->where('is_read', false)
-                // ↓この行を削除
-                // ->where('user_id', '!=', Auth::id())
+                // 「managerが送信した未読」だけを対象にする
+                ->whereIn('user_id', function ($query) {
+                    $query->select('id')->from('users')->where('role', 1);
+                })
                 ->count();
 
             return [
@@ -129,6 +132,7 @@ class ChatController extends Controller
 
         return response()->json($stores);
     }
+
 
     public function unreadTotal()
     {

@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 // 🌐 LP + ログイン画面系 (独立したLPLocaleミドルウェアを使用)
 Route::middleware(['LPLocale'])->group(function () {
-    // LP
+  // LP
     Route::get('/', function () {
         return view('landing.landing'); // landing.blade.php
     })->name('lp.index');
@@ -33,7 +33,7 @@ Route::middleware(['LPLocale'])->group(function () {
     // お問い合わせフォーム
     Route::post('/contact', [ContactController::class, 'send'])->name('lp.contact.send');
 
-    // Auth系もここで言語共通にする
+  
     Auth::routes([
         'verify' => true,
         'register' => true, // ← 追加
@@ -212,4 +212,7 @@ Route::post('/chats/{chatId}/send', [ChatController::class, 'send'])->name('chat
 Route::post('/chat/{chat}/read', [ChatController::class, 'markAsRead'])->name('chat.read');
 Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unreadCount');
 Route::get('/chat/unread-per-store', [ChatController::class, 'unreadPerStore']);
-Route::get('/chat/unread-per-store', [ChatController::class, 'unreadPerStore']);
+// Admin用 未読メッセージ合計
+Route::get('/chat/unread-total', [ChatController::class, 'unreadTotal'])
+    ->middleware('auth', 'admin'); // adminミドルウェアがあれば
+

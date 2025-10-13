@@ -22,13 +22,15 @@ class StoreController extends Controller
                 ['user_id' => $store->user_id, 'chat_type' => 'manager_admin']
             );
 
-            $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
-
-            $firstUnreadId = $chat->messages()
+            // ✅ store info ページを開いた時点で未読を既読にする
+            $chat->messages()
                 ->where('user_id', '!=', Auth::id())
                 ->where('is_read', false)
-                ->orderBy('id', 'asc')
-                ->value('id');
+                ->update(['is_read' => true]);
+
+            $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
+
+            $firstUnreadId = null; // 全部既読化したので不要
         } else {
             $chat = null;
             $messages = collect();
@@ -37,6 +39,7 @@ class StoreController extends Controller
 
         return view('managers.stores.index', compact('store', 'chat', 'messages', 'firstUnreadId'));
     }
+
 
     public function edit()
     {
@@ -63,31 +66,31 @@ class StoreController extends Controller
             'payment_enabled'  => 'nullable',
             'language'         => 'nullable|string|max:5', // ★ 追加
         ]);
-    
+
         // store_photo
         if ($request->hasFile('store_photo')) {
             $validated['store_photo'] = $request->file('store_photo')->store('store_photos', 'public');
         }
-    
+
         // store 用のデータだけ抜き出す（email / password は user 用なので除外）
         $storeData = collect($validated)->except(['email', 'password'])->toArray();
-    
+
         // チェックボックスは存在すれば true、なければ false にする
         $storeData['payment_enabled'] = $request->has('payment_enabled');
-    
+
         $store = Store::firstOrNew(['user_id' => Auth::id()]);
-    
+
         // store_photo やフォームの値を設定
         $store->fill($storeData);
-    
+
         // payment_enabled はチェックボックスの状態でセット
         $store->payment_enabled = $request->has('payment_enabled');
-    
+
         // language を保存（fillでも入るけど念のため）
         if ($request->filled('language')) {
             $store->language = $request->language;
         }
-    
+
         $store->save();
 
         // 選択した言語をセッションに反映
@@ -104,7 +107,7 @@ class StoreController extends Controller
             $user->password = Hash::make($validated['password']);
         }
         $user->save();
-    
+
         return redirect()->route('manager.stores.index');
     }
 
@@ -156,15 +159,14 @@ class StoreController extends Controller
         } else {
             // 同じストア(user_id)の is_active = true のやつだけ取得
             $tables = Table::forStore($store->user_id)
-            ->active()
-            ->withCount([
-                'orders as open_count' => function ($q) {
-                    $q->where('status', 'open');
-                }
-            ])
-            ->orderBy('number')
-            ->get();
-
+                ->active()
+                ->withCount([
+                    'orders as open_count' => function ($q) {
+                        $q->where('status', 'open');
+                    }
+                ])
+                ->orderBy('number')
+                ->get();
         }
 
         return view('managers.tables.tables', compact('tables'));

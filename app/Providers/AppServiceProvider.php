@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -78,12 +79,36 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // manager ページ専用
+        View::composer('layouts.app', function ($view) {
+            $user = Auth::user();
+            $userStore = null;
+
+            if ($user && $user->role == 1) { // manager だけ
+                $userStore = $user->store;
+            }
+
+            $view->with('userStore', $userStore);
+        });
+
+        // manager ページ全体に $store を渡す
+        View::composer('layouts.app', function ($view) {
+            $user = Auth::user();
+            $store = null;
+            if ($user && $user->role == 1) {
+                $store = $user->store;
+            }
+            $view->with('store', $store);
+        });
+
+
+
         // view()->composer('*', function ($view) {
         //     if (Auth::check()) {
         //         $user = Auth::user();
         //         $userStore = $user->store ?? null;
         //         $view->with('userStore', $userStore);
-       
+
         // }});
     }
 }

@@ -130,7 +130,7 @@
                                 }
                             @endphp
 
-                            {{-- @if (in_array($user->role, [1, 2]))
+                            {{-- @if (in_array($user->role, [1, 2]) || request()->routeIs('manager.*'))
                                 <li class="nav-item dropdown">
                                     <a class="nav-link position-relative" href="#" id="notificationDropdown"
                                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -164,12 +164,24 @@
                                 </li>
                             @endif --}}
 
-                            <li class="nav-item">
-                                <a id="navbarDropdown" class="nav-link" href="#" role="button"
-                                    data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
-                                    <i class="fa-solid fa-bars fa-2x text-orange"></i>
-                                </a>
-                            </li>
+                            {{-- menu --}}
+                            <ul class="navbar-nav navbar-right">
+                                @if (request()->routeIs('guest.*'))
+                                    <li class="nav-item">
+                                        <a id="navbarDropdownGuest" class="nav-link" href="#" role="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#langMenu" aria-controls="langMenu">
+                                            <i class="fa-solid fa-language fa-2x text-orange"></i>
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="nav-item">
+                                        <a id="navbarDropdown" class="nav-link" href="#" role="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#sideMenu" aria-controls="sideMenu">
+                                            <i class="fa-solid fa-bars fa-2x text-orange"></i>
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
                         @endauth
                     </ul>
                 </div>

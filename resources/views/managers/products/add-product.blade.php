@@ -167,11 +167,11 @@
                                         @endforeach
                                     </select>
 
-                                    <div class="form-check me-2">
+                                    {{-- <div class="form-check me-2">
                                         <input type="checkbox" name="custom_groups[0][is_required]" value="1"
                                             class="form-check-input">
                                         <label class="form-check-label">{{__('manager.required')}}</label>
-                                    </div>
+                                    </div> --}}
 
                                     {{-- <input type="number" name="custom_groups[0][max_selectable]" value="1"
                                         class="form-control" style="width:100px"> --}}
@@ -294,27 +294,18 @@
             const row = document.createElement('div');
             row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
 
-            @verbatim
             row.innerHTML = `
-            <select name="custom_groups[${index}][id]" 
-                    class="form-select me-2 custom-group-select" 
-                    data-index="${index}">
-                <option value=""> {{__('manager.select_custom')}} </option>
-                ${customGroups.map(group => `<option value="${group.id}">${group.title}</option>`).join('')}
-            </select>
+                <select name="custom_groups[${index}][id]" 
+                        class="form-select me-2 custom-group-select" 
+                        data-index="${index}">
+                    <option value=""> ${"{{ __('manager.select_custom') }}"} </option>
+                    ${customGroups.map(group => `<option value="${group.id}">${group.title}</option>`).join('')}
+                </select>
+                <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
+            `;
 
-            <div class="form-check me-2">
-                <input type="checkbox" name="custom_groups[${index}][is_required]" value="1"
-                       class="form-check-input">
-                <label class="form-check-label">{{__('manager.required')}}</label>
-            </div>
-
-            <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
-        `;
-        @endverbatim
-
-        wrapper.appendChild(row);
-        updateAvailableGroups();
+            wrapper.appendChild(row);
+            updateAvailableGroups();
         }
 
         /**

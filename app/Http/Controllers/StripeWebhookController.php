@@ -35,22 +35,29 @@ class StripeWebhookController extends Controller
         switch ($event->type) {
             case 'checkout.session.completed':
                 $session = $event->data->object;
-
-                $orderId = $session->metadata->order_id ?? null;
+            
+                // メタデータの取得をより安全に
+                $orderId = $session->metadata->order_id
+                    ?? $session->payment_intent?->metadata->order_id
+                    ?? null;
+            
                 $paymentIntent = $session->payment_intent ?? null;
-
+            
                 if ($orderId) {
                     $order = Order::find($orderId);
                     if ($order && !$order->is_paid) {
                         $order->update([
-                            'is_paid'       => true,
-                            'payment_method'=> 'stripe',
-                            'payment_id'    => $paymentIntent,
+                            'is_paid'        => true,
+                            'payment_method' => 'stripe',
+                            'payment_id'     => $paymentIntent,
                         ]);
-                        Log::info("Order #{$orderId} closed and marked as paid.");
+                        Log::info("✅ Order #{$orderId} marked as paid via Stripe.");
+                    } else {
+                        Log::warning("⚠️ Order not found or already paid: #{$orderId}");
                     }
                 } else {
-                    Log::warning('checkout.session.completed without order_id');
+                    Log::warning('⚠️ checkout.session.completed received without valid order_id.');
+                    Log::info('Session object', ['session' => $session]);
                 }
                 break;
 

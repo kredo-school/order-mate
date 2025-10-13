@@ -183,13 +183,6 @@
                                             @endforeach
                                         </select>
 
-                                        <div class="form-check me-2">
-                                            <input type="checkbox" name="custom_groups[{{ $index }}][is_required]"
-                                                value="1" class="form-check-input"
-                                                {{ $group->pivot->is_required ? 'checked' : '' }}>
-                                            <label class="form-check-label">{{__('manager.required')}}</label>
-                                        </div>
-
                                         <button type="button"
                                             class="btn btn-danger btn-sm remove-custom-group">x</button>
                                     </div>
@@ -271,16 +264,12 @@
             const row = document.createElement('div');
             row.classList.add('d-flex', 'mb-2', 'align-items-center', 'custom-group-row');
             row.innerHTML = `
-      <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
-          <option value="">{{__('manager.select_custom')}}</option>
-          ${availableGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
-      </select>
-      <div class="form-check me-2">
-          <input type="checkbox" name="custom_groups[${index}][is_required]" value="1" class="form-check-input">
-          <label class="form-check-label">{{__('manager.required')}}</label>
-      </div>
-      <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
-    `;
+                <select name="custom_groups[${index}][id]" class="form-select me-2 custom-group-select" data-index="${index}">
+                    <option value="">{{__('manager.select_custom')}}</option>
+                    ${availableGroups.map(g=>`<option value="${g.id}">${g.title}</option>`).join('')}
+                </select>
+                <button type="button" class="btn btn-danger btn-sm remove-custom-group">x</button>
+                `;
             wrapper.appendChild(row);
         });
 

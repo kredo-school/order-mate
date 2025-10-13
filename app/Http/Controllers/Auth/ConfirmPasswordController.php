@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
 
 class ConfirmPasswordController extends Controller
@@ -35,5 +38,16 @@ class ConfirmPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function check(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminAnalyticsController;
 use App\Http\Controllers\Admins\AdminController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
@@ -38,6 +39,8 @@ Route::middleware(['LPLocale'])->group(function () {
         'register' => true, // ← 追加
     ]);
 });
+
+Route::post('/password-check', [ConfirmPasswordController::class, 'check'])->name('password.check');
 
 
 // 認証が必要なルート

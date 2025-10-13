@@ -3,6 +3,7 @@ import './modal-relocate';
 
 // Enable Bootstrap tooltips
 import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 
 // --- Bootstrap Tooltip 全部初期化 ---
 document.addEventListener("DOMContentLoaded", () => {

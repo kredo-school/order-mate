@@ -62,6 +62,8 @@ return [
     'order_list'     => 'Order List',
     'admin_menu'     => 'Admin Menu',
     'store_info'    => 'Store Info',
+    'enter_your_password'       =>  'Enter Your Password',
+    'incorrect_password' => 'Incorrect password. Please try again.',
 
     // stores.index
     'edit'            => 'Edit',

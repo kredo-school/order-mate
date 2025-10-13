@@ -27,7 +27,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     {{-- favicon --}}
-<link rel="icon" href="{{ asset('images/ordermate_logo_nav.png?v=1') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/ordermate_logo_nav.png?v=1') }}" type="image/png">
 
 
     {{-- CSS --}}
@@ -184,13 +184,18 @@
                             class="nav-link text-white px-3 py-2 d-flex align-items-center">
                             <i class="fa-solid fa-list-ul me-2"></i> {{__('manager.order_list')}}
                         </a>
-                        <a href="{{ route('manager.analytics') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-chart-simple me-2"></i> {{__('manager.analytics')}}
+                        <!-- Analytics（差し替え） -->
+                        <a href="#"
+                        class="nav-link protected-link text-white px-3 py-2 d-flex align-items-center"
+                        data-route="{{ route('manager.analytics') }}">
+                            <i class="fa-solid fa-chart-simple me-2"></i> {{ __('manager.analytics') }}
                         </a>
-                        <a href="{{ route('manager.stores.index') }}"
-                            class="nav-link text-white px-3 py-2 d-flex align-items-center">
-                            <i class="fa-solid fa-user me-2"></i> {{__('manager.store_info')}}
+
+                        <!-- Store Info（差し替え） -->
+                        <a href="#"
+                        class="nav-link protected-link text-white px-3 py-2 d-flex align-items-center"
+                        data-route="{{ route('manager.stores.index') }}">
+                            <i class="fa-solid fa-user me-2"></i> {{ __('manager.store_info') }}
                         </a>
                         <a href="{{ route('logout') }}"
                             class="nav-link text-white px-3 py-2 d-flex align-items-center mt-auto mb-5"
@@ -333,6 +338,73 @@
         </script>
         @stack('guest-scripts')
     @endif
+    <!-- Password Confirmation Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-light-mode">
+        <div class="modal-header">
+          <h5 class="modal-title" id="passwordModalLabel">{{ __('manager.confirm_password') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="passwordConfirmForm">
+            @csrf
+            <div class="mb-3">
+              <label for="passwordInput" class="form-label">{{ __('manager.enter_your_password') }}</label>
+              <input type="password" class="form-control bg-light-mode" id="passwordInput" name="password" autocomplete="current-password" required autofocus>
+              <div class="text-danger mt-2" id="passwordError" style="display: none;"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">{{ __('manager.confirm') }}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordError = document.getElementById('passwordError');
+        const form = document.getElementById('passwordConfirmForm');
+        let targetRoute = null;
+    
+        document.querySelectorAll('.protected-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                targetRoute = link.dataset.route;
+                passwordInput.value = '';
+                passwordError.style.display = 'none';
+                passwordModal.show();
+            });
+        });
+    
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            passwordError.style.display = 'none';
+    
+            const response = await fetch("{{ route('password.check') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ password: passwordInput.value })
+            });
+    
+            const result = await response.json();
+    
+            if (result.success) {
+                passwordModal.hide();
+                window.location.href = targetRoute;
+            } else {
+                passwordError.textContent = "{{ __('manager.incorrect_password') }}";
+                passwordError.style.display = 'block';
+            }
+        });
+    });
+    </script>
+    
     @stack('scripts')
     @vite(['resources/js/app.js'])
 </body>

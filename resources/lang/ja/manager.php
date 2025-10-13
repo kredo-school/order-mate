@@ -61,6 +61,8 @@ return [
     'order_list'     => '注文一覧',
     'admin_menu'     => 'メニュー管理',
     'store_info'    => '店舗情報',
+    'enter_your_password'       =>  'パスワードを入力してください。',
+    'incorrect_password'    =>  'パスワードが間違っています。もう一度入力してください。',
 
     // stores.index
     'edit'            => '編集',

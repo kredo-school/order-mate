@@ -149,7 +149,7 @@
         </style>
 
         @push('scripts')
-            <script>
+            {{-- <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     // --- Complete Order ポップオーバー ---
                     const completeBtn = document.getElementById('completeOrderBtn');
@@ -168,6 +168,6 @@
                         });
                     }
                 });
-            </script>
+            </script> --}}
         @endpush
     @endsection
